@@ -2,7 +2,8 @@
 #define FP_REPRESENTATIONS_H
 #include "real_quadratic_orders.h"
 
-struct fp_rep {
+struct fp_rep 
+{
     GEN f;
     GEN p;
     GEN b;
@@ -27,7 +28,7 @@ struct fp_rep fpremove (struct fp_rep fprep, GEN T, GEN C, GEN s);
 
 struct fp_rep numult (GEN O, struct fp_rep fprep1, struct fp_rep fprep2);
 /*
- * Input: Reduced (f', p) (resp. (f'', p)) representation fprep1 of ideal a' (resp. fprep2 of ideal a'') (as output by fprepinit).
+ * Input: Reduced (f', p) (resp. (f'', p)) representation fprep1 of ideal a' (resp. fprep2 of ideal a'').
  * Output: Reduced (f, p) representation of the product a = a'*a''.
  */
 
