@@ -1,4 +1,5 @@
 *.o
 *.so
 .vscode
+testing.c
 testing
