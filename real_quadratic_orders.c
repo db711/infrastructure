@@ -57,8 +57,8 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     {
         checkrqi(O,a,"inucomp");
         checkrqi(O,b,"inucomp");
-        if (cmpii(gen_1,gel(a, 1))) pari_err_DOMAIN("inucomp","S","!=",gen_1,a);
-        if (cmpii(gen_1,gel(b, 1))) pari_err_DOMAIN("inucomp","S","!=",gen_1,b);
+        if (cmpii(gen_1,gel(a,1))) pari_err_DOMAIN("inucomp","S","!=",gen_1,a);
+        if (cmpii(gen_1,gel(b,1))) pari_err_DOMAIN("inucomp","S","!=",gen_1,b);
     }
     GEN swap, tmp1, tmp2, G, X, S, Y, Z, R_, R_1, R_0, C_0 = gen_0, C_1 = gen_m1, Q, P, B_0, B_1, q, M_1, M_2, Q_, k, P_, Q_old, Q_old_, A, B, C, res = cgetg(3,t_VEC);
     pari_sp ltop = avma, lbot, av, av2;

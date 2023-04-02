@@ -30,7 +30,7 @@ void checkrqi(GEN O, GEN a, const char *f);
 GEN inucomp(GEN O, GEN a, GEN b, long flag);
 /* 
  * Ideal NUCOMP.
- * Input: Order O (as output by rqoinit), Ideals a and b (as output by rqiinit).
+ * Input: Order O (as output by rqoinit), reduced ideals a and b (as output by rqiinit).
  * Output: [[1, [Q, P]], [A, B, C]], where [1, [Q, P]] = a*b (computed using a version of Shanks' NUCOMP), coefficients A, B, C (as t_INT) of relative generator (A+B*sqrt(d))/C.
  * Set flag = 0 to skip some tests if you are sure that your input is correct.
  */
