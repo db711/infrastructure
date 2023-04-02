@@ -22,14 +22,20 @@ struct fp_rep fprepinit (GEN f, GEN p, GEN b, GEN d, GEN k);
 
 struct fp_rep fpremove (struct fp_rep fprep, GEN T, GEN C, GEN s);
 /*
- * Input: (f, p) representation fprep (as output by fprepinit), integers T, C and s.
+ * Input: An (f, p) representation fprep (as output by fprepinit), t_INT T, C and s.
  * Output: An (f + 9/8, p) representation.
  */
 
-struct fp_rep numult (GEN O, struct fp_rep fprep1, struct fp_rep fprep2);
+struct fp_rep numult (GEN O, struct fp_rep fprep1, struct fp_rep fprep2); 
 /*
- * Input: Reduced (f', p) (resp. (f'', p)) representation fprep1 of ideal a' (resp. fprep2 of ideal a'').
+ * Input: Reduced (f', p) (resp. (f'', p)) representations fprep1 of ideal a' and fprep2 of ideal a''.
  * Output: Reduced (f, p) representation of the product a = a'*a''.
+ */
+
+struct fp_rep wnear (struct fp_rep fprep, GEN w);
+/*
+ * Input: A reduced (f, p) representation fprep of ideal a, t_INT w.
+ * Output: A w-near (f + 9/8, p) representation of ideal a.
  */
 
 #endif
