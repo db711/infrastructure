@@ -181,10 +181,10 @@ regulatorcf(GEN O, long prec, long flag)
     do
     {
         n += 1;
-        if (flag == 1) pari_printf("%ld: (%Ps, %Ps)\n",n,Q,P);
+        if (flag == 1) pari_printf("%ld: [%Ps, %Ps]\n",n,Q,P);
         else if (flag == 2)
         {
-            av = avma; pari_printf("%ld: (%Ps, %Ps) %Ps\n",n,Q,P,gerepileupto(av,mplog(theta)));
+            av = avma; pari_printf("%ld: [%Ps, %Ps] %Ps\n",n,Q,P,gerepileupto(av,mplog(theta)));
         }
         Q_ = Q;
         av = avma; P = gerepileupto(av,subii(mulii(q,Q),P));
@@ -205,10 +205,106 @@ regulatorcf(GEN O, long prec, long flag)
         else gerepileall(av2,7,&q,&Q,&P,&G_0,&G_1,&B_0,&B_1);
     } while (cmpii(Q,Q_0));
     n += 1; 
-    if (flag == 1) pari_printf("%ld: (%Ps, %Ps)\n",n,Q,P);
+    if (flag == 1) pari_printf("%ld: [%Ps, %Ps]\n",n,Q,P);
     else if (flag == 2) 
     {
-        av = avma; pari_printf("%ld: (%Ps, %Ps) %Ps\n",n,Q,P,gerepileupto(av,mplog(theta)));
+        av = avma; pari_printf("%ld: [%Ps, %Ps] %Ps\n",n,Q,P,gerepileupto(av,mplog(theta)));
     }
     return gerepileupto(ltop,mplog(divri(addir(G_0,mulri(sqrtd,B_0)),Q_0)));
+}
+
+GEN 
+regulatorshanks(GEN O, long prec, long flag)
+{
+    // turn L into hashtable
+    pari_sp ltop = avma, av, av2;
+    GEN sqrtd_, sqrtd, sqrt4d, a, b, L, Q_, Q_0, Q, P_, P, q, B_0, B_1, G_0, G_1, swap, psi, theta, lt, el, el2;
+    long n = 0, i;
+    sqrtd_ = sqrti(gel(O,1));
+    sqrtd = gsqrt(gel(O,1),prec);
+    sqrt4d = sqrtr(sqrtd);
+    av = avma; a = gerepileupto(av,rqiinit(gen_1,gel(O,3),mulii(gmael(O,2,2),subii(gel(O,3),gen_1)))); //this is the identity in O
+    el = cgetg(3,t_VEC);
+    el2 = cgetg(3,t_VEC);
+    gel(el,1) = el2;
+    av2 = avma;
+    L = cgetg(1,t_VEC);
+    Q_0 = gmael(a,2,1);
+    Q = Q_0;
+    P = gmael(a,2,2);
+    av = avma; q = gerepileupto(av,divii(addii(P,sqrtd_),Q));
+    B_0 = gen_0;
+    B_1 = gen_1;
+    G_0 = Q;
+    av = avma; G_1 = gerepileupto(av,subii(mulii(Q,q),P));
+    theta = itor(gen_1,prec);
+    lt = mplog(theta);
+    do // baby steps
+    {
+        gel(el2,1) = Q;
+        gel(el2,2) = P;
+        gel(el,2) = lt;
+        av = avma; L = gerepileupto(av,vec_append(L,el));
+        n += 1;
+        Q_ = Q; P_ = P;
+        av = avma; P = gerepileupto(av,subii(mulii(q,Q),P));
+        av = avma; Q = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(P)),Q));
+        av = avma; q = gerepileupto(av,divii(addii(P,sqrtd_),Q));
+        swap = G_1;
+        av = avma; G_1 = gerepileupto(av,addii(mulii(q,G_1),G_0));
+        G_0 = swap;
+        swap = B_1;
+        av = avma; B_1 = gerepileupto(av,addii(mulii(q,B_1),B_0));
+        B_0 = swap;
+        av = avma; psi = gerepileupto(av,divri(addir(P,sqrtd),Q_));
+        av = avma; theta = gerepileupto(av,mulrr(theta,psi));
+        lt = mplog(theta);
+        if (!cmpii(Q,Q_0)) return gerepilecopy(ltop, lt);
+        if (!cmpii(P_,P)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(divri(Q_0,Q_))));
+        if (!cmpii(Q_,Q)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(mulir(Q_0,divri(psi,Q_)))));
+        gerepileall(av2,10,&q,&Q,&P,&G_0,&G_1,&B_0,&B_1,&theta,&lt,&L);
+    } while (cmprr(lt,sqrt4d) <= 0);
+    b = mkvec3(rqiinit(gen_1,Q,P),lt,theta);
+    for (i = 0; i < 3; i++) // 3 more baby steps
+    { // code duplication...
+        gel(el2,1) = Q;
+        gel(el2,2) = P;
+        gel(el,2) = lt;
+        av = avma; L = gerepileupto(av,vec_append(L,el));
+        n += 1;
+        Q_ = Q; P_ = P;
+        av = avma; P = gerepileupto(av,subii(mulii(q,Q),P));
+        av = avma; Q = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(P)),Q));
+        av = avma; q = gerepileupto(av,divii(addii(P,sqrtd_),Q));
+        swap = G_1;
+        av = avma; G_1 = gerepileupto(av,addii(mulii(q,G_1),G_0));
+        G_0 = swap;
+        swap = B_1;
+        av = avma; B_1 = gerepileupto(av,addii(mulii(q,B_1),B_0));
+        B_0 = swap;
+        av = avma; psi = gerepileupto(av,divri(addir(P,sqrtd),Q_));
+        av = avma; theta = gerepileupto(av,mulrr(theta,psi));
+        lt = mplog(theta);
+        if (!cmpii(Q,Q_0)) return gerepilecopy(ltop, lt);
+        if (!cmpii(P_,P)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(divri(Q_0,Q_))));
+        if (!cmpii(Q_,Q)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(mulir(Q_0,divri(psi,Q_)))));
+        gerepileall(av2,11,&q,&Q,&P,&G_0,&G_1,&B_0,&B_1,&theta,&lt,&L,&b);
+    }
+    gerepileall(ltop,2,&L,&b);
+    sqrtd = gsqrt(gel(O,1),prec);
+    lt = gel(b,2);
+    av2 = avma;
+    if (flag) pari_printf("Baby steps: %Ps\nGiant steps:\n%Ps %Ps\n",L,gmael(b,1,2),gel(b,2));
+    a = b;
+    do
+    {
+        a = inucomp(O,gel(a,1),gel(b,1),0);
+        av = avma; lt = gerepileupto(av,addrr(addrr(lt,gel(b,2)),mplog(absr(divir(gmael(a,2,3),addir(gmael(a,2,1),mulir(gmael(a,2,2),sqrtd)))))));
+        if (flag) pari_printf("%Ps %Ps\n",gmael(a,1,2),lt);
+        for (i = 1; i <= n; i++)
+        {
+            if ((!cmpii(gmael3(a,1,2,1),gmael3(L,i,1,1))) && (!cmpii(gmael3(a,1,2,2),gmael3(L,i,1,2)))) return gerepileupto(ltop,subrr(lt,gmael(L,i,2)));
+        }
+        gerepileall(av2,2,&lt,&a);
+    } while (1);
 }

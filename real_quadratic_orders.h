@@ -38,12 +38,21 @@ GEN inucomp(GEN O, GEN a, GEN b, long flag);
 GEN regulatorcf(GEN O, long prec, long flag);
 /*
  * Regulator continued fraction
- * Input: Order O (as output by rqoinit), precision prec, flag = 0, 1.
+ * Input: Order O (as output by rqoinit), precision prec, flag = 0, 1, 2.
  * Output: Regulator of O as t_REAL to precision prec;
  *         flag controls whether the infrastructure is printed:
  *         0 to print nothing,
  *         1 to print only the ideals,
  *         2 to print ideals and distances.
+*/
+
+GEN regulatorshanks(GEN O, long prec, long flag);
+/*
+ * Input: Order O (as output by rqoinit), precision prec, flag = 0, 1.
+ * Output: Regulator of O as t_REAL to precision prec;
+ *         flag controls whether the baby/giant steps are printed:
+ *         0 to print nothing,
+ *         1 to print the steps,
 */
 
 #endif
