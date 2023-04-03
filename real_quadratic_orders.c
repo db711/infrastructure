@@ -290,10 +290,8 @@ regulatorshanks(GEN O, long prec, long flag)
     av2 = avma;
     if (flag) pari_printf("Baby steps: %Ps\nGiant steps:\n%Ps %Ps\n",L,gmael(b,1,2),gel(b,2));
     a = b;
-    int j = 0;
     do
     {
-        j++;
         a = inucomp(O,gel(a,1),gel(b,1),0);
         av = avma; lt = gerepileupto(av,addrr(addrr(lt,gel(b,2)),mplog(absr(divir(gmael(a,2,3),addir(gmael(a,2,1),mulir(gmael(a,2,2),sqrtd)))))));
         if (flag) pari_printf("%Ps %Ps\n",gmael(a,1,2),lt);
@@ -302,6 +300,5 @@ regulatorshanks(GEN O, long prec, long flag)
             if ((!cmpii(gmael3(a,1,2,1),gmael3(L,i,1,1))) && (!cmpii(gmael3(a,1,2,2),gmael3(L,i,1,2)))) return gerepileupto(ltop,subrr(lt,gmael(L,i,2)));
         }
         gerepileall(av2,2,&lt,&a);
-        if (j > 10) return NULL;
     } while (1);
 }
