@@ -78,14 +78,14 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     }
     G = bezout(diviiexact(gmael(a,2,1),gel(O,3)),diviiexact(gmael(b,2,1),gel(O,3)),&tmp2,&X);
     if (!cmpii(gmael(a,2,1),gmael(b,2,1))) X = gen_0;
-    else if (cmpii(X,gen_0) < 0) X = addii(X,diviiexact(gmael(a,2,1),gel(O,3))); 
+    else if (cmpii(X,gen_0) < 0) X = addii(X,diviiexact(gmael(a,2,1),gel(O,3)));
+    av2 = avma;
     S = bezout(diviiexact(addii(gmael(a,2,2),gmael(b,2,2)),gel(O,3)),G,&Y,&Z);
     av = avma; R_ = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael(b,2,2))),gmael(b,2,1)));
     av = avma; R_1 = gerepileupto(av,lift(gadd(gmul(X,gmul(Z,gsub(mkintmod(gmael(a,2,2),diviiexact(gmael(a,2,1),S)),gmael(b,2,2)))),gmul(Y,mkintmod(R_,diviiexact(gmael(a,2,1),S))))));
     gerepileall(ltop,3,&R_1,&R_,&S);
-    av2 = avma;  
-    R_0 = diviiexact(gmael(a,2,1),S);
     av = avma; tmp1 = gerepileupto(av,floorr(gmul(gsqrt(gmul(gen_2,gel(O,3)),DEFAULTPREC),gsqrtn(gel(O,1),sqri(gen_2),NULL,DEFAULTPREC))));
+    R_0 = diviiexact(gmael(a,2,1),S);
     if (cmpii(R_0,tmp1) < 0)
     {
         j = 0;
@@ -106,11 +106,11 @@ inucomp(GEN O, GEN a, GEN b, long flag)
             swap = R_1;
             R_1 = subii(R_0,mulii(q,R_1));
             R_0 = swap;
-            gerepileall(av2,4,&R_0,&R_1,&C_0,&C_1);
+            gerepileall(av2,6,&R_0,&R_1,&C_0,&C_1,&tmp1,&S);
         }
         av = avma; M_1 = gerepileupto(av,diviiexact(addii(mulii(divii(gmael(b,2,1),mulii(gel(O,3),S)),R_1),mulii(subii(gmael(a,2,2),gmael(b,2,2)),C_1)),divii(gmael(a,2,1),S)));
         av = avma; M_2 = gerepileupto(av,diviiexact(addii(mulii(addii(gmael(a,2,2),gmael(b,2,2)),R_1),mulii(mulii(mulii(gel(O,3),S),R_),C_1)),divii(gmael(a,2,1),S)));
-        av = avma; Q = (i == 1) ? gerepileupto(av,subii(mulii(R_1,M_1),mulii(C_1,M_1))) : gerepileupto(av,negi(subii(mulii(R_1,M_1),mulii(C_1,M_2))));
+        av = avma; Q = (i == 1) ? gerepileupto(av,subii(mulii(R_1,M_1),mulii(C_1,M_2))) : gerepileupto(av,negi(subii(mulii(R_1,M_1),mulii(C_1,M_2))));
         av = avma; P = gerepileupto(av,subii(diviiexact(addii(mulii(diviiexact(gmael(b,2,1),mulii(gel(O,3),S)),R_1),mulii(Q,C_0)),C_1),gmael(b,2,2)));
     }
     Q_ = absi(Q);
@@ -290,8 +290,10 @@ regulatorshanks(GEN O, long prec, long flag)
     av2 = avma;
     if (flag) pari_printf("Baby steps: %Ps\nGiant steps:\n%Ps %Ps\n",L,gmael(b,1,2),gel(b,2));
     a = b;
+    int j = 0;
     do
     {
+        j++;
         a = inucomp(O,gel(a,1),gel(b,1),0);
         av = avma; lt = gerepileupto(av,addrr(addrr(lt,gel(b,2)),mplog(absr(divir(gmael(a,2,3),addir(gmael(a,2,1),mulir(gmael(a,2,2),sqrtd)))))));
         if (flag) pari_printf("%Ps %Ps\n",gmael(a,1,2),lt);
@@ -300,5 +302,6 @@ regulatorshanks(GEN O, long prec, long flag)
             if ((!cmpii(gmael3(a,1,2,1),gmael3(L,i,1,1))) && (!cmpii(gmael3(a,1,2,2),gmael3(L,i,1,2)))) return gerepileupto(ltop,subrr(lt,gmael(L,i,2)));
         }
         gerepileall(av2,2,&lt,&a);
+        if (j > 10) return NULL;
     } while (1);
 }
