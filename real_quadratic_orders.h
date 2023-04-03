@@ -35,4 +35,15 @@ GEN inucomp(GEN O, GEN a, GEN b, long flag);
  * Set flag = 0 to skip some tests if you are sure that your input is correct.
  */
 
+GEN regulatorcf(GEN O, long prec, long flag);
+/*
+ * Regulator continued fraction
+ * Input: Order O (as output by rqoinit), precision prec, flag = 0, 1.
+ * Output: Regulator of O as t_REAL to precision prec;
+ *         flag controls whether the infrastructure is printed:
+ *         0 to print nothing,
+ *         1 to print only the ideals,
+ *         2 to print ideals and distances.
+*/
+
 #endif
