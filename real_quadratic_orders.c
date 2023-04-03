@@ -168,6 +168,7 @@ regulatorcf(GEN O, long prec, long flag)
     sqrtd_ = sqrti(gel(O,1));
     sqrtd = gsqrt(gel(O,1),prec);
     av = avma; a = gerepileupto(av,rqiinit(gen_1,gel(O,3),mulii(gmael(O,2,2),subii(gel(O,3),gen_1)))); //this is the identity in O
+    av2 = avma;
     Q_0 = gmael(a,2,1);
     Q = Q_0;
     P = gmael(a,2,2);
@@ -177,7 +178,6 @@ regulatorcf(GEN O, long prec, long flag)
     G_0 = Q;
     av = avma; G_1 = gerepileupto(av,subii(mulii(Q,q),P));
     if (flag == 2) theta = itor(gen_1,prec);
-    av2 = avma;
     do
     {
         n += 1;
