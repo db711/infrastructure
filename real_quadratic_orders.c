@@ -76,12 +76,12 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         a = b;
         b = swap;
     }
-    tmp1 = diviiexact(gmael(a,2,1),gel(O,3));
-    G = bezout(tmp1,diviiexact(gmael(b,2,1),gel(O,3)),&tmp2,&X);
-    if (cmpii(X,gen_0) < 0) X = addii(X,tmp1); 
+    G = bezout(diviiexact(gmael(a,2,1),gel(O,3)),diviiexact(gmael(b,2,1),gel(O,3)),&tmp2,&X);
+    if (!cmpii(gmael(a,2,1),gmael(b,2,1))) X = gen_0;
+    else if (cmpii(X,gen_0) < 0) X = addii(X,diviiexact(gmael(a,2,1),gel(O,3))); 
     S = bezout(diviiexact(addii(gmael(a,2,2),gmael(b,2,2)),gel(O,3)),G,&Y,&Z);
     av = avma; R_ = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael(b,2,2))),gmael(b,2,1)));
-    av = avma; R_1 = gerepileupto(av,lift(gadd(gmul(X,gmul(Z,gsub(mkintmod(gmael(a,2,2),tmp1),gmael(b,2,2)))),gmul(Y,mkintmod(R_,tmp1)))));
+    av = avma; R_1 = gerepileupto(av,lift(gadd(gmul(X,gmul(Z,gsub(mkintmod(gmael(a,2,2),diviiexact(gmael(a,2,1),S)),gmael(b,2,2)))),gmul(Y,mkintmod(R_,diviiexact(gmael(a,2,1),S))))));
     gerepileall(ltop,3,&R_1,&R_,&S);
     av2 = avma;  
     R_0 = diviiexact(gmael(a,2,1),S);
@@ -124,12 +124,6 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     av = avma; tmp1 = gerepileupto(av,addii(P_,sqrti(gel(O,1))));
     if (cmpii(tmp1,Q_) < 0)
     {
-        lbot = avma;
-        av = avma; A = gerepileupto(av,mulii(S,addii(mulii(Q,B_0),mulii(P,B_1))));
-        av = avma; B = gerepileupto(av,mulii(negi(S),B_1));
-        C = gcopy(Q);
-        return res = gerepile(ltop,lbot,mkvec2(rqiinit(gen_1,Q_,P_),mkvec3(A,B,C)));
-
         q = gfloor(gdiv(tmp1,Q_));
         Q_old = Q;
         av = avma; P = gerepileupto(av,subii(mulii(q, Q_),P));
