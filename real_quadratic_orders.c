@@ -254,7 +254,7 @@ regulatorshanks(GEN O, long prec, long flag)
         av = avma; theta = gerepileupto(av,mulrr(theta,psi));
         lt = mplog(theta);
         if (!cmpii(Q,Q_0)) return gerepilecopy(ltop, lt);
-        if (!cmpii(P_,P)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(divri(Q_0,Q_))));
+        if (!cmpii(P_,P)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(rdivii(Q_0,Q_,prec))));
         if (!cmpii(Q_,Q)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(mulir(Q_0,divri(psi,Q_)))));
         gerepileall(av2,10,&q,&Q,&P,&G_0,&G_1,&B_0,&B_1,&theta,&lt,&L);
     } while (cmprr(lt,sqrt4d) <= 0);
