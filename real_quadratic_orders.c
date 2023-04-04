@@ -69,7 +69,7 @@ imultiply(GEN O, GEN a, GEN b)
     W = mulii(X,W);
     av = avma; Q = gerepileupto(av,diviiexact(mulii(gmael(a,2,1),gmael(b,2,1)),mulii(sqri(S),gel(O,3))));
     av = avma; U = gerepileupto(av,lift(gadd(gmul(mkintmod(W,diviiexact(gmael(a,2,1),S)),subii(gmael(a,2,2),gmael(b,2,2))),gmul(mkintmod(Y,diviiexact(gmael(a,2,1),S)),diviiexact(subii(gel(O,1),sqri(gmael(b,2,2))),gmael(b,2,1))))));
-    av = avma; P = gerepileupto(av,lift(gadd(gmael(b,2,2),gmul(mkintmod(U,Q),diviiexact(gmael(a,2,1),mulii(gel(O,3),S))))));
+    av = avma; P = gerepileupto(av,lift(gadd(gmael(b,2,2),gmul(mkintmod(U,Q),diviiexact(gmael(b,2,1),mulii(gel(O,3),S))))));
     return gerepileupto(ltop,rqiinit(S,Q,P));
 }
 
@@ -79,7 +79,7 @@ qiimultiply(GEN O, GEN qi, GEN i)
     checkrqi(O,i,"qiimultiply");
     if (cmpii(gen_1,gel(i,1))) pari_err_DOMAIN("qiimultiply","S","!=",gen_1,i);
     pari_sp ltop = avma, av;
-    GEN a_1, a_2, b_1, b_2, p, q, a, b, c;
+    GEN a_1, a_2, b_1, b_2, p, q, a, b, c, tmp1, tmp2;
     av = avma; a_1 = gerepileupto(av,diviiexact(mulii(gel(qi,1),gmael(i,2,1)),mulii(gel(O,3),gel(qi,3))));
     av = avma; b_1 = gerepileupto(av,diviiexact(mulii(gel(qi,2),gmael(i,2,1)),mulii(gel(O,3),gel(qi,3))));
     av = avma; a_2 = gerepileupto(av,diviiexact(addii(mulii(gel(qi,1),gmael(i,2,2)),mulii(gel(qi,2),gel(O,1))),mulii(gel(O,3),gel(qi,3))));
@@ -87,8 +87,14 @@ qiimultiply(GEN O, GEN qi, GEN i)
     c = bezout(b_1,b_2,&p,&q);
     av = avma, a = gerepileupto(av,diviiexact(subii(mulii(a_1,b_2),mulii(b_1,a_2)),c));
     av = avma, b = gerepileupto(av,addii(mulii(p,a_1),mulii(q,a_2)));
-    //if(!equalii(c,gel(O,3))) pari_err_BUG("qiimultiply");
-    return gerepileupto(ltop,rqiinit(gen_1,diviiexact(a,gel(O,3)),diviiexact(b,gel(O,3))));
+    if(!equalii(c,gel(O,3))) pari_err_BUG("qiimultiply");
+    tmp1 = diviiexact(b,gel(O,3));
+    tmp2 = absi(diviiexact(a,gel(O,3)));
+    while (cmpii(tmp1,gen_0) < 0)
+    {
+        av = avma; tmp1 = gerepileupto(av,addii(tmp1,tmp2));
+    }
+    return gerepileupto(ltop,rqiinit(gen_1,tmp2,diviiexact(b,gel(O,3))));
 }
 
 GEN 
@@ -154,11 +160,14 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     av = avma; P_ = gerepileupto(av,addii(mulii(k,Q_),P));
     if (j != 0)
     {
-        B_0 = absi(C_0);
-        av = avma; B_1 = gerepileupto(av, mulsi(signe(Q),absi(C_1)));
+        av = avma; B_0 = gerepileupto(av,absi(C_0));
+        av = avma; B_1 = gerepileupto(av,absi(C_1)); 
     }
+    j = 1;
     if (cmpii(addii(P_,sqrti(gel(O,1))),Q_) < 0)
     {
+        j = 2;
+        av = avma; B_1 = gerepileupto(av,mulsi(signe(Q),B_1));
         av = avma; q = gerepileupto(av,gfloor(gdiv(addii(P,sqrti(gel(O,1))),Q_)));
         Q_old = Q;
         av = avma; P = gerepileupto(av,subii(mulii(q, Q_),P));
@@ -167,17 +176,18 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         av = avma; k = gerepileupto(av,gfloor(gdiv(subii(sqrti(gel(O,1)),P),Q_)));
         av = avma; P_ = gerepileupto(av,addii(mulii(k,Q_),P));
         swap = B_1;
-        av = avma; B_1 = gerepileupto(av,addii(mulii(q,B_1),B_0));
+        av = avma; B_1 = gerepileupto(av,addii(mulii(q,B_1),B_0)); 
         B_0 = swap;
         if (cmpii(addii(P_,sqrti(gel(O,1))),Q_) < 0)
         {  
+            j = 3;
             Q_old_ = Q;
             av = avma; Q_ = gerepileupto(av,addii(subii(Q_old, Q_old_),mulii(gen_2,P)));
             Q = Q_;
             P = subii(Q_old_,P);
             P_ = subii(P,Q);
             swap = B_1;
-            B_1 = addii(B_1, B_0);
+            B_1 = addii(B_1,B_0);
             B_0 = swap;
         }
     }
@@ -185,6 +195,8 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     av = avma; A = gerepileupto(av,mulii(S,addii(mulii(Q,B_0),mulii(P,B_1))));
     av = avma; B = gerepileupto(av,mulii(negi(S),B_1));
     C = gcopy(Q);
+    //printf("\tj = %ld\n",j);
+    if (j == 3) pari_printf("!!! %Ps !!!\n",gel(O,1));
     return res = gerepile(ltop,lbot,mkvec2(rqiinit(gen_1,Q_,P_),mkvec3(A,B,C)));
 }
 
