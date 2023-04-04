@@ -56,6 +56,42 @@ checkrqi(GEN O, GEN a, const char *f)
 }
 
 GEN 
+imultiply(GEN O, GEN a, GEN b)
+{
+    checkrqi(O,a,"imultiply");
+    checkrqi(O,b,"imultiply");
+    if (cmpii(gen_1,gel(a,1))) pari_err_DOMAIN("imultiply","S","!=",gen_1,a);
+    if (cmpii(gen_1,gel(b,1))) pari_err_DOMAIN("imultiply","S","!=",gen_1,b);
+    pari_sp ltop = avma, av;
+    GEN S, Q, P, U, V, W, X, Y;
+    S = bezout(bezout(diviiexact(gmael(a,2,1),gel(O,3)),diviiexact(gmael(b,2,1),gel(O,3)),&V,&W),diviiexact(addii(gmael(a,2,2),gmael(b,2,2)),gel(O,3)),&X,&Y);
+    V = mulii(X,V);
+    W = mulii(X,W);
+    av = avma; Q = gerepileupto(av,diviiexact(mulii(gmael(a,2,1),gmael(b,2,1)),mulii(sqri(S),gel(O,3))));
+    av = avma; U = gerepileupto(av,lift(gadd(gmul(mkintmod(W,diviiexact(gmael(a,2,1),S)),subii(gmael(a,2,2),gmael(b,2,2))),gmul(mkintmod(Y,diviiexact(gmael(a,2,1),S)),diviiexact(subii(gel(O,1),sqri(gmael(b,2,2))),gmael(b,2,1))))));
+    av = avma; P = gerepileupto(av,lift(gadd(gmael(b,2,2),gmul(mkintmod(U,Q),diviiexact(gmael(a,2,1),mulii(gel(O,3),S))))));
+    return gerepileupto(ltop,rqiinit(S,Q,P));
+}
+
+GEN 
+qiimultiply(GEN O, GEN qi, GEN i)
+{
+    checkrqi(O,i,"qiimultiply");
+    if (cmpii(gen_1,gel(i,1))) pari_err_DOMAIN("qiimultiply","S","!=",gen_1,i);
+    pari_sp ltop = avma, av;
+    GEN a_1, a_2, b_1, b_2, p, q, a, b, c;
+    av = avma; a_1 = gerepileupto(av,diviiexact(mulii(gel(qi,1),gmael(i,2,1)),mulii(gel(O,3),gel(qi,3))));
+    av = avma; b_1 = gerepileupto(av,diviiexact(mulii(gel(qi,2),gmael(i,2,1)),mulii(gel(O,3),gel(qi,3))));
+    av = avma; a_2 = gerepileupto(av,diviiexact(addii(mulii(gel(qi,1),gmael(i,2,2)),mulii(gel(qi,2),gel(O,1))),mulii(gel(O,3),gel(qi,3))));
+    av = avma; b_2 = gerepileupto(av,diviiexact(addii(mulii(gel(qi,2),gmael(i,2,2)),gel(qi,1)),mulii(gel(O,3),gel(qi,3))));
+    c = bezout(b_1,b_2,&p,&q);
+    av = avma, a = gerepileupto(av,diviiexact(subii(mulii(a_1,b_2),mulii(b_1,a_2)),c));
+    av = avma, b = gerepileupto(av,addii(mulii(p,a_1),mulii(q,a_2)));
+    //if(!equalii(c,gel(O,3))) pari_err_BUG("qiimultiply");
+    return gerepileupto(ltop,rqiinit(gen_1,diviiexact(a,gel(O,3)),diviiexact(b,gel(O,3))));
+}
+
+GEN 
 inucomp(GEN O, GEN a, GEN b, long flag) 
 {
     //Which GENs can be turned into longs?

@@ -27,6 +27,20 @@ void checkrqi(GEN O, GEN a, const char *f);
  * Throws a type error if a is not a valid O-ideal.
  */
 
+GEN imultiply(GEN O, GEN a, GEN b);
+/*
+ * Ideal multiply.
+ * Input: Real quadratic order (as output by rqoinit), reduced real quadratic ideals (as output by rqiinit).
+ * Output: Real quadratic ideal a*b (not necessarily primitive or reduced).
+*/
+
+GEN qiimultiply(GEN O, GEN qi, GEN a);
+/*
+ * Quadratic integer ideal multiply.
+ * Input: Quadratic integer qi in the form [A, B, C] = (A + B*sqrt(d))/C (as output for example by inucomp), primitive ideal a = [1, [Q, P]] (as for example output by imultiply or rqiinit).
+ * Output: The primitive ideal qi*a.
+*/
+
 GEN inucomp(GEN O, GEN a, GEN b, long flag);
 /* 
  * Ideal NUCOMP.
