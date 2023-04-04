@@ -121,10 +121,9 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         B_0 = absi(C_0);
         av = avma; B_1 = gerepileupto(av, mulsi(signe(Q),absi(C_1)));
     }
-    av = avma; tmp1 = gerepileupto(av,addii(P_,sqrti(gel(O,1))));
-    if (cmpii(tmp1,Q_) < 0)
+    if (cmpii(addii(P_,sqrti(gel(O,1))),Q_) < 0)
     {
-        q = gfloor(gdiv(tmp1,Q_));
+        av = avma; q = gerepileupto(av,gfloor(gdiv(addii(P,sqrti(gel(O,1))),Q_)));
         Q_old = Q;
         av = avma; P = gerepileupto(av,subii(mulii(q, Q_),P));
         av = avma; Q = gerepileupto(av,diviiexact(gsub(gel(O,1),gsqr(P)),Q_));
@@ -134,8 +133,8 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         swap = B_1;
         av = avma; B_1 = gerepileupto(av,addii(mulii(q,B_1),B_0));
         B_0 = swap;
-        if (cmpii(tmp1,Q_) < 0)
-        {
+        if (cmpii(addii(P_,sqrti(gel(O,1))),Q_) < 0)
+        {  
             Q_old_ = Q;
             av = avma; Q_ = gerepileupto(av,addii(subii(Q_old, Q_old_),mulii(gen_2,P)));
             Q = Q_;
