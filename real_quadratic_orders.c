@@ -210,6 +210,7 @@ GEN
 regulatorshanks(GEN O, long prec, long flag)
 {
     // turn L into hashtable
+    // in some cases the giant step is too small and computation might return 0 erroneously
     pari_sp ltop = avma, av, av2;
     GEN sqrtd_, sqrtd, sqrt4d, a, b, L, Q_, Q_0, Q, P_, P, q, B_0, B_1, G_0, G_1, swap, psi, theta, lt, el, el2;
     long n = 0, i;
@@ -252,9 +253,9 @@ regulatorshanks(GEN O, long prec, long flag)
         av = avma; psi = gerepileupto(av,divri(addir(P,sqrtd),Q_));
         av = avma; theta = gerepileupto(av,mulrr(theta,psi));
         lt = mplog(theta);
-        if (!cmpii(Q,Q_0)) return gerepilecopy(ltop, lt);
-        if (!cmpii(P_,P)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(rdivii(Q_0,Q_,prec))));
-        if (!cmpii(Q_,Q)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(mulir(Q_0,divri(psi,Q_)))));
+        if (equalii(Q,Q_0)) return gerepilecopy(ltop, lt);
+        if (equalii(P_,P)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(rdivii(Q_0,Q_,prec))));
+        if (equalii(Q_,Q)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(mulir(Q_0,divri(psi,Q_)))));
         gerepileall(av2,10,&q,&Q,&P,&G_0,&G_1,&B_0,&B_1,&theta,&lt,&L);
     } while (cmprr(lt,sqrt4d) <= 0);
     b = mkvec3(rqiinit(gen_1,Q,P),lt,theta);
@@ -278,9 +279,9 @@ regulatorshanks(GEN O, long prec, long flag)
         av = avma; psi = gerepileupto(av,divri(addir(P,sqrtd),Q_));
         av = avma; theta = gerepileupto(av,mulrr(theta,psi));
         lt = mplog(theta);
-        if (!cmpii(Q,Q_0)) return gerepilecopy(ltop, lt);
-        if (!cmpii(P_,P)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(divri(Q_0,Q_))));
-        if (!cmpii(Q_,Q)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(mulir(Q_0,divri(psi,Q_)))));
+        if (equalii(Q,Q_0)) return gerepilecopy(ltop, lt);
+        if (equalii(P_,P)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(rdivii(Q_0,Q_,prec))));
+        if (equalii(Q_,Q)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(mulir(Q_0,divri(psi,Q_)))));
         gerepileall(av2,11,&q,&Q,&P,&G_0,&G_1,&B_0,&B_1,&theta,&lt,&L,&b);
     }
     gerepileall(ltop,2,&L,&b);
