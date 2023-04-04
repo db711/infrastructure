@@ -163,10 +163,8 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         av = avma; B_0 = gerepileupto(av,absi(C_0));
         av = avma; B_1 = gerepileupto(av,absi(C_1)); 
     }
-    j = 1;
     if (cmpii(addii(P_,sqrti(gel(O,1))),Q_) < 0)
     {
-        j = 2;
         av = avma; B_1 = gerepileupto(av,mulsi(signe(Q),B_1));
         av = avma; q = gerepileupto(av,gfloor(gdiv(addii(P,sqrti(gel(O,1))),Q_)));
         Q_old = Q;
@@ -180,7 +178,6 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         B_0 = swap;
         if (cmpii(addii(P_,sqrti(gel(O,1))),Q_) < 0)
         {  
-            j = 3;
             Q_old_ = Q;
             av = avma; Q_ = gerepileupto(av,addii(subii(Q_old, Q_old_),mulii(gen_2,P)));
             Q = Q_;
@@ -195,8 +192,6 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     av = avma; A = gerepileupto(av,mulii(S,addii(mulii(Q,B_0),mulii(P,B_1))));
     av = avma; B = gerepileupto(av,mulii(negi(S),B_1));
     C = gcopy(Q);
-    //printf("\tj = %ld\n",j);
-    if (j == 3) pari_printf("!!! %Ps !!!\n",gel(O,1));
     return res = gerepile(ltop,lbot,mkvec2(rqiinit(gen_1,Q_,P_),mkvec3(A,B,C)));
 }
 
