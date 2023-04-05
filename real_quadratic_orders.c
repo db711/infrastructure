@@ -100,8 +100,7 @@ qiimultiply(GEN O, GEN qi, GEN i)
 GEN 
 inucomp(GEN O, GEN a, GEN b, long flag) 
 {
-    //Which GENs can be turned into longs?
-    //Control output of (A, B, C) via flag?
+    //Which GENs can be turned into longs? Arithmetic on longs is about 5 times faster than on t_INTs
     if (flag)
     {
         checkrqi(O,a,"inucomp");
@@ -198,6 +197,7 @@ inucomp(GEN O, GEN a, GEN b, long flag)
 GEN 
 regulatorcf(GEN O, long prec, long flag)
 {
+    //Output the fundamental unit?
     pari_sp ltop = avma, av, av2;
     GEN sqrtd_, sqrtd, a, Q_, Q, Q_0, P, q, B_0, B_1, G_0, G_1, swap, psi, theta;
     long n = 0;
@@ -253,7 +253,6 @@ GEN
 regulatorshanks(GEN O, long prec, long flag)
 {
     // turn L into hashtable
-    // in some cases the giant step is too small and computation might return 0 erroneously
     pari_sp ltop = avma, av, av2;
     GEN sqrtd_, sqrtd, sqrt4d, a, b, L, Q_, Q_0, Q, P_, P, q, B_0, B_1, G_0, G_1, swap, psi, theta, lt, el, el2;
     long n = 0, i;

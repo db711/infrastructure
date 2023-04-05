@@ -66,7 +66,9 @@ GEN regulatorshanks(GEN O, long prec, long flag);
  * Output: Regulator of O as t_REAL to precision prec;
  *         flag controls whether the baby/giant steps are printed:
  *         0 to print nothing,
- *         1 to print the steps,
+ *         1 to print the steps.
+ * Known Bugs:
+ * - In some cases the giant step is too small and computation might return ~0 erroneously, because it hits a baby step immediately.
 */
 
 #endif
