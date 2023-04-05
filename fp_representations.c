@@ -34,7 +34,7 @@ fpremove (GEN fprep, GEN T, GEN C, GEN s)
     GEN gen_3 = addii(gen_2,gen_1), e, d, k;
     long t;
     av = avma; e = gerepileupto(av,roundr(mulir(powii(gen_2,subii(addii(gmael(fprep,1,2),gen_3),s)),absr(rdivii(T,C,DEFAULTPREC)))));
-    av = avma; t = dbllog2r(itor(e,DEFAULTPREC)) - 2.5 - dbllog2r(itor(gmael(fprep,2,2),DEFAULTPREC)); set_avma(av);
+    av = avma; t = dbllog2r(itor(e,DEFAULTPREC)) - 2 - dbllog2r(itor(gmael(fprep,2,2),DEFAULTPREC)); set_avma(av);
     av = avma; d = gerepileupto(av,ceilr(mulir(powii(gen_2,addis(addii(gmael(fprep,1,2),gen_3),t)),rdivii(gmael(fprep,2,2),e,DEFAULTPREC))));
     av = avma; k = gerepileupto(av,subis(gmael(fprep,2,3),t));
     if (gmael(fprep,1,1) == NULL) return gerepileupto(ltop,fprepinit(NULL,gmael(fprep,1,2),gmael(fprep,2,1),d,k));
@@ -48,7 +48,6 @@ numult (GEN O, GEN fprep1, GEN fprep2, long flag)
     GEN b, e, h, s, T;
     pari_sp ltop = avma, av;
     b = inucomp(O,gmael(fprep1,2,1),gmael(fprep2,2,1),flag);
-    pari_printf("%Ps\n",b);
     av = avma;
     if (cmpii(mulii(gmael(fprep1,2,2),gmael(fprep2,2,2)),powii(gen_2,addii(mulii(gen_2,gmael(fprep1,1,2)),gen_1))) <= 0)
     {
