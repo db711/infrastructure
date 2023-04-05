@@ -11,7 +11,7 @@ fprepinit (GEN f, GEN p, GEN b, GEN d, GEN k)
     if (typ(k) != t_INT) pari_err_TYPE("fprepinit",k);
     if (f != NULL && gcmp(f,gen_1) < 0) pari_err_DOMAIN("fprepinit",GENtostr(f),"<",gen_1,f);
     if (cmpii(p,gen_0) < 0) pari_err_DOMAIN("fprepinit",itostr(p),"<",gen_0,p);
-    if (cmpii(powii(gen_2,p),d) >= 0 || cmpii(d,powii(gen_2,addii(p,gen_1))) < 0) pari_err_DOMAIN("fprepinit",itostr(d),"",NULL,d);
+    if (cmpii(powii(gen_2,p),d) >= 0 || cmpii(powii(gen_2,addii(p,gen_1)),d) < 0) pari_err_DOMAIN("fprepinit",itostr(d),"",NULL,d);
     set_avma(ltop);
     gel(res1,1) = (f == NULL) ? NULL : gcopy(f);
     gel(res1,2) = gcopy(p);
