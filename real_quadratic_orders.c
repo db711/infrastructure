@@ -110,7 +110,7 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     }
     GEN swap, tmp1, tmp2, G, X, S, Y, Z, R_, R_1, R_0, C_0 = gen_0, C_1 = gen_m1, Q, P, B_0, B_1, q, M_1, M_2, Q_, k, P_, Q_old, Q_old_, A, B, C, res = cgetg(3,t_VEC);
     pari_sp ltop = avma, lbot, av, av2;
-    long i = 0, j = 1;
+    long i = 0;
     if (cmpii(gmael(a,2,1),gmael(b,2,1)) < 0)
     {
         swap = a;
@@ -129,7 +129,6 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     R_0 = diviiexact(gmael(a,2,1),S);
     if (cmpii(R_0,tmp1) < 0)
     {
-        j = 0;
         av = avma; Q = gerepileupto(av,diviiexact(mulii(gmael(a,2,1),gmael(b,2,1)),mulii(gel(O,3),sqri(S))));
         av = avma; P = gerepileupto(av,lift(gadd(mkintmod(gmael(b,2,2),Q),diviiexact(mulii(R_1,gmael(b,2,1)),mulii(gel(O,3),S)))));
         B_0 = gen_1;
@@ -153,18 +152,14 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         av = avma; M_2 = gerepileupto(av,diviiexact(addii(mulii(addii(gmael(a,2,2),gmael(b,2,2)),R_1),mulii(mulii(mulii(gel(O,3),S),R_),C_1)),divii(gmael(a,2,1),S)));
         av = avma; Q = (i == 1) ? gerepileupto(av,subii(mulii(R_1,M_1),mulii(C_1,M_2))) : gerepileupto(av,negi(subii(mulii(R_1,M_1),mulii(C_1,M_2))));
         av = avma; P = gerepileupto(av,subii(diviiexact(addii(mulii(diviiexact(gmael(b,2,1),mulii(gel(O,3),S)),R_1),mulii(Q,C_0)),C_1),gmael(b,2,2)));
+        av = avma; B_0 = gerepileupto(av,absi(C_0));
+        av = avma; B_1 = gerepileupto(av,mulsi(signe(Q),absi(C_1))); 
     }
     Q_ = absi(Q);
     av = avma; k = gerepileupto(av,gfloor(gdiv(subii(sqrti(gel(O,1)),P),Q_)));
     av = avma; P_ = gerepileupto(av,addii(mulii(k,Q_),P));
-    if (j != 0)
-    {
-        av = avma; B_0 = gerepileupto(av,absi(C_0));
-        av = avma; B_1 = gerepileupto(av,absi(C_1)); 
-    }
     if (cmpii(addii(P_,sqrti(gel(O,1))),Q_) < 0)
     {
-        av = avma; B_1 = gerepileupto(av,mulsi(signe(Q),B_1));
         av = avma; q = gerepileupto(av,gfloor(gdiv(addii(P,sqrti(gel(O,1))),Q_)));
         Q_old = Q;
         av = avma; P = gerepileupto(av,subii(mulii(q, Q_),P));
