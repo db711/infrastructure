@@ -2,7 +2,7 @@ CC = gcc
 RM = rm -f
 CFLAGS = -Wall -Wextra -pedantic -std=c11 -g
 LDFLAGS = -g 
-LDLIBS = -lpari
+LDLIBS = -lpari -lm
 
 SRCS = real_quadratic_orders.c fp_representations.c
 OBJS = $(subst .c,.o,$(SRCS))
