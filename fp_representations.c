@@ -173,3 +173,10 @@ wnear(GEN O, GEN fprep, GEN w)
     if (gmael(fprep,1,1) == NULL) return gerepileupto(ltop,fprepinit(NULL,gmael(fprep,1,2),c,g,h));
     else return gerepileupto(ltop,fprepinit(addrr(gmael(fprep,1,1),rdivii(powii(gen_3,gen_2),powii(gen_2,gen_3),DEFAULTPREC)),gmael(fprep,1,2),c,g,h));
 }
+
+GEN 
+wmult(GEN O, GEN fprep1, GEN fprep2, GEN w, long flag)
+{
+    pari_sp ltop = avma;
+    return gerepileupto(ltop,wnear(O,numult(O,fprep1,fprep2,flag),w));
+}
