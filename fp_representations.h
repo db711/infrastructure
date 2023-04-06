@@ -27,8 +27,8 @@ GEN fpremove(GEN fprep, GEN T, GEN C, GEN s);
 GEN numult(GEN O, GEN fprep1, GEN fprep2, long flag); 
 /*
  * Input:   Real quadratic order O (as output by rqoinit);
-            Reduced (f', p) representation fprep1 = (b', d', k') of invertible ideal a';
-            Reduced (f'', p) representation fprep2 = (b'', d'', k'') of invertible ideal a''.
+ *          Reduced (f', p) representation fprep1 = (b', d', k') of invertible ideal a';
+ *          Reduced (f'', p) representation fprep2 = (b'', d'', k'') of invertible ideal a''.
  * Output:  Reduced (f, p) representation (b, d, k) of the product a = a'*a'',
  *          where b = [1, [Q, P]] with (P + sqrt(d))/Q > 1, -1 < (P - sqrt(d))/Q < 0,
  *          k <= k' + k'' + 1,
@@ -39,18 +39,18 @@ GEN numult(GEN O, GEN fprep1, GEN fprep2, long flag);
 GEN wnear(GEN O, GEN fprep, GEN w);
 /*
  * Input:   Real quadratic order O (as output by rqoinit);
-            A reduced (f, p) representation fprep of ideal a, t_INT w.
+ *          A reduced (f, p) representation fprep of ideal a, t_INT w.
  * Output:  A w-near (f + 9/8, p) representation of the ideal a.
  */
 
 GEN wmult(GEN O, GEN fprep1, GEN fprep2, GEN w, long flag);
 /*
  * Input:   Real quadratic order O (as output by rqoinit);
-            Reduced w-near (f', p) representation fprep1 = (b', d', k') of invertible ideal a';
-            Reduced w-near (f'', p) representation fprep2 = (b'', d'', k'') of invertible ideal a''.
-            (w-nearness is not, and in fact cannot, be checked.)
+ *          Reduced w-near (f', p) representation fprep1 = (b', d', k') of invertible ideal a';
+ *          Reduced w-near (f'', p) representation fprep2 = (b'', d'', k'') of invertible ideal a''.
+ *          (w-nearness is not, and in fact cannot, be checked.)
  * Output:  Reduced w-near (f* + 13/4, p) representation (b, d, k) of the product a = a'*a'',
-            where f* = f' + f'' + 2^(-p)*f'*f''.
+ *          where f* = f' + f'' + 2^(-p)*f'*f''.
  * Set flag = 0 to skip some tests if you are sure that your input is correct.
 */
 
