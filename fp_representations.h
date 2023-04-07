@@ -22,8 +22,8 @@ GEN numult(GEN O, GEN fprep1, GEN fprep2, long flag);
  * Input:   Real quadratic order O (as output by rqoinit);
  *          Reduced (f', p) representation fprep1 = (b', d', k') of invertible ideal a';
  *          Reduced (f'', p) representation fprep2 = (b'', d'', k'') of invertible ideal a''.
- * Output:  [fprep, [a, b]], where
- *          fprep is a reduced (f, p) representation (b_, d, k) of the product a = a'*a'',
+ * Output:  [[[f, p], [b_, d, k]], [a, b]], where
+ *          (b_, d, k) is a reduced (f, p) representation of the product a = a'*a'',
  *          where b_ = [1, [Q, P]] with (P + sqrt(d))/Q > 1, -1 < (P - sqrt(d))/Q < 0,
  *          k <= k' + k'' + 1,
  *          f = f* + 17/8, where f* = f' + f'' + 2^(-p)*f'*f'' and
@@ -48,7 +48,7 @@ GEN ewnear(GEN O, GEN fprep, GEN w);
  *          A reduced (f, p) representation fprep = (b, d, k) of ideal a, 
  *          where b = (Q, P) with  with P + floor(sqrt(d)) >= Q and 0 <= floor(sqrt(d)) - P <= Q,
  *          positive integer w with k < w.
- * Output:  [[c, g, h], [a, b]] with integers a, b, where
+ * Output:  [[[f, p], [c, g, h]], [a, b]] with integers a, b, where
  *          (c, g, h) is a w-near (f + 9/8, p) representation of the ideal a and
  *          c = ((a + b*sqrt(d))/Q)b.
  */
@@ -90,17 +90,19 @@ GEN ax(GEN O, GEN x, GEN p);
  * Output:  An x-near (f, p) representation (a[x], d, k) of the ideal (1) in O for some f \in [1, 2^p).
 */
 
-GEN eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y);
+GEN eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
 /*
  * Extended addxy.
  * Input:   Real quadratic order O (as output by rqoinit),
  *          x-near (f', p) representation (a[x], d', k') of the ideal (1),
  *          y-near (f'', p) rerepsentation (a[y], d'', k'') of the ideal (1).
- * Output:  [[a[x+y], d, k], [a,b]], where
+ * Output:  [[[f, p], [a[x+y], d, k]], [a,b]], where
  *          (a[x+y], d, k) is an (x+y)-near (f, p) representation of (1) with f = f' + f'' + (f'*f'')/2^p + 13/4 and
  *          (a, b) are integers such that 
  *          a[x+y] = ((lambda*theta'*theta'')/(N(a[x])*N(a[y])))(1), where
  *          lambda = (a + b*sqrt(d))/s and a[x] = theta'*a, a[y] = theta''*a.
+ * Set flag = 0 to skip some tests if you are sure that your input is correct.
 */
+
 
 #endif

@@ -194,7 +194,7 @@ ewnear(GEN O, GEN fprep, GEN w)
     if (cmpii(addii(gmael4(fprep,2,1,2,2),sqrti(gel(O,1))),gmael4(fprep,2,1,2,1)) < 0) pari_err_DOMAIN("ewnear",itostr(addii(gmael4(fprep,2,1,2,2),sqrti(gel(O,1)))),"<",gmael4(fprep,2,1,2,1),gmael(fprep,2,1));
     if (cmpii(gen_0,subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))) > 0 || cmpii(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2)),gmael4(fprep,2,1,2,1)) > 0) pari_err_DOMAIN("ewnear",itostr(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))),"",NULL,gmael(fprep,2,1));
     set_avma(ltop);
-    GEN B_0, B_1, B_m1, a, b, s, Q_0, Q_1, Q_m1, P_0, P_1, P_m1, M, T_0, T_1, T_m1, q, sqrtd, sqrtd_, tmp, gen_3 = addii(gen_2,gen_1), e, c, t, g, h, res, res2;
+    GEN B_0, B_1, B_m1, a, b, s, Q_0, Q_1, Q_m1, P_0, P_1, P_m1, M, T_0, T_1, T_m1, q, sqrtd, sqrtd_, tmp, gen_3 = addii(gen_2,gen_1), e, c, t, g, h, res;
     sqrtd = gsqrt(gel(O,1),DEFAULTPREC); //is this enough?
     sqrtd_ = floorr(sqrtd);
     B_0 = gen_1;
@@ -313,7 +313,17 @@ ax(GEN O, GEN x, GEN p)
 }
 
 GEN 
-eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y)
+eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag)
 {
-    return NULL;
+    pari_sp ltop = avma, av;
+    GEN fprep, fprep_, res, res2;
+    fprep = numult(O,fprep1,fprep2,flag);
+    av = avma; fprep_ = gerepileupto(av,ewnear(O,gel(fprep,1),addii(x,y)));
+    res = cgetg(3,t_VEC);
+    gel(res,1) = gcopy(gel(fprep_,1));
+    res2 = cgetg(3,t_VEC);
+    gel(res,2) = res2;
+    av = avma; gel(res2,1) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,1)),mulii(gel(O,1),mulii(gmael(fprep,2,2),gmael(fprep_,2,2)))),mulii(gel(O,3),gmael5(fprep,1,2,1,2,1))));
+    av = avma; gel(res2,2) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,2)),mulii(gmael(fprep,2,2),gmael(fprep_,2,1))),mulii(gel(O,3),gmael5(fprep,1,2,1,2,1))));
+    return gerepileupto(ltop,res);
 }
