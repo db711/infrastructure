@@ -59,13 +59,18 @@ GEN iexp(GEN O, GEN fprep, GEN w, GEN n, long flag);
 
 GEN addxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
 /*
- * Add x, y.
  * Input:   Real quadratic order O (as output by rqoinit),
  *          x-near (f', p) representation (a[x], d', k') of the ideal (1),
  *          y-near (f'', p) rerepsentation (a[y], d'', k'') of the ideal (1),
  * Output:  An (x+y)-near (f, p) representation (a[x+y], d, k) of (1), where
  *          f = f' + f'' + (f'*f'')/2^p + 13/4.
  * Set flag = 0 to skip some tests if you are sure that your input is correct.
+*/
+
+GEN ax(GEN O, GEN x, GEN p);
+/*
+ * Input:   Real quadratic order O (as output by rqoinit), positive integers x and p.
+ * Output:  An x-near (f, p) representation (a[x], d, k) of the ideal a = (1) in O for some f \in [1, 2^p).
 */
 
 #endif

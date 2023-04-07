@@ -186,14 +186,14 @@ iexp(GEN O, GEN fprep, GEN w, GEN n, long flag)
 {
     pari_sp ltop = avma, av;
     GEN ben, fprep_;
-    long i;
-    ben = binary_zv(n);
+    long i, l;
+    ben = binary_zv(n); l = lg(ben);
     fprep_ = shallowcopy(fprep);
     av = avma;
-    for (i = lg(ben)-1; i > 0; i--)
+    for (i = 2; i < l; i++)
     {
         fprep_ = gerepileupto(av,wmult(O,fprep,fprep,w,flag));
-        if (i == 1) fprep_ = gerepileupto(av,wmult(O,fprep_,fprep,w,flag));
+        if (ben[i] == 1) fprep_ = gerepileupto(av,wmult(O,fprep_,fprep,w,flag));
     }
     return gerepileupto(ltop,fprep_); //value of f could be better approximated
 }
@@ -203,4 +203,32 @@ addxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag)
 {
     pari_sp ltop = avma;
     return gerepileupto(ltop,wmult(O,fprep1,fprep2,addii(x,y),flag));
+}
+
+GEN 
+ax(GEN O, GEN x, GEN p)
+{
+    if (typ(x) != t_INT) pari_err_TYPE("ax",x);
+    if (typ(p) != t_INT) pari_err_TYPE("ax",p);
+    if (cmpii(x,gen_0) <= 0) pari_err_DOMAIN("ax",itostr(x),"<=",gen_0,x);
+    if (cmpii(p,gen_0) <= 0) pari_err_DOMAIN("ax",itostr(p),"<=",gen_0,p);
+    pari_sp ltop = avma, av, av2;
+    GEN bex, fprep, s;
+    long i, l;
+    bex = binary_zv(x); l = lg(bex);
+    s = gen_1;
+    av = avma; fprep = gerepileupto(av,wnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,rqiinit(gen_1,gel(O,3),subii(addii(mulii(gel(O,3),divii(addii(subii(sqrti(gel(O,1)),gel(O,3)),gen_1),gel(O,3))),gel(O,3)),gen_1)),addii(powii(gen_2,p),gen_1),gen_0),gen_1));
+    av2 = avma;
+    for (i = 2; i < l; i++)
+    {
+        av = avma; fprep = gerepileupto(av,addxy(O,fprep,fprep,s,s,0));
+        s = mulii(gen_2,s);
+        if (bex[i] == 1)
+        {
+            s = addii(s,gen_1);
+            av = avma; fprep = gerepileupto(av,wnear(O,fprep,s));
+        }
+        gerepileall(av2,2,&fprep,&s);
+    }
+    return gerepileupto(ltop,fprep);
 }
