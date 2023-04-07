@@ -197,3 +197,10 @@ iexp(GEN O, GEN fprep, GEN w, GEN n, long flag)
     }
     return gerepileupto(ltop,fprep_); //value of f could be better approximated
 }
+
+GEN 
+addxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag)
+{
+    pari_sp ltop = avma;
+    return gerepileupto(ltop,wmult(O,fprep1,fprep2,addii(x,y),flag));
+}
