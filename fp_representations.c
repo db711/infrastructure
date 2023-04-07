@@ -33,12 +33,12 @@ fpremove (GEN fprep, GEN T, GEN C, GEN s)
     pari_sp ltop = avma, av;
     GEN gen_3 = addii(gen_2,gen_1), e, d, k;
     long t;
-    av = avma; e = gerepileupto(av,roundr(mulir(powii(gen_2,subii(addii(gmael(fprep,1,2),gen_3),s)),absr(rdivii(T,C,DEFAULTPREC)))));
-    av = avma; t = dbllog2r(itor(e,DEFAULTPREC))-2-dbllog2r(itor(gmael(fprep,2,2),DEFAULTPREC)); set_avma(av);
-    av = avma; d = gerepileupto(av,ceilr(mulir(powii(gen_2,addis(addii(gmael(fprep,1,2),gen_3),t)),rdivii(gmael(fprep,2,2),e,DEFAULTPREC))));
+    av = avma; e = gerepileupto(av,ground(gmul(powii(gen_2,subii(addii(gmael(fprep,1,2),gen_3),s)),gabs(gdiv(T,C),DEFAULTPREC)))); //precision should be ignored
+    av = avma; t = dbllog2r(itor(e,DEFAULTPREC))-2-dbllog2r(itor(gmael(fprep,2,2),DEFAULTPREC)); set_avma(av); //is this enough?
+    av = avma; d = gerepileupto(av,gceil(gmul(powii(gen_2,addis(addii(gmael(fprep,1,2),gen_3),t)),gdiv(gmael(fprep,2,2),e))));
     av = avma; k = gerepileupto(av,subis(gmael(fprep,2,3),t));
     if (gmael(fprep,1,1) == NULL) return gerepileupto(ltop,fprepinit(NULL,gmael(fprep,1,2),gmael(fprep,2,1),d,k));
-    else return gerepileupto(ltop,fprepinit(addrr(gmael(fprep,1,1),rdivii(powii(gen_3,gen_2),powii(gen_2,gen_3),DEFAULTPREC)),gmael(fprep,1,2),gmael(fprep,2,1),d,k));
+    else return gerepileupto(ltop,fprepinit(gadd(gmael(fprep,1,1),gdiv(powii(gen_3,gen_2),powii(gen_2,gen_3))),gmael(fprep,1,2),gmael(fprep,2,1),d,k));
 }
 
 GEN
@@ -59,9 +59,9 @@ numult (GEN O, GEN fprep1, GEN fprep2, long flag)
         e = gerepileupto(av,divii(mulii(gmael(fprep1,2,2),gmael(fprep2,2,2)),powii(gen_2,addii(gmael(fprep1,1,2),gen_1))));
         av = avma; h = gerepileupto(av,addii(addii(gmael(fprep1,2,3),gmael(fprep2,2,3)),gen_1));
     }
-    av = avma; s = gerepileupto(av,ceilr(addir(addii(gmael(fprep1,1,2),addii(gen_2,gen_2)),dbltor(dbllog2r(itor(gmael(b,2,2),DEFAULTPREC))-dbllog2r(itor(gmael3(b,1,2,1),DEFAULTPREC))))));
+    av = avma; s = gerepileupto(av,ceilr(addir(addii(gmael(fprep1,1,2),addii(gen_2,gen_2)),dbltor(dbllog2r(itor(gmael(b,2,2),DEFAULTPREC))-dbllog2r(itor(gmael3(b,1,2,1),DEFAULTPREC)))))); //is this enough?
     if ((cmpii(s,gen_0) < 0)) s = gen_0;
-    av = avma; T = gerepileupto(av,addii(mulii(powii(gen_2,s),gmael(b,2,1)),mulii(gmael(b,2,2),floorr(mulir(powii(gen_2,s),gsqrt(gel(O,1),DEFAULTPREC))))));
+    av = avma; T = gerepileupto(av,addii(mulii(powii(gen_2,s),gmael(b,2,1)),mulii(gmael(b,2,2),floorr(mulir(powii(gen_2,s),gsqrt(gel(O,1),DEFAULTPREC)))))); //is this enough?
     if (gmael(fprep1,1,1) == NULL || gmael(fprep2,1,1) == NULL) return gerepileupto(ltop,fpremove(fprepinit(NULL,gmael(fprep1,1,2),gel(b,1),e,h),T,gmael(b,2,3),s));
     else return gerepileupto(ltop,fpremove(fprepinit(addri(addrr(addrr(gmael(fprep1,1,1),gmael(fprep2,1,1)),gmul(powii(gen_2,negi(gmael(fprep1,1,2))),mulrr(gmael(fprep1,1,1),gmael(fprep2,1,1)))),gen_1),gmael(fprep1,1,2),gel(b,1),e,h),T,gmael(b,2,3),s));
 }
@@ -76,15 +76,15 @@ wnear(GEN O, GEN fprep, GEN w)
     if (cmpii(gen_0,subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))) > 0 || cmpii(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2)),gmael4(fprep,2,1,2,1)) > 0) pari_err_DOMAIN("wnear",itostr(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))),"",NULL,gmael(fprep,2,1));
     set_avma(ltop);
     GEN s, Q_0, Q_1, Q_m1, Q_m2, Q_m3, P_0, P_1, P_m1, M, T_0, T_1, T_m1, T_m2, T_m3, q, sqrtd, sqrtd_, tmp, gen_3 = addii(gen_2,gen_1), e, e_, c, t, g, h;
-    sqrtd = gsqrt(gel(O,1),DEFAULTPREC);
-    sqrtd_ = floorr(sqrtd);
+    sqrtd = gsqrt(gel(O,1),DEFAULTPREC); //is this enough?
+    sqrtd_ = sqrti(gel(O,1));
     if (cmpii(gmael(fprep,2,3),w) < 0)
     {
-        av = avma; s = gerepileupto(av,addis(gmael(fprep,1,2),5-dbllog2r(itor(gmael4(fprep,2,1,2,1),DEFAULTPREC))));
+        av = avma; s = gerepileupto(av,addis(gmael(fprep,1,2),5-dbllog2r(itor(gmael4(fprep,2,1,2,1),DEFAULTPREC)))); //is this enough?
         tmp = powii(gen_2,s);
         Q_1 = gmael4(fprep,2,1,2,1);
         P_1 = gmael4(fprep,2,1,2,2);
-        av = avma; M = gerepileupto(av,ceilr(mulir(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w)),rdivii(gmael4(fprep,2,1,2,1),gmael(fprep,2,2),DEFAULTPREC))));
+        av = avma; M = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w)),gdiv(gmael4(fprep,2,1,2,1),gmael(fprep,2,2)))));
         av2 = avma;
         P_m1 = P_0 = Q_m1 = T_m1 = gen_0; //dummy values
         av = avma; Q_0 = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael4(fprep,2,1,2,2))),gmael4(fprep,2,1,2,1)));
@@ -114,7 +114,7 @@ wnear(GEN O, GEN fprep, GEN w)
             av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(gmael(fprep,1,2),s),gen_3)),gdiv(T_m1,gmael4(fprep,2,1,2,1)))));
             //also set next element
         }
-        av = avma; t = gerepileupto(av,subsi(dbllog2r(itor(mulii(e,gmael(fprep,2,2)),DEFAULTPREC))-3,mulii(gen_2,gmael(fprep,1,2))));
+        av = avma; t = gerepileupto(av,subsi(dbllog2r(itor(mulii(e,gmael(fprep,2,2)),DEFAULTPREC))-3,mulii(gen_2,gmael(fprep,1,2)))); //is this enough?
         //also set for next element and initialize that   
         av = avma; g = gerepileupto(av,gceil(gdiv(mulii(e,gmael(fprep,2,2)),powii(gen_2,addii(addii(gmael(fprep,1,2),t),gen_3)))));
         h = addii(gmael(fprep,2,3),t);
@@ -147,31 +147,31 @@ wnear(GEN O, GEN fprep, GEN w)
         av = avma; q = gerepileupto(av,divii(addii(P_1,sqrtd_),Q_1));
         P_0 = P_1;
         av = avma; P_1 = gerepileupto(av,subii(mulii(q,Q_1),P_1));
-        av = avma; e = gerepileupto(av,ceilr(rdivii(T_1,mulii(gen_2,Q_1),DEFAULTPREC)));
-        av = avma; e_ = gerepileupto(av,ceilr(rdivii(T_0,mulii(gen_2,Q_0),DEFAULTPREC)));
+        av = avma; e = gerepileupto(av,gceil(gdiv(T_1,mulii(gen_2,Q_1))));
+        av = avma; e_ = gerepileupto(av,gceil(gdiv(T_0,mulii(gen_2,Q_0))));
         av2 = avma;
         av = avma; tmp = gerepileupto(av,mulii(gmael(fprep,2,2),powii(gen_2,addii(subii(gmael(fprep,2,3),w),gen_3))));
         if (cmpii(e_,tmp) >= 0)
         {
             e = e_;
-            av = avma; e_ = gerepileupto(av,ceilr(rdivii(T_m2,mulii(gen_2,Q_m2),DEFAULTPREC)));
+            av = avma; e_ = gerepileupto(av,gceil(gdiv(T_m2,mulii(gen_2,Q_m2))));
             if (cmpii(e_,tmp) >= 0)
             {
                 e = e_;
-                av = avma; e_ = gerepileupto(av,ceilr(rdivii(T_m3,mulii(gen_2,Q_m3),DEFAULTPREC)));
+                av = avma; e_ = gerepileupto(av,gceil(gdiv(T_m3,mulii(gen_2,Q_m3))));
                 if (cmpii(e_,tmp) >= 0) pari_err_IMPL("this");
             }
             c = rqiinit(gen_1,Q_0,P_0);
             //also set next element
         }
         else c = rqiinit(gen_1,Q_1,P_1); //also set next element
-        t = stoi(dbllog2r(itor(e,DEFAULTPREC))-2-dbllog2r(itor(gmael(fprep,2,2),DEFAULTPREC)));
+        t = stoi(dbllog2r(itor(e,DEFAULTPREC))-2-dbllog2r(itor(gmael(fprep,2,2),DEFAULTPREC))); //is this enough?
         //also set for next element and initialize that
         av = avma; g = gerepileupto(av,gceil(gmul(powii(gen_2,addii(addii(gmael(fprep,1,2),gen_3),t)),gdiv(gmael(fprep,2,2),e))));
         h = subii(gmael(fprep,2,3),t);
     }
     if (gmael(fprep,1,1) == NULL) return gerepileupto(ltop,fprepinit(NULL,gmael(fprep,1,2),c,g,h));
-    else return gerepileupto(ltop,fprepinit(addrr(gmael(fprep,1,1),rdivii(powii(gen_3,gen_2),powii(gen_2,gen_3),DEFAULTPREC)),gmael(fprep,1,2),c,g,h));
+    else return gerepileupto(ltop,fprepinit(gadd(gmael(fprep,1,1),gdiv(powii(gen_3,gen_2),powii(gen_2,gen_3))),gmael(fprep,1,2),c,g,h));
 }
 
 GEN 
@@ -179,22 +179,22 @@ ewnear(GEN O, GEN fprep, GEN w)
 {
     if (typ(w) != t_INT) pari_err_TYPE("ewnear",w);
     if (cmpii(w,gen_1) < 0) pari_err_DOMAIN("ewnear","w","<",gen_1,w);
-    if (cmpii(gmael(fprep,2,3),w) >= 0) pari_err_DOMAIN("ewnear","w","<=",gmael(fprep,2,3),w);
+    if (cmpii(gmael(fprep,2,3),w) >= 0) pari_err_DOMAIN("ewnear","w","<=",gmael(fprep,2,3),w); //TOD: Implement other case
     pari_sp ltop = avma, av, av2;
     if (cmpii(addii(gmael4(fprep,2,1,2,2),sqrti(gel(O,1))),gmael4(fprep,2,1,2,1)) < 0) pari_err_DOMAIN("ewnear",itostr(addii(gmael4(fprep,2,1,2,2),sqrti(gel(O,1)))),"<",gmael4(fprep,2,1,2,1),gmael(fprep,2,1));
     if (cmpii(gen_0,subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))) > 0 || cmpii(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2)),gmael4(fprep,2,1,2,1)) > 0) pari_err_DOMAIN("ewnear",itostr(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))),"",NULL,gmael(fprep,2,1));
     set_avma(ltop);
     GEN B_0, B_1, B_m1, a, b, s, Q_0, Q_1, Q_m1, P_0, P_1, P_m1, M, T_0, T_1, T_m1, q, sqrtd, sqrtd_, tmp, gen_3 = addii(gen_2,gen_1), e, c, t, g, h, res, res2;
     res = cgetg(3,t_VEC); res2 = cgetg(3,t_VEC);
-    sqrtd = gsqrt(gel(O,1),DEFAULTPREC);
+    sqrtd = gsqrt(gel(O,1),DEFAULTPREC); //is this enough?
     sqrtd_ = floorr(sqrtd);
     B_0 = gen_1;
     B_1 = gen_0;
-    av = avma; s = gerepileupto(av,addis(gmael(fprep,1,2),5-dbllog2r(itor(gmael4(fprep,2,1,2,1),DEFAULTPREC))));
+    av = avma; s = gerepileupto(av,addis(gmael(fprep,1,2),5-dbllog2r(itor(gmael4(fprep,2,1,2,1),DEFAULTPREC)))); //is this enough?
     tmp = powii(gen_2,s);
     Q_1 = gmael4(fprep,2,1,2,1);
     P_1 = gmael4(fprep,2,1,2,2);
-    av = avma; M = gerepileupto(av,ceilr(mulir(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w)),rdivii(gmael4(fprep,2,1,2,1),gmael(fprep,2,2),DEFAULTPREC))));
+    av = avma; M = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w)),gdiv(gmael4(fprep,2,1,2,1),gmael(fprep,2,2)))));
     av2 = avma;
     P_m1 = P_0 = Q_m1 = T_m1 = gen_0; //dummy values
     av = avma; Q_0 = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael4(fprep,2,1,2,2))),gmael4(fprep,2,1,2,1)));
@@ -218,17 +218,17 @@ ewnear(GEN O, GEN fprep, GEN w)
     if (cmpii(mulii(gmael(fprep,2,2),e),powii(gen_2,addii(addii(subii(mulii(gen_2,gmael(fprep,1,2)),gmael(fprep,2,3)),w),gen_3))) <= 0)
     {
         set_avma(av); c = rqiinit(gen_1,Q_0,P_0);
-        av = avma; a = gerepileupto(av,gdiv(subii(T_0,mulii(floorr(mulir(tmp,sqrtd)),B_0)),tmp));
+        av = avma; a = gerepileupto(av,diviiexact(subii(T_0,mulii(floorr(mulir(tmp,sqrtd)),B_0)),tmp));
         b = B_0;
     }
     else
     {
         set_avma(av); c = rqiinit(gen_1,Q_m1,P_m1);
         av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(gmael(fprep,1,2),s),gen_3)),gdiv(T_m1,gmael4(fprep,2,1,2,1)))));
-        av = avma; a = gerepileupto(av,gdiv(subii(T_m1,mulii(floorr(mulir(tmp,sqrtd)),B_m1)),tmp));
+        av = avma; a = gerepileupto(av,diviiexact(subii(T_m1,mulii(floorr(mulir(tmp,sqrtd)),B_m1)),tmp));
         b = B_m1;
     }
-    av = avma; t = gerepileupto(av,subsi(dbllog2r(itor(mulii(e,gmael(fprep,2,2)),DEFAULTPREC))-3,mulii(gen_2,gmael(fprep,1,2)))); 
+    av = avma; t = gerepileupto(av,subsi(dbllog2r(itor(mulii(e,gmael(fprep,2,2)),DEFAULTPREC))-3,mulii(gen_2,gmael(fprep,1,2)))); //is this enough?
     av = avma; g = gerepileupto(av,gceil(gdiv(mulii(e,gmael(fprep,2,2)),powii(gen_2,addii(addii(gmael(fprep,1,2),t),gen_3)))));
     h = addii(gmael(fprep,2,3),t);
     if (gmael(fprep,1,1) == NULL)
@@ -237,7 +237,7 @@ ewnear(GEN O, GEN fprep, GEN w)
     }
     else 
     {
-        av = avma; gel(res,1) = gerepileupto(av,fprepinit(addrr(gmael(fprep,1,1),rdivii(powii(gen_3,gen_2),powii(gen_2,gen_3),DEFAULTPREC)),gmael(fprep,1,2),c,g,h));
+        av = avma; gel(res,1) = gerepileupto(av,fprepinit(gadd(gmael(fprep,1,1),gdiv(powii(gen_3,gen_2),powii(gen_2,gen_3))),gmael(fprep,1,2),c,g,h));
     }
     gel(res2,1) = gcopy(a); gel(res2,2) = gcopy(b);
     gel(res,2) = res2;
@@ -287,7 +287,7 @@ ax(GEN O, GEN x, GEN p)
     long i, l;
     bex = binary_zv(x); l = lg(bex);
     s = gen_1;
-    av = avma; fprep = gerepileupto(av,wnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,rqiinit(gen_1,gel(O,3),subii(addii(mulii(gel(O,3),divii(addii(subii(sqrti(gel(O,1)),gel(O,3)),gen_1),gel(O,3))),gel(O,3)),gen_1)),addii(powii(gen_2,p),gen_1),gen_0),gen_1));
+    av = avma; fprep = gerepileupto(av,wnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,rqiinit(gen_1,gel(O,3),subii(addii(mulii(gel(O,3),divii(addii(subii(sqrti(gel(O,1)),gel(O,3)),gen_1),gel(O,3))),gel(O,3)),gen_1)),addii(powii(gen_2,p),gen_1),gen_0),gen_1)); //maybe change the gen_1,DEFAULTPREC)?
     av2 = avma;
     for (i = 2; i < l; i++)
     {

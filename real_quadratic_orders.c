@@ -125,7 +125,7 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     av = avma; R_ = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael(b,2,2))),gmael(b,2,1)));
     av = avma; R_1 = gerepileupto(av,lift(gadd(gmul(X,gmul(Z,gsub(mkintmod(gmael(a,2,2),diviiexact(gmael(a,2,1),S)),gmael(b,2,2)))),gmul(Y,mkintmod(R_,diviiexact(gmael(a,2,1),S))))));
     gerepileall(ltop,3,&R_1,&R_,&S);
-    av = avma; tmp1 = gerepileupto(av,floorr(gmul(gsqrt(gmul(gen_2,gel(O,3)),DEFAULTPREC),gsqrtn(gel(O,1),sqri(gen_2),NULL,DEFAULTPREC))));
+    av = avma; tmp1 = gerepileupto(av,floorr(gmul(gsqrt(gmul(gen_2,gel(O,3)),DEFAULTPREC),gsqrtn(gel(O,1),sqri(gen_2),NULL,DEFAULTPREC)))); //truncate instead of floor?
     R_0 = diviiexact(gmael(a,2,1),S);
     if (cmpii(R_0,tmp1) < 0)
     {
