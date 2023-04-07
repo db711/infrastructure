@@ -10,13 +10,6 @@ GEN fprepinit (GEN f, GEN p, GEN b, GEN d, GEN k);
  * (Representation is checked for validity, ideal b is not.)
  */
 
-GEN tofprep(GEN O, GEN b, GEN theta, GEN prec);
-/*
- * To (f, p) representation.
- * Input:   Real quadratic order O (as output by rqoinit), ideal b (as outpute by rqiinit), quadratic integer [A, B, C] = (A + B*sqrt(d))/C.
- * Output:  (1, p) representation (b, d, k) of (1/theta)*b.
-*/
-
 GEN fpremove(GEN fprep, GEN T, GEN C, GEN s);
 /*
  * Input:   An (f, p) representation fprep (as output by fprepinit) = (mb, d, k) of a; t_INT T, C and s,
