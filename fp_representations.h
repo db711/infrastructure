@@ -22,10 +22,13 @@ GEN numult(GEN O, GEN fprep1, GEN fprep2, long flag);
  * Input:   Real quadratic order O (as output by rqoinit);
  *          Reduced (f', p) representation fprep1 = (b', d', k') of invertible ideal a';
  *          Reduced (f'', p) representation fprep2 = (b'', d'', k'') of invertible ideal a''.
- * Output:  Reduced (f, p) representation (b, d, k) of the product a = a'*a'',
- *          where b = [1, [Q, P]] with (P + sqrt(d))/Q > 1, -1 < (P - sqrt(d))/Q < 0,
+ * Output:  [fprep, [a, b]], where
+ *          fprep is a reduced (f, p) representation (b_, d, k) of the product a = a'*a'',
+ *          where b_ = [1, [Q, P]] with (P + sqrt(d))/Q > 1, -1 < (P - sqrt(d))/Q < 0,
  *          k <= k' + k'' + 1,
- *          f = f* + 17/8, where f* = f' + f'' + 2^(-p)*f'*f''.
+ *          f = f* + 17/8, where f* = f' + f'' + 2^(-p)*f'*f'' and
+ *          a, b are integers such that 
+ *          b_ = ((a + b*sqrt(d))/s)/(N(b')*N(b''))*b'*b''. 
  * Set flag = 0 to skip some tests if you are sure that your input is correct.
  */
 
@@ -75,7 +78,7 @@ GEN addxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
 /*
  * Input:   Real quadratic order O (as output by rqoinit),
  *          x-near (f', p) representation (a[x], d', k') of the ideal (1),
- *          y-near (f'', p) rerepsentation (a[y], d'', k'') of the ideal (1),
+ *          y-near (f'', p) rerepsentation (a[y], d'', k'') of the ideal (1).
  * Output:  An (x+y)-near (f, p) representation (a[x+y], d, k) of (1), where
  *          f = f' + f'' + (f'*f'')/2^p + 13/4.
  * Set flag = 0 to skip some tests if you are sure that your input is correct.
@@ -84,7 +87,20 @@ GEN addxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
 GEN ax(GEN O, GEN x, GEN p);
 /*
  * Input:   Real quadratic order O (as output by rqoinit), positive integers x and p.
- * Output:  An x-near (f, p) representation (a[x], d, k) of the ideal a = (1) in O for some f \in [1, 2^p).
+ * Output:  An x-near (f, p) representation (a[x], d, k) of the ideal (1) in O for some f \in [1, 2^p).
+*/
+
+GEN eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y);
+/*
+ * Extended addxy.
+ * Input:   Real quadratic order O (as output by rqoinit),
+ *          x-near (f', p) representation (a[x], d', k') of the ideal (1),
+ *          y-near (f'', p) rerepsentation (a[y], d'', k'') of the ideal (1).
+ * Output:  [[a[x+y], d, k], [a,b]], where
+ *          (a[x+y], d, k) is an (x+y)-near (f, p) representation of (1) with f = f' + f'' + (f'*f'')/2^p + 13/4 and
+ *          (a, b) are integers such that 
+ *          a[x+y] = ((lambda*theta'*theta'')/(N(a[x])*N(a[y])))(1), where
+ *          lambda = (a + b*sqrt(d))/s and a[x] = theta'*a, a[y] = theta''*a.
 */
 
 #endif

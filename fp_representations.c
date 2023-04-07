@@ -45,7 +45,7 @@ GEN
 numult (GEN O, GEN fprep1, GEN fprep2, long flag)
 {
     if (flag && cmpii(gmael(fprep1,1,2),gmael(fprep2,1,2))) pari_err_DOMAIN("numult",itostr(gmael(fprep2,1,2)),"!=",gmael(fprep1,1,2),gmael(fprep2,1,2));
-    GEN b, e, h, s, T;
+    GEN b, e, h, s, T, res, res2;
     pari_sp ltop = avma, av;
     b = inucomp(O,gmael(fprep1,2,1),gmael(fprep2,2,1),flag);
     av = avma;
@@ -62,8 +62,18 @@ numult (GEN O, GEN fprep1, GEN fprep2, long flag)
     av = avma; s = gerepileupto(av,ceilr(addir(addii(gmael(fprep1,1,2),addii(gen_2,gen_2)),dbltor(dbllog2r(itor(gmael(b,2,2),DEFAULTPREC))-dbllog2r(itor(gmael3(b,1,2,1),DEFAULTPREC)))))); //is this enough?
     if ((cmpii(s,gen_0) < 0)) s = gen_0;
     av = avma; T = gerepileupto(av,addii(mulii(powii(gen_2,s),gmael(b,2,1)),mulii(gmael(b,2,2),floorr(mulir(powii(gen_2,s),gsqrt(gel(O,1),DEFAULTPREC)))))); //is this enough?
-    if (gmael(fprep1,1,1) == NULL || gmael(fprep2,1,1) == NULL) return gerepileupto(ltop,fpremove(fprepinit(NULL,gmael(fprep1,1,2),gel(b,1),e,h),T,gmael(b,2,3),s));
-    else return gerepileupto(ltop,fpremove(fprepinit(addri(addrr(addrr(gmael(fprep1,1,1),gmael(fprep2,1,1)),gmul(powii(gen_2,negi(gmael(fprep1,1,2))),mulrr(gmael(fprep1,1,1),gmael(fprep2,1,1)))),gen_1),gmael(fprep1,1,2),gel(b,1),e,h),T,gmael(b,2,3),s));
+    res = cgetg(3,t_VEC);
+    if (gmael(fprep1,1,1) == NULL || gmael(fprep2,1,1) == NULL) 
+    {
+        av = avma; gel(res,1) = gerepileupto(av,fpremove(fprepinit(NULL,gmael(fprep1,1,2),gel(b,1),e,h),T,gmael(b,2,3),s));
+    }
+    else
+    {
+        av = avma; gel(res,1) = gerepileupto(av,fpremove(fprepinit(addri(addrr(addrr(gmael(fprep1,1,1),gmael(fprep2,1,1)),gmul(powii(gen_2,negi(gmael(fprep1,1,2))),mulrr(gmael(fprep1,1,1),gmael(fprep2,1,1)))),gen_1),gmael(fprep1,1,2),gel(b,1),e,h),T,gmael(b,2,3),s));
+    }
+    res2 = mkvec2(gcopy(gmael(b,2,1)),negi(gmael(b,2,2)));
+    gel(res,2) = res2;
+    return gerepileupto(ltop,res);
 }
 
 GEN 
@@ -248,7 +258,7 @@ GEN
 wmult(GEN O, GEN fprep1, GEN fprep2, GEN w, long flag)
 {
     pari_sp ltop = avma;
-    return gerepileupto(ltop,wnear(O,numult(O,fprep1,fprep2,flag),w));
+    return gerepileupto(ltop,wnear(O,gel(numult(O,fprep1, fprep2, flag),1),w));
 }
 
 GEN 
@@ -301,4 +311,10 @@ ax(GEN O, GEN x, GEN p)
         gerepileall(av2,2,&fprep,&s);
     }
     return gerepileupto(ltop,fprep);
+}
+
+GEN 
+eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y)
+{
+    return NULL;
 }
