@@ -32,8 +32,22 @@ GEN numult(GEN O, GEN fprep1, GEN fprep2, long flag);
 GEN wnear(GEN O, GEN fprep, GEN w);
 /*
  * Input:   Real quadratic order O (as output by rqoinit);
- *          A reduced (f, p) representation fprep of ideal a, t_INT w.
+ *          A reduced (f, p) representation fprep = (b, d, k) of ideal a,
+ *          where b = (Q, P) with P + floor(sqrt(d)) >= Q and 0 <= floor(sqrt(d)) - P <= Q,
+ *          positive integer w.
  * Output:  A w-near (f + 9/8, p) representation of the ideal a.
+ */
+
+GEN ewnear(GEN O, GEN fprep, GEN w);
+/*
+ * Extended wnear.
+ * Input:   Real quadratic order O (as output by rqoinit);
+ *          A reduced (f, p) representation fprep = (b, d, k) of ideal a, 
+ *          where b = (Q, P) with  with P + floor(sqrt(d)) >= Q and 0 <= floor(sqrt(d)) - P <= Q,
+ *          positive integer w with k < w.
+ * Output:  [[c, g, h], [a, b]] with integers a, b, where
+ *          (c, g, h) is a w-near (f + 9/8, p) representation of the ideal a and
+ *          c = ((a + b*sqrt(d))/Q)b.
  */
 
 GEN wmult(GEN O, GEN fprep1, GEN fprep2, GEN w, long flag);
