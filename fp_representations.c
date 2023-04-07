@@ -180,3 +180,20 @@ wmult(GEN O, GEN fprep1, GEN fprep2, GEN w, long flag)
     pari_sp ltop = avma;
     return gerepileupto(ltop,wnear(O,numult(O,fprep1,fprep2,flag),w));
 }
+
+GEN 
+iexp(GEN O, GEN fprep, GEN w, GEN n, long flag)
+{
+    pari_sp ltop = avma, av;
+    GEN ben, fprep_;
+    long i;
+    ben = binary_zv(n);
+    fprep_ = shallowcopy(fprep);
+    av = avma;
+    for (i = lg(ben)-1; i > 0; i--)
+    {
+        fprep_ = gerepileupto(av,wmult(O,fprep,fprep,w,flag));
+        if (i == 1) fprep_ = gerepileupto(av,wmult(O,fprep_,fprep,w,flag));
+    }
+    return gerepileupto(ltop,fprep_); //value of f could be better approximated
+}

@@ -47,4 +47,15 @@ GEN wmult(GEN O, GEN fprep1, GEN fprep2, GEN w, long flag);
  * Set flag = 0 to skip some tests if you are sure that your input is correct.
 */
 
+GEN iexp(GEN O, GEN fprep, GEN w, GEN n, long flag);
+/*
+ * Ideal exponentiation.
+ * Input:   Real quadratic order O (as output by rqoinit),
+ *          w-near (f', p representation) (b', d', k') of invertible real quadratic ideal a (this isn't checked),
+ *          positive integer n.
+ * Output:  A w-near (f, p)  representation (b, d, k) of a^n for some suitable f.
+ * Set flag = 0 to skip some tests if you are sure that your input is correct.
+*/
+
+
 #endif
