@@ -51,12 +51,12 @@ numult (GEN O, GEN fprep1, GEN fprep2, long flag)
     av = avma;
     if (cmpii(mulii(gmael(fprep1,2,2),gmael(fprep2,2,2)),powii(gen_2,addii(mulii(gen_2,gmael(fprep1,1,2)),gen_1))) <= 0)
     {
-        e = gerepileupto(av,floorr(rdivii(mulii(gmael(fprep1,2,2),gmael(fprep2,2,2)),powii(gen_2,gmael(fprep1,1,2)),DEFAULTPREC)));
+        e = gerepileupto(av,divii(mulii(gmael(fprep1,2,2),gmael(fprep2,2,2)),powii(gen_2,gmael(fprep1,1,2))));
         h = addii(gmael(fprep1,2,3),gmael(fprep2,2,3));
     }
     else
     {
-        e = gerepileupto(av,floorr(rdivii(mulii(gmael(fprep1,2,2),gmael(fprep2,2,2)),powii(gen_2,addii(gmael(fprep1,1,2),gen_1)),DEFAULTPREC)));
+        e = gerepileupto(av,divii(mulii(gmael(fprep1,2,2),gmael(fprep2,2,2)),powii(gen_2,addii(gmael(fprep1,1,2),gen_1))));
         av = avma; h = gerepileupto(av,addii(addii(gmael(fprep1,2,3),gmael(fprep2,2,3)),gen_1));
     }
     av = avma; s = gerepileupto(av,ceilr(addir(addii(gmael(fprep1,1,2),addii(gen_2,gen_2)),dbltor(dbllog2r(itor(gmael(b,2,2),DEFAULTPREC))-dbllog2r(itor(gmael3(b,1,2,1),DEFAULTPREC))))));
