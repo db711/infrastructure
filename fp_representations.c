@@ -348,11 +348,13 @@ crax(GEN O, GEN x, GEN p)
     if (typ(p) != t_INT) pari_err_TYPE("crax",p);
     if (cmpii(x,gen_0) <= 0) pari_err_DOMAIN("crax",itostr(x),"<=",gen_0,x);
     if (cmpii(p,gen_0) <= 0) pari_err_DOMAIN("crax",itostr(p),"<=",gen_0,p);
-    pari_sp ltop = avma, av, av2;
+    pari_sp ltop = avma, av, av2, av3;
     if (gcmp(powii(gen_2,p),gmax_shallow(powii(gen_2,addii(gen_2,gen_1)),gdiv(glog(x,DEFAULTPREC),mplog2(DEFAULTPREC)))) <= 0) pari_err_PREC("p"); //different error?
     set_avma(ltop);
-    GEN bex, s, fprep, fprep_, list, el, el2, N, eli;
+    GEN bex, s, fprep, fprep_, list, el, el2, N, eli, res;
+    res = cgetg(3,t_VEC);
     long i, l;
+    av3 = avma;
     bex = binary_zv(x); l = lg(bex);
     av2 = avma;
     list = cgetg(l,t_VEC);
@@ -373,8 +375,8 @@ crax(GEN O, GEN x, GEN p)
             fprep_ = ewnear(O,gel(fprep,1),s);
             el2 = cgetg(3,t_VEC);
             eli = cgetg(3,t_VEC);
-            av = avma; gel(eli,1) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,1)),mulii(gel(O,1),mulii(gmael(fprep,2,2),gmael(fprep_,2,2)))),mulii(gel(O,3),N)));
-            av = avma; gel(eli,2) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,2)),mulii(gmael(fprep,2,2),gmael(fprep_,2,1))),mulii(gel(O,3),N)));
+            av = avma; gel(eli,1) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,1)),mulii(gel(O,1),mulii(gmael(fprep,2,2),gmael(fprep_,2,2)))),mulii(gel(O,3),diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3)))));
+            av = avma; gel(eli,2) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,2)),mulii(gmael(fprep,2,2),gmael(fprep_,2,1))),mulii(gel(O,3),diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3)))));
             gel(el2,1) = eli;
             fprep = fprep_;
         }
@@ -388,8 +390,10 @@ crax(GEN O, GEN x, GEN p)
         gel(list,i-1) = el;
         el = el2;
     }
-    fprep = gcopy(fprep);
-    gerepileall(ltop,3,&fprep,&el,&list);
+    fprep = gel(fprep,1);
     gel(list,i-1) = el;
-    return mkvec2(fprep,list);
+    gerepileall(av3,2,&fprep,&list);
+    gel(res,1) = fprep;
+    gel(res,2) = list;
+    return gerepileupto(ltop,res); 
 }
