@@ -105,7 +105,8 @@ GEN eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
 */
 
 GEN crax(GEN O, GEN x, GEN p);
-/* Compact representation ax.
+/* 
+ * Compact representation ax.
  * Input:   Real quadratic order O (as output by rqoinit), positive integers x and p,
             that satisfy 2^p > 11.2x*max(16,log_2(x)).      
  * Output:  [[f, p], [a[x], d, k]], [[[m_0, n_0], L_0], [[m_1, n_1], L_1], ..., [[m_l, n_l], L_l]]

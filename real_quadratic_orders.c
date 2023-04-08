@@ -34,7 +34,7 @@ rqiinit(GEN S, GEN Q, GEN P)
     if (typ(P) != t_INT) pari_err_TYPE("rqiinit0",P);
     GEN res;
     res = cgetg(3,t_VEC);
-    gel(res,1) =  (S == gen_1) ? gen_1 : gcopy(S);
+    gel(res,1) =  (S == gen_1) ? gen_1 : gcopy(S); //common special case, no need to store S
     gel(res,2) = mkvec2copy(Q,P);
     return res;
 }
@@ -42,18 +42,18 @@ rqiinit(GEN S, GEN Q, GEN P)
 void
 checkrqi(GEN O, GEN a, const char *f)
 {
-    pari_sp av = avma;
+    pari_sp ltop = avma;
     GEN d;
     if (signe(gmael(a,2,1)) <= 0) pari_err_DOMAIN(f,itostr(gmael(a,2,1)),"<=",gen_0,a); //could be fixed instead of throwing error
     d = gcdii(gmael(a,2,1),gel(O,3));
     if (cmpii(d,gel(O,3))) pari_err_DOMAIN(f,itostr(gel(O,3)),"does not divide",gel(gel(a, 2),1),a);
     d = gcdii(mulii(gel(O,3),gmael(a,2,1)),subii(gel(O,1),sqri(gmael(a,2,2))));
-    if (gcmp(mulii(gel(O,3),gmael(a,2,1)),d)) pari_err_DOMAIN(f,itostr(mulii(gel(O,3),gmael(a,2,1))),"does not divide",subii(gel(O,1),sqri(gmael(a,2,2))),a);
-    set_avma(av); return;
+    if (cmpii(mulii(gel(O,3),gmael(a,2,1)),d)) pari_err_DOMAIN(f,itostr(mulii(gel(O,3),gmael(a,2,1))),"does not divide",subii(gel(O,1),sqri(gmael(a,2,2))),a);
+    set_avma(ltop); return;
 }
 
 GEN 
-imultiply(GEN O, GEN a, GEN b)
+imultiply(GEN O, GEN a, GEN b) // DEPRECATED
 {
     checkrqi(O,a,"imultiply");
     checkrqi(O,b,"imultiply");
@@ -71,7 +71,7 @@ imultiply(GEN O, GEN a, GEN b)
 }
 
 GEN 
-qiimultiply(GEN O, GEN qi, GEN i)
+qiimultiply(GEN O, GEN qi, GEN i) // DEPRECATED
 {
     checkrqi(O,i,"qiimultiply");
     if (cmpii(gen_1,gel(i,1))) pari_err_DOMAIN("qiimultiply","S","!=",gen_1,i);
@@ -96,8 +96,7 @@ qiimultiply(GEN O, GEN qi, GEN i)
 
 GEN 
 inucomp(GEN O, GEN a, GEN b, long flag) 
-{
-    //Which GENs can be turned into longs? Arithmetic on longs is about 5 times faster than on t_INTs
+{ //Which GENs can be turned into longs? Arithmetic on longs is about 5 times faster than on t_INTs
     if (flag)
     {
         checkrqi(O,a,"inucomp");
@@ -105,8 +104,8 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         if (cmpii(gen_1,gel(a,1))) pari_err_DOMAIN("inucomp","S","!=",gen_1,a);
         if (cmpii(gen_1,gel(b,1))) pari_err_DOMAIN("inucomp","S","!=",gen_1,b);
     }
-    GEN swap, tmp1, tmp2, G, X, S, Y, Z, R_, R_1, R_0, C_0 = gen_0, C_1 = gen_m1, Q, P, B_0, B_1, q, M_1, M_2, Q_, k, P_, Q_old, Q_old_, A, B, C, res = cgetg(3,t_VEC);
-    pari_sp ltop = avma, lbot, av, av2;
+    GEN swap, tmp1, tmp2, G, X, S, Y, Z, R_, R_1, R_0, C_0 = gen_0, C_1 = gen_m1, Q, P, B_0, B_1, q, M_1, M_2, Q_, k, P_, Q_old, Q_old_, res, resi;
+    pari_sp ltop = avma, av, av2;
     long i = 0;
     if (cmpii(gmael(a,2,1),gmael(b,2,1)) < 0)
     {
@@ -179,19 +178,21 @@ inucomp(GEN O, GEN a, GEN b, long flag)
             B_0 = swap;
         }
     }
-    lbot = avma;
-    av = avma; A = gerepileupto(av,mulii(S,addii(mulii(Q,B_0),mulii(P,B_1))));
-    av = avma; B = gerepileupto(av,mulii(negi(S),B_1));
-    C = gcopy(Q);
-    return res = gerepile(ltop,lbot,mkvec2(rqiinit(gen_1,Q_,P_),mkvec3(A,B,C)));
+    res = cgetg(3,t_VEC);
+    gel(res,1) = rqiinit(gen_1,Q_,P_);
+    resi = cgetg(4,t_VEC);
+    av = avma; gel(resi,1) = gerepileupto(av,mulii(S,addii(mulii(Q,B_0),mulii(P,B_1))));
+    av = avma; gel(resi,2) = gerepileupto(av,mulii(negi(S),B_1));
+    gel(resi,3) = gcopy(Q);
+    gel(res,2) = resi;
+    return gerepileupto(ltop,res);
 }
 
 GEN 
 regulatorcf(GEN O, long prec, long flag)
 {
-    //Output the fundamental unit?
     pari_sp ltop = avma, av, av2;
-    GEN sqrtd_, sqrtd, a, Q_, Q, Q_0, P, q, B_0, B_1, G_0, G_1, swap, psi, theta;
+    GEN sqrtd_, sqrtd, a, Q_, Q, Q_0, P, q, B_0, B_1, G_0, G_1, swap, psi, theta, res, resi;
     long n = 0;
     sqrtd_ = sqrti(gel(O,1));
     sqrtd = gsqrt(gel(O,1),prec);
@@ -209,7 +210,7 @@ regulatorcf(GEN O, long prec, long flag)
     do
     {
         n += 1;
-        if (flag == 1) pari_printf("%ld: [%Ps, %Ps]\n",n,Q,P);
+        if (flag == 1) pari_printf("%ld: [%Ps, %Ps] %Ps\n",n,Q,P,gerepileupto(av,mplog(theta)));
         else if (flag == 2)
         {
             av = avma; pari_printf("%ld: [%Ps, %Ps] %Ps\n",n,Q,P,gerepileupto(av,mplog(theta)));
@@ -238,13 +239,19 @@ regulatorcf(GEN O, long prec, long flag)
     {
         av = avma; pari_printf("%ld: [%Ps, %Ps] %Ps\n",n,Q,P,gerepileupto(av,mplog(theta)));
     }
-    return gerepileupto(ltop,mplog(divri(addir(G_0,mulri(sqrtd,B_0)),Q_0)));
+    res = cgetg(3,t_VEC);
+    av = avma; gel(res,1) = gerepileupto(av,mplog(divri(addir(G_0,mulri(sqrtd,B_0)),Q_0)));
+    resi = cgetg(4,t_VEC);
+    av = avma; gel(resi,1) = gerepileupto(av,diviiexact(mulii(gen_2,G_0),Q_0));
+    av = avma; gel(resi,2) = gerepileupto(av,diviiexact(mulii(gen_2,B_0),Q_0));
+    gel(resi,3) = (n%2) ? gen_1 : gen_m1;
+    gel(res,2) = resi;
+    return gerepileupto(ltop,res);
 }
 
 GEN 
 regulatorshanks(GEN O, long prec, long flag)
-{
-    // turn L into hashtable
+{ // turn L into hashtable
     pari_sp ltop = avma, av, av2;
     GEN sqrtd_, sqrtd, sqrt4d, a, b, L, Q_, Q_0, Q, P_, P, q, B_0, B_1, G_0, G_1, swap, psi, theta, lt, el, el2;
     long n = 0, i;
