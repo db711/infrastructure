@@ -112,7 +112,7 @@ GEN crax(GEN O, GEN x, GEN p);
             An x-near (f, p) representation (a[x], d, k) of the ideal (1) in O, where f < 2^(p-4),
             as well as integer pairs (m_i, n_i) and positive integers L_i for i = 0, 1, ..., l = floor(log_2(x)).
  * When this algorithm terminates we have a[x] = (theta) for
- * ...
+ *      theta = lambda_l * \prod_{i=0}^{l-1}(lambda_i/L_{i+1})^{2^(l-i)}, where lambda_i = (m_i + n_i*sqrtd(d))/s.
 */
 
 #endif
