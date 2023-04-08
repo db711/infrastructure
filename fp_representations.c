@@ -242,7 +242,7 @@ ewnear(GEN O, GEN fprep, GEN w)
         av = avma; a = gerepileupto(av,diviiexact(subii(T_m1,mulii(floorr(mulir(tmp,sqrtd)),B_m1)),tmp));
         b = B_m1;
     }
-    av = avma; t = gerepileupto(av,subsi(dbllog2r(itor(mulii(e,gmael(fprep,2,2)),DEFAULTPREC))-3,mulii(gen_2,gmael(fprep,1,2)))); //is this enough?
+    av = avma; t = gerepileupto(av,subsi(dbllog2r(itor(mulii(e,gmael(fprep,2,2)),DEFAULTPREC))-3,mulii(gen_2,gmael(fprep,1,2)))); //is this enough? no...
     av = avma; g = gerepileupto(av,gceil(gdiv(mulii(e,gmael(fprep,2,2)),powii(gen_2,addii(addii(gmael(fprep,1,2),t),gen_3)))));
     h = addii(gmael(fprep,2,3),t);
     res = cgetg(3,t_VEC);
@@ -329,14 +329,24 @@ eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag)
     if (cmpii(x,gen_0) <= 0) pari_err_DOMAIN("ax",itostr(x),"<=",gen_0,x);
     if (cmpii(y,gen_0) <= 0) pari_err_DOMAIN("ax",itostr(y),"<=",gen_0,y);
     pari_sp ltop = avma, av;
-    GEN fprep, fprep_, res, res2;
+    GEN fprep, fprep_, res, res2, r_, r_2;
     fprep = numult(O,fprep1,fprep2,flag);
     av = avma; fprep_ = gerepileupto(av,ewnear(O,gel(fprep,1),addii(x,y)));
     res = cgetg(3,t_VEC);
-    gel(res,1) = gcopy(gel(fprep_,1));
+    if (gmael3(fprep_,1,1,1) == NULL) //in this case gcopy fails...
+    {
+        r_ = cgetg(3,t_VEC);
+        r_2 = cgetg(3,t_VEC);
+        gel(r_2,1) = NULL;
+        gel(r_2,2) = gcopy(gmael3(fprep_,1,1,2));
+        gel(r_,1) = r_2;
+        gel(r_,2) = gcopy(gmael(fprep_,1,2));
+        gel(res,1) = r_;
+    }
+    else gel(res,1) = gcopy(gel(fprep_,1));
     res2 = cgetg(3,t_VEC);
-    av = avma; gel(res2,1) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,1)),mulii(gel(O,1),mulii(gmael(fprep,2,2),gmael(fprep_,2,2)))),gel(O,3)));
-    av = avma; gel(res2,2) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,2)),mulii(gmael(fprep,2,2),gmael(fprep_,2,1))),gel(O,3)));
+    av = avma; gel(res2,1) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,1)),mulii(gel(O,1),mulii(gmael(fprep,2,2),gmael(fprep_,2,2)))),diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3))));
+    av = avma; gel(res2,2) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,2)),mulii(gmael(fprep,2,2),gmael(fprep_,2,1))),diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3))));
     gel(res,2) = res2;
     return gerepileupto(ltop,res);
 }
@@ -375,8 +385,8 @@ crax(GEN O, GEN x, GEN p)
             fprep_ = ewnear(O,gel(fprep,1),s);
             el2 = cgetg(3,t_VEC);
             eli = cgetg(3,t_VEC);
-            av = avma; gel(eli,1) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,1)),mulii(gel(O,1),mulii(gmael(fprep,2,2),gmael(fprep_,2,2)))),mulii(gel(O,3),diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3)))));
-            av = avma; gel(eli,2) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,2)),mulii(gmael(fprep,2,2),gmael(fprep_,2,1))),mulii(gel(O,3),diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3)))));
+            av = avma; gel(eli,1) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,1)),mulii(gel(O,1),mulii(gmael(fprep,2,2),gmael(fprep_,2,2)))),gmael5(fprep,1,2,1,2,1)));
+            av = avma; gel(eli,2) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,2)),mulii(gmael(fprep,2,2),gmael(fprep_,2,1))),gmael5(fprep,1,2,1,2,1)));
             gel(el2,1) = eli;
             fprep = fprep_;
         }
