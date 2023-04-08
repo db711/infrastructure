@@ -87,7 +87,7 @@ GEN addxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
 GEN ax(GEN O, GEN x, GEN p);
 /*
  * Input:   Real quadratic order O (as output by rqoinit), positive integers x and p.
- * Output:  An x-near (f, p) representation (a[x], d, k) of the ideal (1) in O for some f \in [1, 2^p).
+ * Output:  [[f, p], [a[x], d, k]], where (a[x], d, k) is an (f, p) representation of the ideal (1) in O for some f \in [1, 2^p).
 */
 
 GEN eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
@@ -104,5 +104,15 @@ GEN eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
  * Set flag = 0 to skip some tests if you are sure that your input is correct.
 */
 
+GEN crax(GEN O, GEN x, GEN p);
+/* Compact representation ax.
+ * Input:   Real quadratic order O (as output by rqoinit), positive integers x and p,
+            that satisfy 2^p > 11.2x*max(16,log_2(x)).      
+ * Output:  [[f, p], [a[x], d, k]], [[[m_0, n_0], L_0], [[m_1, n_1], L_1], ..., [[m_l, n_l], L_l]]
+            An x-near (f, p) representation (a[x], d, k) of the ideal (1) in O, where f < 2^(p-4),
+            as well as integer pairs (m_i, n_i) and positive integers L_i for i = 0, 1, ..., l = floor(log_2(x)).
+ * When this algorithm terminates we have a[x] = (theta) for
+ * ...
+*/
 
 #endif

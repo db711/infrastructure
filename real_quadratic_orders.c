@@ -32,7 +32,7 @@ rqiinit(GEN S, GEN Q, GEN P)
     if (typ(S) != t_INT) pari_err_TYPE("rqiinit0",S);
     if (typ(Q) != t_INT) pari_err_TYPE("rqiinit0",Q);
     if (typ(P) != t_INT) pari_err_TYPE("rqiinit0",P);
-    GEN res, res2;
+    GEN res;
     res = cgetg(3,t_VEC);
     gel(res,1) =  (S == gen_1) ? gen_1 : gcopy(S);
     gel(res,2) = mkvec2copy(Q,P);
