@@ -6,9 +6,9 @@ GEN rqoinit(GEN d);
 /* Real quadratic order initialization.
  * Input:   Nonsquare t_INT d.
  * Output:  [d, [d_0, f], s, D], where
- *          d = d_0*f^2 and 
- *          D is the discriminant of the order with conductor f in Q(sqrt(d_0));
- *          s = 2 if d_0 = 1 (mod 4) and s = 1 otherwise.
+            d = d_0*f^2 and 
+            D is the discriminant of the order with conductor f in Q(sqrt(d_0));
+            s = 2 if d_0 = 1 (mod 4) and s = 1 otherwise.
  */
 
 GEN rqiinit(GEN S, GEN Q, GEN P);
@@ -60,9 +60,9 @@ GEN regulatorcf(GEN O, long prec, long flag);
             [x, y] are the coefficients of the fundamental unit, so (x + y*sqrt(d))/2 is of norm o = {+-1} and generates O;
             this means x^2 - d*y^2 = 4o is the least solution to X^2 - d*Y^2 = +-4.
  * The flag controls whether the infrastructure is printed:
- *      0 to print nothing,
- *      1 to print only the ideals (do marginally less computations compared to 2),
- *      2 to print ideals and distances.
+        0 to print nothing,
+        1 to print only the ideals (do marginally less computations compared to 2),
+        2 to print ideals and distances.
 */
 
 GEN regulatorshanks(GEN O, long prec, long flag);
@@ -72,10 +72,10 @@ GEN regulatorshanks(GEN O, long prec, long flag);
             flag = {0, 1}.
  * Output:  R, the regulator of O to precision prec.
  * The flag controls whether the baby/giant steps are printed:
- *      0 to print nothing,
- *      1 to print the steps.
+        0 to print nothing,
+        1 to print the steps.
  * Known Bugs:
- *      - In some cases the giant step is too small and computation might return ~0 erroneously, because it hits a baby step immediately.
+        - In some cases the giant step is too small and computation might return ~0 erroneously, because it hits a baby step immediately.
 */
 
 #endif
