@@ -142,4 +142,5 @@ GEN cr(GEN O, GEN b, GEN y, GEN q);
            b = (theta) for 
                 theta = \lambda_{l+1} * \prod_{i=0}^l (lambda_i/L_{i+1})^{2^(l-i)}, where lambda_i = (m_i + n_i*sqrtd(d))/s.
 */
+
 #endif
