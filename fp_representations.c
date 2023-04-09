@@ -305,7 +305,7 @@ ax(GEN O, GEN x, GEN p)
     long i, l;
     bex = binary_zv(x); l = lg(bex);
     s = gen_1;
-    av = avma; fprep = gerepileupto(av,wnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,rqiinit(gen_1,gel(O,3),subii(addii(mulii(gel(O,3),divii(addii(subii(sqrti(gel(O,1)),gel(O,3)),gen_1),gel(O,3))),gel(O,3)),gen_1)),addii(powii(gen_2,p),gen_1),gen_0),gen_1)); //maybe change the gen_1,DEFAULTPREC)?
+    av = avma; fprep = gerepileupto(av,wnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,rqiinit(gen_1,gel(O,3),addii(mulii(gel(O,3),divii(addii(subii(sqrti(gel(O,1)),gel(O,3)),gen_1),gel(O,3))),subii(gel(O,3),gen_1))),addii(powii(gen_2,p),gen_1),gen_0),gen_1)); //maybe change the gen_1,DEFAULTPREC)?
     av2 = avma;
     for (i = 2; i < l; i++)
     {
@@ -345,8 +345,8 @@ eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag)
     }
     else gel(res,1) = gcopy(gel(fprep_,1));
     res2 = cgetg(3,t_VEC);
-    av = avma; gel(res2,1) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,1)),mulii(gel(O,1),mulii(gmael(fprep,2,2),gmael(fprep_,2,2)))),diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3))));
-    av = avma; gel(res2,2) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,2)),mulii(gmael(fprep,2,2),gmael(fprep_,2,1))),diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3))));
+    av = avma; gel(res2,1) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,1)),mulii(gel(O,1),mulii(gmael(fprep,2,2),gmael(fprep_,2,2)))),gmael5(fprep,1,2,1,2,1)));
+    av = avma; gel(res2,2) = gerepileupto(av,diviiexact(addii(mulii(gmael(fprep,2,1),gmael(fprep_,2,2)),mulii(gmael(fprep,2,2),gmael(fprep_,2,1))),gmael5(fprep,1,2,1,2,1)));
     gel(res,2) = res2;
     return gerepileupto(ltop,res);
 }
@@ -406,4 +406,91 @@ crax(GEN O, GEN x, GEN p)
     gel(res,1) = fprep;
     gel(res,2) = list;
     return gerepileupto(ltop,res); 
+}
+
+GEN 
+find(GEN O, GEN fprep, GEN c)
+{
+    pari_sp ltop = avma, av, av2;
+    GEN s, Q_0, Q_1, P_0, P_1, G_0, G_1, B_0, B_1, swap, sqrtd_, q, T, e, tmp, gen_3, t, res;
+    tmp = gsqrt(gel(O,1),DEFAULTPREC);
+    if (cmpri(addir(gmael4(fprep,2,1,2,2),tmp),gmael4(fprep,2,1,2,1)) <= 0) pari_err_DOMAIN("find",itostr(gmael4(fprep,2,1,2,1)),">=",addir(gmael4(fprep,2,1,2,2),tmp),gmael(fprep,2,1));
+    tmp = subir(gmael4(fprep,2,1,2,2),tmp);
+    if (cmpir(negi(gmael4(fprep,2,1,2,1)),tmp) >= 0 || cmpri(tmp,gen_0) >= 0) pari_err_DOMAIN("find",GENtostr(tmp),"",NULL,gmael(fprep,2,1));
+    set_avma(ltop);
+    sqrtd_ = sqrti(gel(O,1));
+    av = avma; s = gerepileupto(av,addis(gmael(fprep,1,2),5-dbllog2r(itor(gmael4(fprep,2,1,2,1),DEFAULTPREC)))); //is this enough?
+    Q_1 = gmael4(fprep,2,1,2,1);
+    P_1 = gmael4(fprep,2,1,2,2);
+    av2 = avma;
+    av = avma; Q_0 = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael4(fprep,2,1,2,2))),gmael4(fprep,2,1,2,1)));
+    G_0 = negi(gmael4(fprep,2,1,2,2));
+    G_1 = gmael4(fprep,2,1,2,1);
+    B_0 = gen_1;
+    B_1 = gen_0;
+    while (cmpii(Q_1,gmael(c,2,1)) || cmpii(P_1,gmael(c,2,2)))
+    {
+        av = avma; q = gerepileupto(av,divii(addii(P_1,sqrtd_),Q_1));
+        P_0 = P_1;
+        av = avma; P_1 = gerepileupto(av,subii(mulii(q,Q_1),P_1));
+        swap = Q_1;
+        av = avma; Q_1 = gerepileupto(av,subii(Q_0,mulii(q,subii(P_1,P_0))));
+        Q_0 = swap;
+        swap = B_1;
+        av = avma; B_1 = gerepileupto(av,addii(mulii(q,B_1),B_0));
+        B_0 = swap;
+        swap = G_1;
+        av = avma; G_1 = gerepileupto(av,addii(mulii(q,G_1),G_0));
+        G_0 = swap;
+        gerepileall(av2,8,&P_0,&P_1,&Q_0,&Q_1,&B_0,&B_1,&G_0,&G_1);
+    }
+    tmp = powii(gen_2,s);
+    gen_3 = addii(gen_2,gen_1);
+    av = avma; T = gerepileupto(av,addii(mulii(tmp,G_1),mulii(B_1,floorr(mulir(tmp,gsqrt(gel(O,1),DEFAULTPREC)))))); //is this enough?
+    av = avma; e = gerepileupto(av,gceil(gdiv(mulii(powii(gen_2,subii(addii(gmael(fprep,1,2),gen_3),s)),T),gmael4(fprep,2,1,2,1))));
+    av = avma; t = gerepileupto(av,subsi(dbllog2r(itor(mulii(e,gmael(fprep,2,2)),DEFAULTPREC))-3,mulii(gen_2,gmael(fprep,1,2)))); //is this enough?
+    res = cgetg(3,t_VEC);
+    if (gmael(fprep,1,1) == NULL)
+    {
+        av = avma; gel(res,1) = gerepileupto(av,fprepinit(NULL,gmael(fprep,1,2),rqiinit(gen_1,Q_1,P_1),gceil(gdiv(mulii(e,gmael(fprep,2,2)),powii(gen_2,addii(addii(gmael(fprep,1,2),t),gen_3)))),addii(gmael(fprep,2,3),t)));
+    }
+    else
+    {
+        av = avma; gel(res,1) = gerepileupto(av,fprepinit(gadd(gmael(fprep,1,1),ginv(addii(gen_2,gen_2))),gmael(fprep,1,2),rqiinit(gen_1,Q_1,P_1),gceil(gdiv(mulii(e,gmael(fprep,2,2)),powii(gen_2,addii(addii(gmael(fprep,1,2),t),gen_3)))),addii(gmael(fprep,2,3),t)));
+    }
+    gel(res,2) = mkvec2copy(G_1,B_1);
+    return gerepileupto(ltop,res);
+}
+
+GEN 
+cr(GEN O, GEN b, GEN y, GEN q)
+{
+    if (typ(y) != t_FRAC && typ(y) != t_INT) pari_err_TYPE("cr",y);
+    if (typ(q) != t_FRAC && typ(q) != t_INT) pari_err_TYPE("cr",q);
+    if (gcmp(y,gen_0) <= 0) pari_err_DOMAIN("cr",GENtostr(y),"<=",gen_0,y);
+    if (gcmp(q,gen_0) <= 0) pari_err_DOMAIN("cr",GENtostr(y),"<=",gen_0,q);
+    pari_sp ltop = avma, av;
+    GEN x, p, fprep, fprep_, res, res_, list;
+    long i;
+    double tmpd;
+    //GEN c, gen_3 = addii(gen_2,gen_1);
+    //av = avma; c = gerepileupto(av,addii(addii(gen_3,gen_3),gceil(gmul(gen_3,q)))); //this is an upper bound on the steps performed by find
+    av = avma; x = gerepileupto(av,subii(gfloor(gsub(y,q)),gen_1));
+    av = avma; tmpd = dbllog2r(itor(x,DEFAULTPREC)); set_avma(av); //is this enough?
+    av = avma; p = gerepileupto(av,ceilr(dbltor(3.4854268271702417595716498877424406327761952329415601716225+tmpd+fmax(4.,log2(tmpd)))));
+    fprep = crax(O,x,p);
+    fprep_ = find(O,gel(fprep,1),b);
+    res_ = cgetg(3,t_VEC);
+    gel(res_,1) = gel(fprep_,2);
+    gel(res_,2) = diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3));
+    res = cgetg(3,t_VEC);
+    gel(res,1) = gcopy(gel(fprep_,1));
+    list = cgetg(lg(gel(fprep,2))+1,t_VEC);
+    for (i = 1; i < lg(gel(fprep,2)); i++) //there must be a better way...
+    {
+        gel(list,i) = gcopy(gel(gel(fprep,2),i));
+    }
+    gel(list,i) = gcopy(res_);
+    gel(res,2) = list;
+    return gerepileupto(ltop,res);
 }

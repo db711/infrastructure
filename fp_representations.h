@@ -1,6 +1,7 @@
 #ifndef FP_REPRESENTATIONS_H
 #define FP_REPRESENTATIONS_H
 #include "real_quadratic_orders.h"
+#include <math.h>
 
 GEN fprepinit (GEN f, GEN p, GEN b, GEN d, GEN k);
 /* (f, p) representation initialization.
@@ -46,8 +47,8 @@ GEN wnear(GEN O, GEN fprep, GEN w);
 GEN ewnear(GEN O, GEN fprep, GEN w);
 /* Extended wnear.
  * Input:   Real quadratic order O (as output by rqoinit);
-            reduced (f, p) representation fprep = [[f, p], [b', d', k']] of ideal a, 
-            where b = (Q, P) with  with P + floor(sqrt(d)) >= Q and 0 <= floor(sqrt(d)) - P <= Q;
+            reduced (f, p) representation fprep = [[f, p], [b', d, k]] of ideal a, 
+            where b' = [1, [Q, P]] with  with P + floor(sqrt(d)) >= Q and 0 <= floor(sqrt(d)) - P <= Q;
             positive integer w with k < w.
  * Output:  [[[f + 9/8, p], [c, g, h]], [a, b]] with integers a, b, where
             (c, g, h) is a w-near (f + 9/8, p) representation of the ideal a and
@@ -96,7 +97,7 @@ GEN eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
  * Input:   Real quadratic order O (as output by rqoinit);
             [[f', p], [a[x], d', k'], an x-near (f', p) representation (a[x], d', k') of the ideal (1),
             [[f'', p], [a[y], d'', k''], an y-near (f'', p) rerepsentation (a[y], d'', k'') of the ideal (1).
- * Output:  [[[f, p], [a[x+y], d, k]], [a,b]], where
+ * Output:  [[[f, p], [a[x+y], d, k]], [a, b]], where
             (a[x+y], d, k) is an (x+y)-near (f, p) representation of (1) with f = f' + f'' + (f'*f'')/2^p + 13/4 and
             (a, b) are integers such that 
             a[x+y] = ((lambda*theta'*theta'')/(N(a[x])*N(a[y])))(1), where
@@ -107,13 +108,38 @@ GEN eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag);
 GEN crax(GEN O, GEN x, GEN p);
 /* Compact representation ax.
  * Input:   Real quadratic order O (as output by rqoinit);
-            positive integers x and p,
+            positive integers x and p (precision used for (f, p) representations),
             that satisfy 2^p > 11.2x*max(16,log_2(x)).      
- * Output:  [[f, p], [a[x], d, k]], [[[m_0, n_0], L_0], [[m_1, n_1], L_1], ..., [[m_l, n_l], L_l]].
+ * Output:  [[f, p], [a[x], d, k]], [[[m_0, n_0], L_0], [[m_1, n_1], L_1], ..., [[m_l, n_l], L_l]],
             an x-near (f, p) representation (a[x], d, k) of the ideal (1) in O, where f < 2^(p-4)
             as well as integer pairs (m_i, n_i) and positive integers L_i for i = 0, 1, ..., l = floor(log_2(x)).
  * When this algorithm terminates we have a[x] = (theta) for
         theta = lambda_l * \prod_{i=0}^{l-1}(lambda_i/L_{i+1})^{2^(l-i)}, where lambda_i = (m_i + n_i*sqrtd(d))/s.
 */
 
+GEN find(GEN O, GEN fprep, GEN c);
+/* Find a (f, p) representation.
+ * Input:   Real quadratic order O (as output by rqoinit);
+            reduced (f, p) representation fprep = [[f, p], [b, d, k]] of ideal a,
+            where b = [1, [Q, P]] with (P + sqrt(d))/Q > 1 and -1 < (P - sqrt(d))/Q < 0;
+            real quadratic ideal c = [1, [Q', P']], that comes after b in the infrastructure (this isn't checked);
+ * Output:  [[[f + 1/4, p], [c, g, h]], [m, n]], where
+            (c, g, h) is a reduced (f + 1/4, p) representation of a,
+            and m, n are integers such that 
+            N(b)*c = ((m + n*sqrtd(d))/s)*b.
+*/
+
+GEN cr(GEN O, GEN b, GEN y, GEN q);
+/* (Find a)  compact representation.
+ * Input:   Real quadratic order O (as output by rqoinit);
+            reduced principal ideal b = [1, [Q, P]] with (P + sqrt(d))/Q > 1 and -1 < (P - sqrt(d))/Q < 0;
+            y, q positive rational numbers, such that
+                |log_2(theta) - y| < q.
+            where (theta) = b.
+* Output:  [[f, p], [b, d, k]], [[[m_0, n_0], L_0], [[m_1, n_1], L_1], ..., [[m_l, n_l], L_l], [[m_{l+1}, n_{l+1}], L_{l+1}]].
+           an (f, p) representation [[f, p], [b, d, k]] of b, as well as
+           integers (m_i, n_i)_i, L_i, L_{i+1} for i = 0, 1, ..., l = floor(log_2(x)), such that
+           b = (theta) for 
+                theta = \lambda_{l+1} * \prod_{i=0}^l (lambda_i/L_{i+1})^{2^(l-i)}, where lambda_i = (m_i + n_i*sqrtd(d))/s.
+*/
 #endif
