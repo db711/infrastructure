@@ -1,7 +1,6 @@
 #ifndef FP_REPRESENTATIONS_H
 #define FP_REPRESENTATIONS_H
 #include "real_quadratic_orders.h"
-#include <math.h>
 
 GEN fprepinit (GEN f, GEN p, GEN b, GEN d, GEN k);
 /* (f, p) representation initialization.
@@ -140,7 +139,7 @@ GEN cr(GEN O, GEN b, GEN y, GEN q);
            an (f, p) representation [[f, p], [b, d, k]] of b, as well as
            integers (m_i, n_i)_i, L_i, L_{i+1} for i = 0, 1, ..., l = floor(log_2(x)), such that
            b = (theta) for 
-                theta = \lambda_{l+1} * \prod_{i=0}^l (lambda_i/L_{i+1})^{2^(l-i)}, where lambda_i = (m_i + n_i*sqrtd(d))/s.
+                theta = lambda_{l+1} * \prod_{i=0}^l (lambda_i/L_{i+1})^{2^(l-i)}, where lambda_i = (m_i + n_i*sqrtd(d))/s.
 */
 
 #endif
