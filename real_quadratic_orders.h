@@ -4,7 +4,7 @@
 
 GEN rqoinit(GEN d);
 /* Real quadratic order initialization.
- * Input:   Nonsquare t_INT d.
+ * Input:   Nonsquare integer d.
  * Output:  [d, [d_0, f], s, D], where
             d = d_0*f^2 and 
             D is the discriminant of the order with conductor f in Q(sqrt(d_0));
@@ -25,6 +25,13 @@ void checkrqi(GEN O, GEN a, const char *f);
  * Throws an appropriate error if a is not a valid O-ideal, given in the form (S)(Q, P).
  */
 
+GEN pci(GEN O);
+/* Principal cycle identity.
+ * Input:   Real quadratic order O (as output by rqoinit).
+ * Output:  The ideal (1) = [1, [Q, P]] as it appears in (respectively at the end of) the infrastructure, that is we have
+            Q = s, P = f (mod s) and (P + sqrt(d))/s > 1 as well as -1 < (P - sqrt(d))/s < 0.           
+*/
+
 GEN imultiply(GEN O, GEN a, GEN b); // DEPRECATED
 /* Ideal multiply.
  * Input:   Real quadratic order O (as output by rqoinit);
@@ -34,7 +41,8 @@ GEN imultiply(GEN O, GEN a, GEN b); // DEPRECATED
 
 GEN qiimultiply(GEN O, GEN qi, GEN a); // DEPRECATED
 /* Quadratic integer ideal multiply.
- * Input:   Quadratic integer qi in the form [A, B, C] = (A + B*sqrt(d))/C (as output for example by inucomp);
+ * Input:   Real quadratic order O (as output by rqoinit); 
+            Quadratic integer qi in the form [A, B, C] = (A + B*sqrt(d))/C (as output for example by inucomp);
             primitive ideal a (as for example output by imultiply or rqiinit).
  * Output:  [1, [Q, P]] = qi*a.
 */

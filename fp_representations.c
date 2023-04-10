@@ -307,7 +307,7 @@ ax(GEN O, GEN x, GEN p)
     long i, l;
     bex = binary_zv(x); l = lg(bex);
     s = gen_1;
-    av = avma; fprep = gerepileupto(av,wnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,rqiinit(gen_1,gel(O,3),addii(mulii(gel(O,3),divii(addii(subii(sqrti(gel(O,1)),gel(O,3)),gen_1),gel(O,3))),subii(gel(O,3),gen_1))),addii(powii(gen_2,p),gen_1),gen_0),gen_1)); //maybe change the gen_1,DEFAULTPREC)?
+    av = avma; fprep = gerepileupto(av,wnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,pci(O),addii(powii(gen_2,p),gen_1),gen_0),gen_1)); //maybe change the gen_1,DEFAULTPREC)?
     av2 = avma;
     for (i = 2; i < l; i++)
     {
@@ -371,7 +371,7 @@ crax(GEN O, GEN x, GEN p)
     av2 = avma;
     list = cgetg(l,t_VEC);
     for (i = 1; i < l; i++) gel(list,i) = gen_0; //initialize list so we can gerepile it
-    av = avma; fprep = gerepileupto(av,ewnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,rqiinit(gen_1,gel(O,3),addii(mulii(gel(O,3),divii(addii(subii(sqrti(gel(O,1)),gel(O,3)),gen_1),gel(O,3))),subii(gel(O,3),gen_1))),addii(powii(gen_2,p),gen_1),gen_0),gen_1));
+    av = avma; fprep = gerepileupto(av,ewnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,pci(O),addii(powii(gen_2,p),gen_1),gen_0),gen_1));
     s = gen_1;
     el = cgetg(3,t_VEC);
     gel(el,1) = mkvec2copy(gmael(fprep,2,1),gmael(fprep,2,2));

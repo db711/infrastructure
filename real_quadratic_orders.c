@@ -52,6 +52,29 @@ checkrqi(GEN O, GEN a, const char *f)
     set_avma(ltop); return;
 }
 
+GEN
+pci(GEN O)
+{ // Principal cycle identity: Given a real quadratic order O, this computes the last element [1, [Q, P]] in the principal cycle of reduced ideals.
+    pari_sp ltop = avma;
+    GEN sqrtd_;
+    pari_printf("test\n");
+    sqrtd_ = sqrti(gel(O,1));
+    if (equali1(gel(O,3))) return gerepileupto(ltop,rqiinit(gen_1,gel(O,3),sqrtd_));
+    else 
+    {
+        if (mod2(gmael(O,2,2)))
+        {
+            if (mod2(sqrtd_)) return gerepileupto(ltop,rqiinit(gen_1,gel(O,3),sqrtd_));
+            else return gerepileupto(ltop,rqiinit(gen_1,gel(O,3),subii(sqrtd_,gen_1)));
+        }
+        else
+        {
+            if (mod2(sqrtd_)) return gerepileupto(ltop,rqiinit(gen_1,gel(O,3),subii(sqrtd_,gen_1)));
+            else return gerepileupto(ltop,rqiinit(gen_1,gel(O,3),sqrtd_));
+        }
+    }
+}
+
 GEN 
 imultiply(GEN O, GEN a, GEN b) // DEPRECATED
 {
