@@ -1,24 +1,20 @@
 #include <stdio.h>
-#include <pari/pari.h>
-#include "real_quadratic_orders.h"
 #include "testing.h"
 
 int main() {
-   pari_init(1000000,0);
-   long j = 10, n = 100;
-   printf("regulatorshanks: %ld\n",timedtest(regulatorshanks,j,n));
-   printf("regulatorcf: %ld\n",timedtest(regulatorcf,j,n));
+   pari_init(1000000000,0);
+   //...
    pari_close();
    return 0;
 }
 
-long timedtest(GEN (*f)(GEN O, long prec, long flag), int i, int n)
+long 
+timedtest(GEN (*f)(GEN O, long prec, long flag), int i, int n)
 {
    pari_timer timer;
    pari_sp ltop = avma, av;
-   GEN x, tmp;
-   int j; 
-   long t;
+   GEN x, tmp; 
+   long j, t;
    tmp = powis(strtoi("10"),i);
    timer_start(&timer);
    av = avma;
@@ -32,4 +28,38 @@ long timedtest(GEN (*f)(GEN O, long prec, long flag), int i, int n)
    t = timer_delay(&timer);
    set_avma(ltop);
    return t;
+}
+
+void 
+testcr(int i, int n)
+{
+   pari_sp ltop = avma, av, av2;
+   GEN O, tmp, x, A, B, C, C_, b, y;
+   long j;
+   tmp = powis(strtoi("10"),i);
+   av2 = avma;
+   for (j = 0; j < n; j++)
+   {
+      av = avma; x = gerepileupto(av,addii(randomi(tmp),tmp));
+      if (Z_issquare(x)) continue;
+      pari_printf("d = %Ps\n",x);
+      O = rqoinit(x);
+      A = regulatorcf(O,DEFAULTPREC,0);
+      av = avma; y = gerepileupto(av,roundr(gdiv(gel(A,1),mplog2(DEFAULTPREC))));
+      av = avma; b = gerepileupto(av,rqiinit(gen_1,gel(O,3),addii(mulii(gel(O,3),divii(addii(subii(sqrti(gel(O,1)),gel(O,3)),gen_1),gel(O,3))),subii(gel(O,3),gen_1))));
+      B = cr(O,b,y,ghalf);
+      av = avma; 
+      C = expandcr(O,gel(B,2));
+      if(cmpii(gel(O,3),gen_2))
+      {
+         C_ = cgetg(3,t_VEC);
+         gel(C_,1) = mulii(gen_2,gel(C,1));
+         gel(C_,2) = mulii(gen_2,gel(C,2));
+         C = C_; C_ = NULL;
+      }
+      if (abscmpii(gel(C,1),gmael(A,2,1)) || abscmpii(gel(C,2),gmael(A,2,2))) pari_printf("Error found for d = %Ps\n%Ps\nvs\n%Ps\n\n",x,C,gel(A,2));
+      else
+      set_avma(av2);
+   }
+   set_avma(ltop);
 }
