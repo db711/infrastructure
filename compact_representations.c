@@ -13,7 +13,7 @@ mulqi (GEN O, GEN a, GEN b, GEN a_, GEN b_)
 GEN expandcr(GEN O, GEN cr)
 {
     pari_sp ltop = avma, av, av2;
-    GEN theta, fac, theta_;
+    GEN theta, fac;
     long i, j, l;
     l = lg(cr)-1;
     theta = gmael(cr,l,1);
