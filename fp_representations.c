@@ -326,10 +326,10 @@ ax(GEN O, GEN x, GEN p)
 GEN 
 eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag)
 {
-    if (typ(x) != t_INT) pari_err_TYPE("ax",x);
-    if (typ(y) != t_INT) pari_err_TYPE("ax",y);
-    if (cmpii(x,gen_0) <= 0) pari_err_DOMAIN("ax",itostr(x),"<=",gen_0,x);
-    if (cmpii(y,gen_0) <= 0) pari_err_DOMAIN("ax",itostr(y),"<=",gen_0,y);
+    if (typ(x) != t_INT) pari_err_TYPE("eaddxy",x);
+    if (typ(y) != t_INT) pari_err_TYPE("eaddxy",y);
+    if (cmpii(x,gen_0) <= 0) pari_err_DOMAIN("eaddxy",itostr(x),"<=",gen_0,x);
+    if (cmpii(y,gen_0) <= 0) pari_err_DOMAIN("eaddxy",itostr(y),"<=",gen_0,y);
     pari_sp ltop = avma, av;
     GEN fprep, fprep_, res, res2, r_, r_2;
     fprep = numult(O,fprep1,fprep2,flag);
