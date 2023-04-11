@@ -54,10 +54,9 @@ checkrqi(GEN O, GEN a, const char *f)
 
 GEN
 pci(GEN O)
-{ // Principal cycle identity: Given a real quadratic order O, this computes the last element [1, [Q, P]] in the principal cycle of reduced ideals.
+{
     pari_sp ltop = avma;
     GEN sqrtd_;
-    pari_printf("test\n");
     sqrtd_ = sqrti(gel(O,1));
     if (equali1(gel(O,3))) return gerepileupto(ltop,rqiinit(gen_1,gel(O,3),sqrtd_));
     else 
@@ -187,7 +186,7 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         av = avma; k = gerepileupto(av,gfloor(gdiv(subii(sqrti(gel(O,1)),P),Q_)));
         av = avma; P_ = gerepileupto(av,addii(mulii(k,Q_),P));
         swap = B_1;
-        av = avma; B_1 = gerepileupto(av,subii(mulii(q,B_1),B_0)); 
+        av = avma; B_1 = gerepileupto(av,addii(mulii(q,B_1),mulsi(signe(Q_old),B_0))); 
         B_0 = swap;
         if (cmpii(addii(P_,sqrti(gel(O,1))),Q_) < 0)
         {  
@@ -200,7 +199,6 @@ inucomp(GEN O, GEN a, GEN b, long flag)
             B_1 = addii(B_1,B_0); //is this correct?
             B_0 = swap;
         }
-        else B_1 = mulsi(signe(Q),B_1);
     }
     res = cgetg(3,t_VEC);
     gel(res,1) = rqiinit(gen_1,Q_,P_);
