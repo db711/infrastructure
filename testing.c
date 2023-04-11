@@ -34,7 +34,7 @@ void
 testcr(int i, int n)
 {
    pari_sp ltop = avma, av, av2;
-   GEN O, tmp, x, A, B, C, C_, b, y;
+   GEN O, tmp, x, A, B, C, C_, y;
    long j;
    tmp = powis(strtoi("10"),i);
    av2 = avma;
@@ -46,8 +46,7 @@ testcr(int i, int n)
       O = rqoinit(x);
       A = regulatorcf(O,DEFAULTPREC,0);
       av = avma; y = gerepileupto(av,roundr(gdiv(gel(A,1),mplog2(DEFAULTPREC))));
-      av = avma; b = gerepileupto(av,rqiinit(gen_1,gel(O,3),addii(mulii(gel(O,3),divii(addii(subii(sqrti(gel(O,1)),gel(O,3)),gen_1),gel(O,3))),subii(gel(O,3),gen_1))));
-      B = cr(O,b,y,ghalf);
+      B = cr(O,pci(O),y,ghalf);
       av = avma; 
       C = expandcr(O,gel(B,2));
       if(cmpii(gel(O,3),gen_2))
