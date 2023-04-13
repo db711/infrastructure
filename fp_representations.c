@@ -97,8 +97,7 @@ wnear(GEN O, GEN fprep, GEN w)
     if (cmpii(addii(gmael4(fprep,2,1,2,2),sqrti(gel(O,1))),gmael4(fprep,2,1,2,1)) < 0) pari_err_DOMAIN("wnear",itostr(addii(gmael4(fprep,2,1,2,2),sqrti(gel(O,1)))),"<",gmael4(fprep,2,1,2,1),gmael(fprep,2,1));
     if (cmpii(gen_0,subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))) > 0 || cmpii(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2)),gmael4(fprep,2,1,2,1)) > 0) pari_err_DOMAIN("wnear",itostr(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))),"",NULL,gmael(fprep,2,1));
     set_avma(ltop);
-    GEN s, Q_0, Q_1, Q_m1, Q_m2, Q_m3, P_0, P_1, P_m1, M, T_0, T_1, T_m1, T_m2, T_m3, q, sqrtd, sqrtd_, tmp, tmp2, gen_3 = addii(gen_2,gen_1), e, e_, c, t, g, h;
-    sqrtd = gsqrt(gel(O,1),DEFAULTPREC); //is this enough?
+    GEN s, Q_0, Q_1, Q_m1, Q_m2, Q_m3, P_0, P_1, P_m1, M, T_0, T_1, T_m1, T_m2, T_m3, q, twossqrtd, sqrtd_, tmp, tmp2, gen_3 = addii(gen_2,gen_1), e, e_, c, t, g, h;
     sqrtd_ = sqrti(gel(O,1));
     if (cmpii(gmael(fprep,2,3),w) < 0)
     {
@@ -106,13 +105,14 @@ wnear(GEN O, GEN fprep, GEN w)
         av = avma; if (cmpii(gmael4(fprep,2,1,2,1),powii(gen_2,subii(addis(gmael(fprep,1,2),4),s))) <= 0) s = gerepileupto(av,addii(s,gen_1));
         else set_avma(av);
         tmp = powii(gen_2,s);
+        twossqrtd = sqri(mulii(sqri(tmp),gel(O,1)));
         Q_1 = gmael4(fprep,2,1,2,1);
         P_1 = gmael4(fprep,2,1,2,2);
         av = avma; M = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w)),gdiv(gmael4(fprep,2,1,2,1),gmael(fprep,2,2)))));
         av2 = avma;
         P_m1 = P_0 = Q_m1 = T_m1 = gen_0; //dummy values
         av = avma; Q_0 = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael4(fprep,2,1,2,2))),gmael4(fprep,2,1,2,1)));
-        av = avma; T_0 = gerepileupto(av,addii(mulii(negi(tmp),P_1),gfloor(gmul(tmp,sqrtd)))); //should throw error if precision is too low
+        av = avma; T_0 = gerepileupto(av,addii(mulii(negi(tmp),P_1),twossqrtd)); 
         T_1 = mulii(tmp,gmael4(fprep,2,1,2,1));
         while (cmpii(T_1,M) <= 0)
         {
@@ -154,6 +154,7 @@ wnear(GEN O, GEN fprep, GEN w)
     {
         av = avma; s = gerepileupto(av,addii(gmael(fprep,1,2),addii(gen_2,gen_2)));
         tmp = powii(gen_2,s);
+        twossqrtd = sqri(mulii(sqri(tmp),gel(O,1)));
         Q_0 = gmael4(fprep,2,1,2,1);
         P_1 = gmael4(fprep,2,1,2,2); 
         av = avma; M = gerepileupto(av,mulii(gmael(fprep,2,2),powii(gen_2,addii(subii(gmael(fprep,2,3),w),addii(gen_2,gen_2)))));
@@ -161,7 +162,7 @@ wnear(GEN O, GEN fprep, GEN w)
         Q_m3 = Q_m2 = Q_m1 = T_m3 = T_m2 = T_m1 = gen_0; //dummy values
         av = avma; Q_1 = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael4(fprep,2,1,2,2))),gmael4(fprep,2,1,2,1)));
         av = avma; T_0 = gerepileupto(av,mulii(tmp,Q_0));
-        av = avma; T_1 = gerepileupto(av,addii(mulii(tmp,P_1),gfloor(gmul(tmp,sqrtd)))); //should throw error if precision is too low
+        av = avma; T_1 = gerepileupto(av,addii(mulii(tmp,P_1),twossqrtd)); 
         while (cmpii(T_1,mulii(Q_1,M)) < 0)
         {
             av = avma; q = gerepileupto(av,divii(addii(P_1,sqrtd_),Q_1));
@@ -220,27 +221,27 @@ ewnear(GEN O, GEN fprep, GEN w)
 {
     if (typ(w) != t_INT) pari_err_TYPE("ewnear",w);
     if (cmpii(w,gen_1) < 0) pari_err_DOMAIN("ewnear","w","<",gen_1,w);
-    if (cmpii(gmael(fprep,2,3),w) >= 0) pari_err_DOMAIN("ewnear","w","<=",gmael(fprep,2,3),w); //TOD: Implement other case
+    if (cmpii(gmael(fprep,2,3),w) >= 0) pari_err_DOMAIN("ewnear","w","<=",gmael(fprep,2,3),w); //TODO: Implement other case
     pari_sp ltop = avma, av, av2;
     if (cmpii(addii(gmael4(fprep,2,1,2,2),sqrti(gel(O,1))),gmael4(fprep,2,1,2,1)) < 0) pari_err_DOMAIN("ewnear",itostr(addii(gmael4(fprep,2,1,2,2),sqrti(gel(O,1)))),"<",gmael4(fprep,2,1,2,1),gmael(fprep,2,1));
     if (cmpii(gen_0,subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))) > 0 || cmpii(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2)),gmael4(fprep,2,1,2,1)) > 0) pari_err_DOMAIN("ewnear",itostr(subii(sqrti(gel(O,1)),gmael4(fprep,2,1,2,2))),"",NULL,gmael(fprep,2,1));
     set_avma(ltop);
-    GEN B_0, B_1, B_m1, a, b, s, Q_0, Q_1, Q_m1, P_0, P_1, P_m1, M, T_0, T_1, T_m1, q, sqrtd, sqrtd_, tmp, tmp2, gen_3 = addii(gen_2,gen_1), e, c, t, g, h, res;
-    sqrtd = gsqrt(gel(O,1),DEFAULTPREC); //is this enough?
-    sqrtd_ = floorr(sqrtd);
+    GEN B_0, B_1, B_m1, a, b, s, Q_0, Q_1, Q_m1, P_0, P_1, P_m1, M, T_0, T_1, T_m1, q, twossqrtd, sqrtd_, tmp, tmp2, gen_3 = addii(gen_2,gen_1), e, c, t, g, h, res;
+    sqrtd_ = sqrti(gel(O,1));
     B_0 = gen_1;
     B_1 = gen_0;
     s = addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1)));
     av = avma; if (cmpii(gmael4(fprep,2,1,2,1),powii(gen_2,subii(addis(gmael(fprep,1,2),4),s))) <= 0) s = gerepileupto(av,addii(s,gen_1));
     else set_avma(av);
     tmp = powii(gen_2,s);
+    twossqrtd = sqri(mulii(sqri(tmp),gel(O,1)));
     Q_1 = gmael4(fprep,2,1,2,1);
     P_1 = gmael4(fprep,2,1,2,2);
     av = avma; M = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w)),gdiv(gmael4(fprep,2,1,2,1),gmael(fprep,2,2)))));
     av2 = avma;
     P_m1 = P_0 = Q_m1 = T_m1 = gen_0; //dummy values
     av = avma; Q_0 = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael4(fprep,2,1,2,2))),gmael4(fprep,2,1,2,1)));
-    av = avma; T_0 = gerepileupto(av,addii(mulii(negi(tmp),P_1),gfloor(gmul(tmp,sqrtd)))); //should throw error if precision is too low
+    av = avma; T_0 = gerepileupto(av,addii(mulii(negi(tmp),P_1),twossqrtd)); 
     T_1 = mulii(tmp,gmael4(fprep,2,1,2,1));
     while (cmpii(T_1,M) <= 0)
     {
@@ -260,14 +261,14 @@ ewnear(GEN O, GEN fprep, GEN w)
     if (cmpii(mulii(gmael(fprep,2,2),e),powii(gen_2,addii(addii(subii(mulii(gen_2,gmael(fprep,1,2)),gmael(fprep,2,3)),w),gen_3))) <= 0)
     {
         set_avma(av); c = rqiinit(gen_1,Q_0,P_0);
-        av = avma; a = gerepileupto(av,diviiexact(subii(T_0,mulii(gfloor(gmul(tmp,sqrtd)),B_0)),tmp)); //should throw error if precision is too low
+        av = avma; a = gerepileupto(av,diviiexact(subii(T_0,mulii(twossqrtd,B_0)),tmp)); 
         b = B_0;
     }
     else
     {
         set_avma(av); c = rqiinit(gen_1,Q_m1,P_m1);
         av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(gmael(fprep,1,2),s),gen_3)),gdiv(T_m1,gmael4(fprep,2,1,2,1)))));
-        av = avma; a = gerepileupto(av,diviiexact(subii(T_m1,mulii(floorr(mulir(tmp,sqrtd)),B_m1)),tmp));
+        av = avma; a = gerepileupto(av,diviiexact(subii(T_m1,mulii(twossqrtd,B_m1)),tmp));
         b = B_m1;
     }
     av = avma; t = gerepileupto(av,subsi(sigbits(e)+sigbits(gmael(fprep,2,2))-6,mulii(gen_2,gmael(fprep,1,2))));
