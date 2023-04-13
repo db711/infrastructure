@@ -140,6 +140,8 @@ GEN cr(GEN O, GEN b, GEN y, GEN q);
            integers (m_i, n_i)_i, L_i, L_{i+1} for i = 0, 1, ..., l = floor(log_2(x)), such that
            b = (theta) for 
                 theta = lambda_{l+1} * \prod_{i=0}^l (lambda_i/L_{i+1})^{2^(l-i)}, where lambda_i = (m_i + n_i*sqrtd(d))/s.
+* Known bugs:
+        - For small y (say less than 15), this may fail, because it hits the value immediately and cannot compute relative generators that way.
 */
 
 #endif

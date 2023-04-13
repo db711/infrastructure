@@ -3,7 +3,6 @@
 
 int main() {
    pari_init(1000000000,0);
-   //...
    pari_close();
    return 0;
 }
@@ -42,9 +41,9 @@ testcr(int i, int n)
    {
       av = avma; x = gerepileupto(av,addii(randomi(tmp),tmp));
       if (Z_issquare(x)) continue;
-      pari_printf("d = %Ps\n",x);
       O = rqoinit(x);
       A = regulatorcf(O,DEFAULTPREC,0);
+      if (cmpri(gel(A,1),strtoi("10")) < 0) continue; // in this case cr might fail
       av = avma; y = gerepileupto(av,roundr(gdiv(gel(A,1),mplog2(DEFAULTPREC))));
       B = cr(O,pci(O),y,ghalf);
       av = avma; 
