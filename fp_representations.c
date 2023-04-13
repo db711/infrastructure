@@ -58,7 +58,7 @@ numult (GEN O, GEN fprep1, GEN fprep2, long flag)
     }
     else
     {
-        e = gerepileupto(av,divii(mulii(gmael(fprep1,2,2),gmael(fprep2,2,2)),powii(gen_2,addii(gmael(fprep1,1,2),gen_1))));
+        e = gerepileupto(av,gceil(gdiv(mulii(gmael(fprep1,2,2),gmael(fprep2,2,2)),powii(gen_2,addii(gmael(fprep1,1,2),gen_1)))));
         av = avma; h = gerepileupto(av,addii(addii(gmael(fprep1,2,3),gmael(fprep2,2,3)),gen_1));
     }
     if (cmpii(gmael(b,2,2),gen_0) > 0)
@@ -449,7 +449,7 @@ find(GEN O, GEN fprep, GEN c)
     tmp = powii(gen_2,s);
     gen_3 = addii(gen_2,gen_1);
     av = avma; T = gerepileupto(av,addii(mulii(tmp,G_1),mulii(B_1,gfloor(gmul(tmp,gsqrt(gel(O,1),DEFAULTPREC)))))); //should throw error if precision is too low
-    av = avma; e = gerepileupto(av,gceil(gdiv(mulii(powii(gen_2,subii(addii(gmael(fprep,1,2),gen_3),s)),T),gmael4(fprep,2,1,2,1))));
+    av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,subii(addii(gmael(fprep,1,2),gen_3),s)),gdiv(T,gmael4(fprep,2,1,2,1)))));
     av = avma; t = gerepileupto(av,subii(subii(subii(gceil(gdiv(glog(mulii(e,gmael(fprep,2,2)),DEFAULTPREC),mplog2(DEFAULTPREC))),mulii(gen_2,gmael(fprep,1,2))),gen_3),gen_1)); //should throw error if precision is too low
     res = cgetg(3,t_VEC);
     if (gmael(fprep,1,1) == NULL)
