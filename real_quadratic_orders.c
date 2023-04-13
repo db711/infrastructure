@@ -191,12 +191,12 @@ inucomp(GEN O, GEN a, GEN b, long flag)
         if (cmpii(addii(P_,sqrti(gel(O,1))),Q_) < 0)
         {  
             Q_old_ = Q;
-            av = avma; Q_ = gerepileupto(av,addii(subii(Q_old, Q_old_),mulii(gen_2,P)));
+            av = avma; Q_ = gerepileupto(av,addii(subii(absi(Q_old),Q),mulii(gen_2,P)));
             Q = Q_;
             P = subii(Q_old_,P);
             P_ = subii(P,Q);
             swap = B_1;
-            B_1 = addii(B_1,B_0); //is this correct?
+            B_1 = addii(B_1,B_0); 
             B_0 = swap;
         }
     }
