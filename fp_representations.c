@@ -36,7 +36,7 @@ fpremove (GEN fprep, GEN T, GEN C, GEN s)
     if (equalii(C,gen_0)) pari_err_DOMAIN("fpremove","C","==",gen_0,C);
     pari_sp ltop = avma, av;
     GEN gen_3 = addii(gen_2,gen_1), e, d, k;
-    long t;
+    ulong t;
     av = avma; e = gerepileupto(av,ground(gmul(powii(gen_2,subii(addii(gmael(fprep,1,2),gen_3),s)),gabs(gdiv(T,C),DEFAULTPREC)))); //precision should be ignored
     t = sigbits(e)-sigbits(gmael(fprep,2,2))-3;
     av = avma; if (cmpii(e,mulii(powis(gen_2,t+3),gmael(fprep,2,2))) >= 0) t++; set_avma(av);
@@ -306,7 +306,7 @@ iexp(GEN O, GEN fprep, GEN w, GEN n, long flag)
 {
     pari_sp ltop = avma, av;
     GEN ben, fprep_;
-    long i, l;
+    ulong i, l;
     ben = binary_zv(n); l = lg(ben);
     fprep_ = shallowcopy(fprep);
     av = avma;
@@ -338,7 +338,7 @@ ax(GEN O, GEN x, GEN p)
     if (cmpii(p,gen_0) <= 0) pari_err_DOMAIN("ax",itostr(p),"<=",gen_0,p);
     pari_sp ltop = avma, av, av2;
     GEN bex, fprep, s;
-    long i, l;
+    ulong i, l;
     bex = binary_zv(x); l = lg(bex);
     s = gen_1;
     av = avma; fprep = gerepileupto(av,wnear(O,fprepinit(itor(gen_1,DEFAULTPREC),p,pci(O),addii(powii(gen_2,p),gen_1),gen_0),gen_1)); //maybe change the gen_1,DEFAULTPREC)?
@@ -399,7 +399,7 @@ crax(GEN O, GEN x, GEN p)
     set_avma(ltop);
     GEN bex, s, fprep, fprep_, list, el, el2, N, eli, res;
     res = cgetg(3,t_VEC);
-    long i, l;
+    ulong i, l;
     av3 = avma;
     bex = binary_zv(x); l = lg(bex);
     av2 = avma;
@@ -516,7 +516,7 @@ cr(GEN O, GEN b, GEN y, GEN q)
     if (gcmp(q,gen_0) <= 0) pari_err_DOMAIN("cr",GENtostr(y),"<=",gen_0,q);
     pari_sp ltop = avma, av;
     GEN x, p, fprep, fprep_, res, res_, list;
-    long i;
+    ulong i;
     //GEN c, gen_3 = addii(gen_2,gen_1);
     //av = avma; c = gerepileupto(av,addii(addii(gen_3,gen_3),gceil(gmul(gen_3,q)))); //this is an upper bound on the steps performed by find
     av = avma; x = gerepileupto(av,subii(gfloor(gsub(y,q)),gen_1));

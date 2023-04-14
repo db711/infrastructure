@@ -58,7 +58,7 @@ GEN inucomp(GEN O, GEN a, GEN b, long flag);
  * Set flag = 0 to skip some tests if you are sure that your input is correct.
  */
 
-GEN regulatorcf(GEN O, long prec, long flag);
+GEN regulatorcf(GEN O, ulong prec, long flag);
 /* Regulator (via) continued fraction.
  * Input:   Order O (as output by rqoinit); 
             precision prec;
@@ -73,7 +73,7 @@ GEN regulatorcf(GEN O, long prec, long flag);
         2 to print ideals and distances.
 */
 
-GEN regulatorshanks(GEN O, long prec, long flag);
+GEN regulatorshanks(GEN O, ulong prec, long flag);
 /* Regulator (via) Shanks' baby-step giant-step method.
  * Input:   Real quadratic order O (as output by rqoinit);
             precision prec;

@@ -5,7 +5,7 @@
 #include "fp_representations.h"
 #include "compact_representations.h"
 
-long timedtest(GEN (*f)(GEN O, long prec, long flag), int i, int n);
+ulong timedtest(GEN (*f)(GEN O, ulong prec, long flag), ulong i, ulong n);
 /* Timed tests.
  * Input:   Function to time f (regulatorcf/regulatorshanks);
             integers i and n.
@@ -14,7 +14,7 @@ long timedtest(GEN (*f)(GEN O, long prec, long flag), int i, int n);
  * Assumes that the RNG of PARI is already set.
 */
 
-long testcr(int i, int n);
+ulong testcr(ulong i, ulong n);
 /* Test compact representations.
  * Input:   Integers i and n.
  * Output:  Number of times that the compact representation was smaller than the standard decimal representation.

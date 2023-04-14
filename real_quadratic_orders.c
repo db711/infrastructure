@@ -8,7 +8,7 @@ rqoinit(GEN d)
     if (Z_issquare(d)) pari_err_DOMAIN("rqoinit","issquare(d)","=",gen_1,d);
     GEN c, res = cgetg(5,t_VEC);
     pari_sp ltop;
-    long r;
+    ulong r;
     gel(res,1) = gcopy(d);
     c = core2(gel(res,1));
     gel(res,2) = c;
@@ -128,7 +128,7 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     }
     GEN swap, tmp1, tmp2, G, X, S, Y, Z, R_, R_1, R_0, C_0 = gen_0, C_1 = gen_m1, Q, P, B_0, B_1, q, M_1, M_2, Q_, k, P_, Q_old, Q_old_, res, resi;
     pari_sp ltop = avma, av, av2;
-    long i = 0;
+    ulong i = 0;
     if (cmpii(gmael(a,2,1),gmael(b,2,1)) < 0)
     {
         swap = a;
@@ -211,11 +211,11 @@ inucomp(GEN O, GEN a, GEN b, long flag)
 }
 
 GEN 
-regulatorcf(GEN O, long prec, long flag)
+regulatorcf(GEN O, ulong prec, long flag)
 {
     pari_sp ltop = avma, av, av2;
     GEN sqrtd_, sqrtd, a, Q_, Q, Q_0, P, q, B_0, B_1, G_0, G_1, swap, psi, theta, res, resi;
-    long n = 0;
+    ulong n = 0;
     sqrtd_ = sqrti(gel(O,1));
     sqrtd = gsqrt(gel(O,1),prec);
     av = avma; a = gerepileupto(av,rqiinit(gen_1,gel(O,3),mulii(gmael(O,2,2),subii(gel(O,3),gen_1)))); //this is the identity in O
@@ -272,11 +272,11 @@ regulatorcf(GEN O, long prec, long flag)
 }
 
 GEN 
-regulatorshanks(GEN O, long prec, long flag)
+regulatorshanks(GEN O, ulong prec, long flag)
 { // turn L into hashtable
     pari_sp ltop = avma, av, av2;
     GEN sqrtd_, sqrtd, sqrt4d, a, b, L, Q_, Q_0, Q, P_, P, q, B_0, B_1, G_0, G_1, swap, psi, theta, lt, el, el2;
-    long n = 0, i;
+    ulong n = 0, i;
     sqrtd_ = sqrti(gel(O,1));
     sqrtd = gsqrt(gel(O,1),prec);
     sqrt4d = sqrtr(sqrtd);

@@ -7,13 +7,13 @@ int main() {
    return 0;
 }
 
-long 
-timedtest(GEN (*f)(GEN O, long prec, long flag), int i, int n)
+ulong 
+timedtest(GEN (*f)(GEN O, ulong prec, long flag), ulong i, ulong n)
 {
    pari_timer timer;
    pari_sp ltop = avma, av;
    GEN x, tmp; 
-   long j, t;
+   ulong j, t;
    tmp = powis(strtoi("10"),i);
    timer_start(&timer);
    av = avma;
@@ -29,12 +29,12 @@ timedtest(GEN (*f)(GEN O, long prec, long flag), int i, int n)
    return t;
 }
 
-long 
-testcr(int i, int n)
+ulong 
+testcr(ulong i, ulong n)
 {
    pari_sp ltop = avma, av, av2;
    GEN O, tmp, x, A, B, C, C_, y;
-   long j, count = 0, size, size2;
+   ulong j, count = 0, size, size2;
    tmp = powis(strtoi("10"),i);
    av2 = avma;
    for (j = 0; j < n; j++)
@@ -50,6 +50,7 @@ testcr(int i, int n)
       av = avma; y = gerepileupto(av,roundr(gdiv(gel(A,1),mplog2(DEFAULTPREC))));
       size2 = avma;
       B = cr(O,pci(O),y,ghalf);
+      pari_printf("%Ps\n",gel(B,2));
       size2 -= avma;
       if (size2 < size) count++;
       av = avma; 
