@@ -105,7 +105,7 @@ wnear(GEN O, GEN fprep, GEN w)
         av = avma; if (cmpii(gmael4(fprep,2,1,2,1),powii(gen_2,subii(addis(gmael(fprep,1,2),4),s))) <= 0) s = gerepileupto(av,addii(s,gen_1));
         else set_avma(av);
         tmp = powii(gen_2,s);
-        twossqrtd = sqri(mulii(sqri(tmp),gel(O,1)));
+        twossqrtd = sqrti(mulii(sqri(tmp),gel(O,1)));
         Q_1 = gmael4(fprep,2,1,2,1);
         P_1 = gmael4(fprep,2,1,2,2);
         av = avma; M = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w)),gdiv(gmael4(fprep,2,1,2,1),gmael(fprep,2,2)))));
@@ -154,7 +154,7 @@ wnear(GEN O, GEN fprep, GEN w)
     {
         av = avma; s = gerepileupto(av,addii(gmael(fprep,1,2),addii(gen_2,gen_2)));
         tmp = powii(gen_2,s);
-        twossqrtd = sqri(mulii(sqri(tmp),gel(O,1)));
+        twossqrtd = sqrti(mulii(sqri(tmp),gel(O,1)));
         Q_0 = gmael4(fprep,2,1,2,1);
         P_1 = gmael4(fprep,2,1,2,2); 
         av = avma; M = gerepileupto(av,mulii(gmael(fprep,2,2),powii(gen_2,addii(subii(gmael(fprep,2,3),w),addii(gen_2,gen_2)))));
@@ -234,7 +234,7 @@ ewnear(GEN O, GEN fprep, GEN w)
     av = avma; if (cmpii(gmael4(fprep,2,1,2,1),powii(gen_2,subii(addis(gmael(fprep,1,2),4),s))) <= 0) s = gerepileupto(av,addii(s,gen_1));
     else set_avma(av);
     tmp = powii(gen_2,s);
-    twossqrtd = sqri(mulii(sqri(tmp),gel(O,1)));
+    twossqrtd = sqrti(mulii(sqri(tmp),gel(O,1)));
     Q_1 = gmael4(fprep,2,1,2,1);
     P_1 = gmael4(fprep,2,1,2,2);
     av = avma; M = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w)),gdiv(gmael4(fprep,2,1,2,1),gmael(fprep,2,2)))));
