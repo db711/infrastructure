@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "testing.h"
+#include"utility.h"
 
 int main() {
    pari_init(1000000000,0);
-   pari_close();
    return 0;
 }
 
@@ -29,23 +29,29 @@ timedtest(GEN (*f)(GEN O, long prec, long flag), int i, int n)
    return t;
 }
 
-void 
+long 
 testcr(int i, int n)
 {
    pari_sp ltop = avma, av, av2;
    GEN O, tmp, x, A, B, C, C_, y;
-   long j;
+   long j, count = 0, size, size2;
    tmp = powis(strtoi("10"),i);
    av2 = avma;
    for (j = 0; j < n; j++)
    {
       av = avma; x = gerepileupto(av,addii(randomi(tmp),tmp));
       if (Z_issquare(x)) continue;
+      pari_printf("d = %Ps\n",x);
       O = rqoinit(x);
+      size = avma;
       A = regulatorcf(O,DEFAULTPREC,0);
+      size -= avma;
       if (cmpri(gel(A,1),strtoi("10")) < 0) continue; // in this case cr might fail
       av = avma; y = gerepileupto(av,roundr(gdiv(gel(A,1),mplog2(DEFAULTPREC))));
+      size2 = avma;
       B = cr(O,pci(O),y,ghalf);
+      size2 -= avma;
+      if (size2 < size) count++;
       av = avma; 
       C = expandcr(O,gel(B,2));
       if(cmpii(gel(O,3),gen_2))
@@ -60,4 +66,5 @@ testcr(int i, int n)
       set_avma(av2);
    }
    set_avma(ltop);
+   return count;
 }
