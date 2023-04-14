@@ -41,7 +41,6 @@ testcr(ulong i, ulong n)
    {
       av = avma; x = gerepileupto(av,addii(randomi(tmp),tmp));
       if (Z_issquare(x)) continue;
-      pari_printf("d = %Ps\n",x);
       O = rqoinit(x);
       size = avma;
       A = regulatorcf(O,DEFAULTPREC,0);
@@ -50,7 +49,6 @@ testcr(ulong i, ulong n)
       av = avma; y = gerepileupto(av,roundr(gdiv(gel(A,1),mplog2(DEFAULTPREC))));
       size2 = avma;
       B = cr(O,pci(O),y,ghalf);
-      pari_printf("%Ps\n",gel(B,2));
       size2 -= avma;
       if (size2 < size) count++;
       av = avma; 
