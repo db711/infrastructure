@@ -1,6 +1,27 @@
 #include "fp_representations.h"
 #include "utility.h"
 
+static inline GEN
+mulqidivn (GEN O, GEN qi1, GEN qi2, GEN N)
+{ // Returns [x, y] = (x + y*sqrt(d))/(s*N) = ((a + b*sqrt(d))/s * (a_ + b_*sqrt(d))/s)/N, where qi1 = [a, b] and qi2 = [a_, b_].
+    pari_sp ltop = avma, av;
+    GEN res = cgetg(3,t_VEC);
+    av = avma; gel(res,1) = gerepileupto(av,diviiexact(addii(mulii(gel(qi1,1),gel(qi2,1)),mulii(mulii(gel(qi1,2),gel(qi2,2)),gel(O,1))),mulii(gel(O,3),N)));
+    av = avma; gel(res,2) = gerepileupto(av,diviiexact(addii(mulii(gel(qi1,1),gel(qi2,2)),mulii(gel(qi1,2),gel(qi2,1))),mulii(gel(O,3),N)));
+    return gerepileupto(ltop,res);
+}
+
+static inline GEN 
+invqi(GEN qi)
+{ // Returns [a, -b], where qi = [a, b].
+    pari_sp ltop = avma;
+    GEN res;
+    res = cgetg(3,t_VEC);
+    gel(res,1) = gcopy(gel(qi,1));
+    gel(res,2) = negi(gel(qi,2));
+    return gerepileupto(ltop,res);
+}
+
 GEN
 fprepinit (GEN f, GEN p, GEN b, GEN d, GEN k)
 {
@@ -388,16 +409,18 @@ eaddxy(GEN O, GEN fprep1, GEN fprep2, GEN x, GEN y, long flag)
 }
 
 GEN
-crax(GEN O, GEN x, GEN p)
+crax(GEN O, GEN x, GEN p, GEN m)
 {
     if (typ(x) != t_INT) pari_err_TYPE("crax",x);
     if (typ(p) != t_INT) pari_err_TYPE("crax",p);
+    if (typ(m) != t_INT) pari_err_TYPE("crax",m);
     if (cmpii(x,gen_0) <= 0) pari_err_DOMAIN("crax",itostr(x),"<=",gen_0,x);
     if (cmpii(p,gen_0) <= 0) pari_err_DOMAIN("crax",itostr(p),"<=",gen_0,p);
     pari_sp ltop = avma, av, av2, av3;
     if (gcmp(powii(gen_2,p),gmax_shallow(powii(gen_2,addii(gen_2,gen_1)),gdiv(glog(x,DEFAULTPREC),mplog2(DEFAULTPREC)))) <= 0) pari_err_PREC("p"); //different error?
     set_avma(ltop);
-    GEN bex, s, fprep, fprep_, list, el, el2, N, eli, res;
+    GEN bex, s, fprep, fprep_, list, el, el2, el2_, N, eli, res, beta, beta_;
+    GEN h_1, h_2, h_3, b, r_1, r_2, r_3, s_1, s_2, spl, x_, y_, N_, Nc, tmp;
     res = cgetg(3,t_VEC);
     ulong i, l;
     av3 = avma;
@@ -410,6 +433,8 @@ crax(GEN O, GEN x, GEN p)
     el = cgetg(3,t_VEC);
     gel(el,1) = mkvec2copy(gmael(fprep,2,1),gmael(fprep,2,2));
     gel(el,2) = gen_1;
+    beta = mkvec2(gel(O,3),gen_0);
+    Nc = gen_1;
     for (i = 2; i < l; i++)
     {
         N = diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3));
@@ -432,7 +457,41 @@ crax(GEN O, GEN x, GEN p)
             gel(el2,1) = mkvec2copy(gmael(fprep,2,1),gmael(fprep,2,2));
         }
         gel(el2,2) = gcopy(N);
-        gerepileall(av2,5,&el2,&s,&fprep,&el,&list);
+        if (cmpii(m,gen_0))
+        {
+            if(i > 2)
+            {
+                beta_ = beta;
+                N_ = diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3));
+                if (i < l-1 && cmpii(gcdii(N_,m),gen_1) > 0)
+                {
+                    h_1 = N_;
+                    av = avma; tmp = gerepileupto(av,mulii(gmael(O,2,2),subii(gel(O,3),gen_1)));
+                    av = avma; b = gerepileupto(av,modii(diviiexact(subii(gmael5(fprep,1,2,1,2,2),tmp),gel(O,3)),h_1));
+                    av = avma; h_3 = gerepileupto(av,diviiexact(subii(sqri(addii(mulii(gel(O,3),b),tmp)),gel(O,1)),mulii(h_1,sqri(gel(O,3)))));
+                    av = avma; h_2 = gerepileupto(av,addii(diviiexact(mulii(gen_2,addii(mulii(gel(O,3),b),tmp)),gel(O,3)),addii(h_1,h_3)));
+                    spl = split(h_1,m); r_1 = gel(spl,1); s_1 = gel(spl,2);
+                    spl = split(h_2,s_1); r_2 = gel(spl,1); s_2 = gel(spl,2);
+                    spl = split(h_3,s_2); r_3 = gel(spl,1); // s_3 not needed
+                    x_ = lift(chinese1_coprime_Z(mkvec2(mkintmod(gen_1,mulii(r_1,r_2)),mkintmod(gen_0,r_3))));
+                    y_ = lift(chinese1_coprime_Z(mkvec2(mkintmod(gen_1,mulii(r_2,r_3)),mkintmod(gen_0,r_1))));
+                    beta = cgetg(3,t_VEC);
+                    av = avma; gel(beta,1) = gerepileupto(av,addii(mulii(gel(O,3),addii(mulii(x_,h_1),mulii(b,y_))),mulii(y_,tmp)));
+                    gel(beta,2) = gcopy(y_);
+                }
+                else
+                {
+                    beta = mkvec2(mulii(N_,gel(O,3)),gen_0);
+                } 
+                el2_ = cgetg(3,t_VEC);
+                av = avma; gel(el2_,1) = gerepileupto(av,mulqidivn(O,mulqidivn(O,invqi(beta),gel(el2,1),gen_1),mulqidivn(O,beta_,beta_,gen_1),mulii(N_,sqri(N))));
+                gel(el2_,2) = Nc;
+                av = avma; Nc = gerepileupto(av,diviiexact(subii(sqri(gel(beta,1)),mulii(sqri(gel(beta,2)),gel(O,1))),mulii(sqri(gel(O,3)),N_)));
+                el2 = el2_;
+            }
+            gerepileall(av2,7,&el2,&s,&fprep,&el,&list,&beta,&Nc);
+        }
+        else gerepileall(av2,5,&el2,&s,&fprep,&el,&list);
         gel(list,i-1) = el;
         el = el2;
     }
@@ -508,7 +567,7 @@ find(GEN O, GEN fprep, GEN c)
 }
 
 GEN 
-cr(GEN O, GEN b, GEN y, GEN q)
+cr(GEN O, GEN b, GEN y, GEN q, GEN m)
 {
     if (typ(y) != t_FRAC && typ(y) != t_INT) pari_err_TYPE("cr",y);
     if (typ(q) != t_FRAC && typ(q) != t_INT) pari_err_TYPE("cr",q);
@@ -521,7 +580,7 @@ cr(GEN O, GEN b, GEN y, GEN q)
     //av = avma; c = gerepileupto(av,addii(addii(gen_3,gen_3),gceil(gmul(gen_3,q)))); //this is an upper bound on the steps performed by find
     av = avma; x = gerepileupto(av,subii(gfloor(gsub(y,q)),gen_1));
     av = avma; p = gerepileupto(av,addsi(4.48543+sigbits(x),gmax_shallow(strtoi("4"),stoi(sigbits(stoi(sigbits(x)+1))+1)))); //generous upper bound
-    fprep = crax(O,x,p);
+    fprep = crax(O,x,p,m);
     fprep_ = find(O,gel(fprep,1),b);
     res_ = cgetg(3,t_VEC);
     gel(res_,1) = gel(fprep_,2);

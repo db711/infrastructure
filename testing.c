@@ -48,7 +48,7 @@ testcr(ulong i, ulong n)
       if (cmpri(gel(A,1),strtoi("10")) < 0) continue; // in this case cr might fail
       av = avma; y = gerepileupto(av,roundr(gdiv(gel(A,1),mplog2(DEFAULTPREC))));
       size2 = avma;
-      B = cr(O,pci(O),y,ghalf);
+      B = cr(O,pci(O),y,ghalf,gen_0);
       size2 -= avma;
       if (size2 < size) count++;
       av = avma; 
