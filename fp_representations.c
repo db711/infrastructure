@@ -1,6 +1,30 @@
 #include "fp_representations.h"
 #include "utility.h"
 
+static inline GEN 
+split(GEN h, GEN m)
+{ // Split integer m into [r, s] with m = r*s such that gcd(r, s) = 1 and any prime dividing s also divides h.
+    if (typ(h) != t_INT) pari_err_TYPE("split",h);
+    if (typ(m) != t_INT) pari_err_TYPE("split",m);
+    if (cmpii(m,gen_1) < 0) pari_err_DOMAIN("split",itostr(m),"<",gen_1,m);
+    GEN g, r, s, res;
+    pari_sp ltop = avma;
+    g = gcdii(m,h);
+    r = diviiexact(m,g);
+    s = g;
+    while (cmpii(g,gen_1) > 0)
+    {
+        g = gcdii(r,g);
+        r = diviiexact(r,g);
+        s = mulii(g,s);
+        gerepileall(ltop,3,&g,&r,&s);
+    }
+    res = cgetg(3,t_VEC);
+    gel(res,1) = gcopy(r);
+    gel(res,2) = gcopy(s);
+    return gerepileupto(ltop,res);
+}
+
 static inline GEN
 mulqidivn (GEN O, GEN qi1, GEN qi2, GEN N)
 { // Returns [x, y] = (x + y*sqrt(d))/(s*N) = ((a + b*sqrt(d))/s * (a_ + b_*sqrt(d))/s)/N, where qi1 = [a, b] and qi2 = [a_, b_].
