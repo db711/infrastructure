@@ -1,14 +1,5 @@
 #include "compact_representations.h"
-
-static inline GEN
-mulqifrac (GEN O, GEN qi1, GEN qi2)
-{ // Returns [x, y] = (x + y*sqrt(d))/s = (a + b*sqrt(d))/s * (a_ + b_*sqrt(d))/s, where qi1 = [a, b] and qi2 = [a_, b_].
-    pari_sp ltop = avma, av;
-    GEN res = cgetg(3,t_VEC);
-    av = avma; gel(res,1) = gerepileupto(av,gdiv(gadd(gmul(gel(qi1,1),gel(qi2,1)),gmul(gmul(gel(qi1,2),gel(qi2,2)),gel(O,1))),gel(O,3)));
-    av = avma; gel(res,2) = gerepileupto(av,gdiv(gadd(gmul(gel(qi1,1),gel(qi2,2)),gmul(gel(qi1,2),gel(qi2,1))),gel(O,3)));
-    return gerepileupto(ltop,res);
-}
+#include "utility.h"
 
 GEN expandcr(GEN O, GEN cr)
 {
@@ -23,8 +14,35 @@ GEN expandcr(GEN O, GEN cr)
         fac = cgetg(3,t_VEC);
         av = avma; gel(fac,1) = gerepileupto(av,gdiv(gmael3(cr,i,1,1),gmael(cr,i+1,2)));
         av = avma; gel(fac,2) = gerepileupto(av,gdiv(gmael3(cr,i,1,2),gmael(cr,i+1,2)));
-        for (j = 1; j < l-i; j++) fac = gerepileupto(av2,mulqifrac(O,fac,fac));
-        theta = gerepileupto(ltop,mulqifrac(O,theta,fac));
+        for (j = 1; j < l-i; j++) fac = gerepileupto(av2,mulqig(O,fac,fac));
+        theta = gerepileupto(ltop,mulqig(O,theta,fac));
     }
     return gerepileupto(ltop,theta);
+}
+
+GEN 
+crmodm (GEN O, GEN cr, GEN m)
+{
+    pari_sp ltop = avma, av;
+    GEN D, G, res, tmp;
+    ulong l = lg(cr), i; 
+    if (!cmpii(gel(O,3),gen_2)) pari_err_IMPL("crmodm");
+    av = avma;
+    D = mkintmod(modii(gmael(cr,2,2),m),m);
+    G = cgetg(3,t_VEC);
+    gel(G,1) = mkintmod(modii(gmael3(cr,1,1,1),m),m);
+    gel(G,2) = mkintmod(modii(gmael3(cr,1,1,2),m),m);
+    for (i = 2; i < l-2; i++)
+    {
+        D = gmul(gmael(cr,i+1,2),gsqr(D));
+        G = mulqig(O,gmael(cr,i,1),mulqig(O,G,G));
+        gerepileall(av,2,&D,&G);
+    }
+    D = gsqr(D);
+    G = mulqig(O,G,G);
+    tmp = mulqig(O,G,mulqidivn(O,gmael(cr,l-1,1),gmael(cr,l-2,1),gmael(cr,l-1,2)));
+    res = cgetg(3,t_VEC);
+    gel(res,1) = gdiv(gel(tmp,1),D);
+    gel(res,2) = gdiv(gel(tmp,2),D);
+    return gerepileupto(ltop,res);
 }
