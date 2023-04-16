@@ -582,7 +582,7 @@ cr(GEN O, GEN b, GEN y, GEN q, GEN m)
     //GEN c, gen_3 = addii(gen_2,gen_1);
     //av = avma; c = gerepileupto(av,addii(addii(gen_3,gen_3),gceil(gmul(gen_3,q)))); //this is an upper bound on the steps performed by find
     av = avma; x = gerepileupto(av,subii(gfloor(gsub(y,q)),gen_1));
-    av = avma; p = gerepileupto(av,addsi(4.48543+sigbits(x),gmax_shallow(strtoi("4"),stoi(sigbits(stoi(sigbits(x)+1))+1)))); //generous upper bound
+    av = avma; p = gerepileupto(av,addsi(4.48543+sigbits(x),gmax_shallow(stoi(4),stoi(sigbits(stoi(sigbits(x)+1))+1)))); //generous upper bound
     fprep = crax(O,x,p,m);
     fprep_ = find(O,gel(fprep,1),b);
     res_ = cgetg(3,t_VEC);

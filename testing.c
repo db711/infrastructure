@@ -14,7 +14,7 @@ timedtest(GEN (*f)(GEN O, ulong prec, long flag), ulong i, ulong n)
    pari_sp ltop = avma, av;
    GEN x, tmp; 
    ulong j, t;
-   tmp = powis(strtoi("10"),i);
+   tmp = powis(stoi(10),i);
    timer_start(&timer);
    av = avma;
    for (j = 0; j < n; j++)
@@ -35,7 +35,7 @@ testcr(ulong i, ulong n)
    pari_sp ltop = avma, av, av2;
    GEN O, tmp, x, A, B, C, C_, y;
    ulong j, count = 0, size, size2;
-   tmp = powis(strtoi("10"),i);
+   tmp = powis(stoi(10),i);
    av2 = avma;
    for (j = 0; j < n; j++)
    {
@@ -45,7 +45,7 @@ testcr(ulong i, ulong n)
       size = avma;
       A = regulatorcf(O,DEFAULTPREC,0);
       size -= avma;
-      if (cmpri(gel(A,1),strtoi("10")) < 0) continue; // in this case cr might fail
+      if (cmpri(gel(A,1),stoi(10)) < 0) continue; // in this case cr might fail
       av = avma; y = gerepileupto(av,roundr(gdiv(gel(A,1),mplog2(DEFAULTPREC))));
       size2 = avma;
       B = cr(O,pci(O),y,ghalf,gen_0);
