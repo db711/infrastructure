@@ -83,29 +83,29 @@ crmodm (GEN O, GEN cr, GEN m)
     return gerepileupto(ltop,res);
 }
 
-GEN 
-crpval(GEN O, GEN cr, GEN p, ulong c)
+ulong
+crpval(GEN O, GEN cr, ulong p, ulong c)
 {
-    if (typ(p) != t_INT) pari_err_TYPE("crpval",p);
     if (c != 1 &&  c != 2) pari_err_DOMAIN("crpval","c","",NULL,cr);
     pari_sp ltop = avma, av;
-    GEN k = stoi(16), k_ = gen_0, tmp, m; //starting value of 16 good?
-    av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powii(p,k)),c));
+    ulong k = 16, k_ = 0, m; //starting value of 16 good?
+    GEN tmp;
+    av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powuu(p,k)),c));
     while (!cmpii(tmp,gen_0))
     {
-        av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powii(p,k)),c));
+        av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powuu(p,k)),c));
         k_ = k;
-        k = mulii(gen_2,k);
-        gerepileall(ltop,2,&k,&k_);
+        k *= 2;
+        set_avma(ltop);
     }
     while (1) // v_p is now in [k_,k); do a binary search
     {
-        m = addii(k_,divii(subii(k,k_),gen_2));
-        av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powii(p,m)),c));
+        m = k_ + (k-k_)/2;
+        av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powuu(p,m)),c));
         if (!cmpii(tmp,gen_0)) k_ = m;
         else k = m;
-        gerepileall(ltop,2,&k,&k_);
-        if (!cmpii(addii(k_,gen_1),k)) break;
+        set_avma(ltop);
+        if (k_+1 == k) break;
     }
-    return gerepileupto(ltop,k_);
+    set_avma(ltop); return k_;
 }
