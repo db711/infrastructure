@@ -113,13 +113,12 @@ crpval(GEN O, GEN cr, ulong p, ulong c)
 GEN 
 crsmoothpart(GEN O, GEN cr, ulong B, ulong c)
 {
-    if (c != 1 &&  c != 2) pari_err_DOMAIN("crpval","c","",NULL,cr);
     pari_sp ltop = avma;
     GEN res = gen_1;
     ulong p = 2;
     forprime_t S;
     u_forprime_init(&S,2,B);
-    while (p = u_forprime_next(&S))
+    while ((p = u_forprime_next(&S)))
     {
         res = gerepileupto(ltop,mulii(res,powuu(p,crpval(O,cr,p,c))));
     }
@@ -129,15 +128,14 @@ crsmoothpart(GEN O, GEN cr, ulong B, ulong c)
 GEN
 crsmoothpart_alt(GEN O, GEN b, GEN y, GEN q, ulong B, ulong c)
 {
-    if (c != 1 &&  c != 2) pari_err_DOMAIN("crpval","c","",NULL,cr);
     pari_sp ltop = avma;
-    GEN res = gen_1, tmp;
+    GEN res = gen_1;
     ulong p = 2;
     forprime_t S;
     u_forprime_init(&S,2,B);
-    while (p = u_forprime_next(&S))
+    while ((p = u_forprime_next(&S)))
     {
-        res = gerepileupto(ltop,mulii(res,powuu(p,crpval(O,cr(O,b,y,q,p),p,c))));
+        res = gerepileupto(ltop,mulii(res,powuu(p,crpval(O,gel(cr(O,b,y,q,stoi(p)),2),p,c))));
     }
     return gerepileupto(ltop,res);
 }
