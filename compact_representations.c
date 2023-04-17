@@ -1,7 +1,8 @@
 #include "compact_representations.h"
 #include "utility.h"
 
-GEN expandcr(GEN O, GEN cr)
+GEN 
+expandcr(GEN O, GEN cr)
 {
     pari_sp ltop = avma, av, av2;
     GEN theta, fac;
@@ -23,6 +24,7 @@ GEN expandcr(GEN O, GEN cr)
 GEN 
 crmodm (GEN O, GEN cr, GEN m)
 {
+    if (typ(m) != t_INT) pari_err_TYPE("crmodm",m);
     pari_sp ltop = avma, av;
     GEN D, G, res, tmp;
     ulong l = lg(cr), i, sw = 0; 
@@ -79,4 +81,31 @@ crmodm (GEN O, GEN cr, GEN m)
         av = avma; gel(res,2) = gerepileupto(av,modii(mulii(gel(tmp,2),ginvmod(lift(D),m)),m));
     }
     return gerepileupto(ltop,res);
+}
+
+GEN 
+crpval(GEN O, GEN cr, GEN p, ulong c)
+{
+    if (typ(p) != t_INT) pari_err_TYPE("crpval",p);
+    if (c != 1 &&  c != 2) pari_err_DOMAIN("crpval","c","",NULL,cr);
+    pari_sp ltop = avma, av;
+    GEN k = stoi(16), k_ = gen_0, tmp, m; //starting value of 16 good?
+    av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powii(p,k)),c));
+    while (!cmpii(tmp,gen_0))
+    {
+        av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powii(p,k)),c));
+        k_ = k;
+        k = mulii(gen_2,k);
+        gerepileall(ltop,2,&k,&k_);
+    }
+    while (1) // v_p is now in [k_,k); do a binary search
+    {
+        m = addii(k_,divii(subii(k,k_),gen_2));
+        av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powii(p,m)),c));
+        if (!cmpii(tmp,gen_0)) k_ = m;
+        else k = m;
+        gerepileall(ltop,2,&k,&k_);
+        if (!cmpii(addii(k_,gen_1),k)) break;
+    }
+    return gerepileupto(ltop,k_);
 }
