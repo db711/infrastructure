@@ -87,13 +87,13 @@ ulong
 crpval(GEN O, GEN cr, ulong p, ulong c)
 {
     if (c != 1 &&  c != 2) pari_err_DOMAIN("crpval","c","",NULL,cr);
-    pari_sp ltop = avma, av;
+    pari_sp ltop = avma;
     ulong k = 16, k_ = 0, m; //starting value of 16 good?
     GEN tmp;
-    av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powuu(p,k)),c));
+    tmp = gel(crmodm(O,cr,powuu(p,k)),c);
     while (!cmpii(tmp,gen_0))
     {
-        av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powuu(p,k)),c));
+        tmp = gel(crmodm(O,cr,powuu(p,k)),c);
         k_ = k;
         k *= 2;
         set_avma(ltop);
@@ -101,11 +101,43 @@ crpval(GEN O, GEN cr, ulong p, ulong c)
     while (1) // v_p is now in [k_,k); do a binary search
     {
         m = k_ + (k-k_)/2;
-        av = avma; tmp = gerepileupto(av,gel(crmodm(O,cr,powuu(p,m)),c));
+        tmp = gel(crmodm(O,cr,powuu(p,m)),c);
         if (!cmpii(tmp,gen_0)) k_ = m;
         else k = m;
         set_avma(ltop);
         if (k_+1 == k) break;
     }
-    set_avma(ltop); return k_;
+    return gc_long(ltop,k_);
+}
+
+GEN 
+crsmoothpart(GEN O, GEN cr, ulong B, ulong c)
+{
+    if (c != 1 &&  c != 2) pari_err_DOMAIN("crpval","c","",NULL,cr);
+    pari_sp ltop = avma;
+    GEN res = gen_1;
+    ulong p = 2;
+    forprime_t S;
+    u_forprime_init(&S,2,B);
+    while (p = u_forprime_next(&S))
+    {
+        res = gerepileupto(ltop,mulii(res,powuu(p,crpval(O,cr,p,c))));
+    }
+    return gerepileupto(ltop,res);
+}
+
+GEN
+crsmoothpart_alt(GEN O, GEN b, GEN y, GEN q, ulong B, ulong c)
+{
+    if (c != 1 &&  c != 2) pari_err_DOMAIN("crpval","c","",NULL,cr);
+    pari_sp ltop = avma;
+    GEN res = gen_1, tmp;
+    ulong p = 2;
+    forprime_t S;
+    u_forprime_init(&S,2,B);
+    while (p = u_forprime_next(&S))
+    {
+        res = gerepileupto(ltop,mulii(res,powuu(p,crpval(O,cr(O,b,y,q,p),p,c))));
+    }
+    return gerepileupto(ltop,res);
 }
