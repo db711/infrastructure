@@ -75,7 +75,10 @@ testcrsmoothpart(ulong i, ulong n, ulong B, ulong c, ulong sw)
    ulong j, p = 2;
    forprime_t S;
    u_forprime_init(&S,2,B);
-   while ((p = u_forprime_next(&S))) prod = gerepileupto(ltop,mulis(prod,p));
+   if (sw == 1)
+   {
+      while ((p = u_forprime_next(&S))) prod = gerepileupto(ltop,mulis(prod,p));
+   }
    tmp = powis(stoi(10),i);
    timer_start(&timer);
    av2 = avma;
@@ -91,7 +94,8 @@ testcrsmoothpart(ulong i, ulong n, ulong B, ulong c, ulong sw)
       if (cmpri(R,stoi(10)) < 0) continue; // in this case cr might fail
       av = avma; y = gerepileupto(av,roundr(gdiv(R,mplog2(DEFAULTPREC))));
       if (sw == 1) crsmoothpart(O,gel(cr(O,b,y,ghalf,prod),2),B,c);
-      else crsmoothpart_alt(O,b,y,ghalf,B,c);
+      else if (sw == 2) crsmoothpart2(O,b,y,ghalf,B,c);
+      else crsmoothpart_alt(O,gel(cr(O,b,y,ghalf,gen_0),2),B,c);
       set_avma(av2);
    }
    return gc_long(ltop,timer_delay(&timer));

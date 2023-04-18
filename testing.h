@@ -28,9 +28,9 @@ ulong testcrsmoothpart(ulong i, ulong n, ulong B, ulong c, ulong sw);
 /* Test compact representation smooth part.
  * Input:   Integers i and n as well as B;
             c = {1, 2};
-            sw = {1, 2}.
+            sw = {1, 2, 3}.
  * Output:  The time it took in ms.
- * The function tests either crsmoothpart or crsmoothpartalt (depending on wheter sw = 1 or sw = 2)
+ * The function tests either crsmoothpart or crsmoothpart2 or crsmoothpart_alt (depending on wheter sw = 1 or sw = 2 or sw = 3)
    by computing the B-smooth part of the c'th coordinate of of a compact representation of the fundamental unit (x + y*sqrt(d))/s,
    which is randomly chose in [10^i, 10^(i+1)); this is repeated n times.
  * Assumes that the RNG of PARI is already set.
