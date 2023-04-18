@@ -26,7 +26,8 @@ crmodm (GEN O, GEN cr, GEN m)
 {
     if (typ(m) != t_INT) pari_err_TYPE("crmodm",m);
     pari_sp ltop = avma, av;
-    GEN D, G, res, tmp;
+    GEN D, G, res, tmp, m_;
+    m_ = mulii(gen_2,m);
     ulong l = lg(cr), i, sw = 0; 
     av = avma;
     D = mkintmod(modii(gmael(cr,2,2),m),m);
@@ -39,8 +40,8 @@ crmodm (GEN O, GEN cr, GEN m)
     }
     else
     {
-        gel(G,1) = modii(gmael3(cr,1,1,1),m);
-        gel(G,2) = modii(gmael3(cr,1,1,2),m);
+        gel(G,1) = modii(gmael3(cr,1,1,1),m_);
+        gel(G,2) = modii(gmael3(cr,1,1,2),m_);
     }
     for (i = 2; i < l-2; i++)
     {
@@ -49,12 +50,12 @@ crmodm (GEN O, GEN cr, GEN m)
         else
         {
             tmp = mulqig(O,G,G);
-            gel(tmp,1) = modii(gel(tmp,1),m);
-            gel(tmp,2) = modii(gel(tmp,2),m);
+            gel(tmp,1) = modii(gel(tmp,1),m_);
+            gel(tmp,2) = modii(gel(tmp,2),m_);
             tmp = mulqig(O,tmp,gmael(cr,i,1));
             G = cgetg(3,t_VEC);
-            gel(G,1) = modii(gel(tmp,1),m);
-            gel(G,2) = modii(gel(tmp,2),m);
+            gel(G,1) = modii(gel(tmp,1),m_);
+            gel(G,2) = modii(gel(tmp,2),m_);
         }
         gerepileall(av,2,&D,&G);
     }
@@ -64,8 +65,8 @@ crmodm (GEN O, GEN cr, GEN m)
     {
         tmp = mulqig(O,G,G);
         G = cgetg(3,t_VEC);
-        gel(G,1) = modii(gel(tmp,1),m);
-        gel(G,2) = modii(gel(tmp,2),m);
+        gel(G,1) = modii(gel(tmp,1),m_);
+        gel(G,2) = modii(gel(tmp,2),m_);
     }
     tmp = mulqig(O,G,mulqidivn(O,gmael(cr,l-1,1),gmael(cr,l-2,1),gmael(cr,l-1,2)));
     if (sw) 
