@@ -118,6 +118,44 @@ rqfumodm_fixed(GEN bnf, GEN m)
     return res;
 }
 
+ulong
+rqfupval(GEN bnf, ulong p, ulong c)
+{
+    pari_sp ltop = avma;
+    ulong k = 16, k_ = 0, m; //starting value of 16 good?
+    GEN tmp;
+    tmp = lift(gel(rqfumodm_fixed(bnf,powuu(p,k)),c));
+    while (!cmpii(tmp,gen_0))
+    {
+        tmp = lift(gel(rqfumodm_fixed(bnf,powuu(p,k)),c));
+        k_ = k;
+        k *= 2;
+        set_avma(ltop);
+    }
+    while (1) // v_p is now in [k_,k); do a binary search
+    {
+        m = k_ + (k-k_)/2;
+        tmp = lift(gel(rqfumodm_fixed(bnf,powuu(p,k)),c));
+        if (!cmpii(tmp,gen_0)) k_ = m;
+        else k = m;
+        set_avma(ltop);
+        if (k_+1 == k) break;
+    }
+    return gc_long(ltop,k_);
+}
+
+GEN
+rqfusmoothpart(GEN bnf, ulong B, ulong c)
+{
+    pari_sp ltop = avma;
+    GEN res = gen_1;
+    ulong p = 2;
+    forprime_t S;
+    u_forprime_init(&S,2,B);
+    while ((p = u_forprime_next(&S))) res = gerepileupto(ltop,mulii(res,powuu(p,rqfupval(bnf,p,c))));
+    return gerepileupto(ltop,res);
+}
+
 GEN
 mulqidivn (GEN O, GEN qi1, GEN qi2, GEN N)
 { // Returns [x, y] = (x + y*sqrt(d))/(s*N) = ((a + b*sqrt(d))/s * (a_ + b_*sqrt(d))/s)/N, where qi1 = [a, b] and qi2 = [a_, b_].
