@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "testing.h"
-#include"utility.h"
 
-int main() {
-   pari_init(1000000000,0);
+int main() 
+{
+   pari_init(1048576000,0); //1GB
    pari_close();
    return 0;
 }
@@ -71,7 +71,7 @@ testcrsmoothpart(ulong i, ulong n, ulong B, ulong c, ulong sw)
 {
    pari_timer timer;
    pari_sp ltop = avma, av, av2;
-   GEN O, R, x, tmp, y, prod = gen_1, b;
+   GEN O, R, x, tmp, y, prod = gen_1, b, P, K;
    ulong j, p = 2;
    forprime_t S;
    u_forprime_init(&S,2,B);
@@ -86,17 +86,26 @@ testcrsmoothpart(ulong i, ulong n, ulong B, ulong c, ulong sw)
    {
       av = avma; x = gerepileupto(av,addii(randomi(tmp),tmp));
       if (Z_issquare(x)) continue;
-      O = rqoinit(x);
-      b = pci(O);
-      if (Mod4(x) != 1) x = mulsi(4,x);
-      if (i >= 10) R = gel(quadclassunit0(x,0,NULL,DEFAULTPREC),4);
-      else R = quadregulator(x,DEFAULTPREC);
-      if (cmpri(R,stoi(10)) < 0) continue; // in this case cr might fail
-      av = avma; y = gerepileupto(av,roundr(gdiv(R,mplog2(DEFAULTPREC))));
-      if (sw == 1) crsmoothpart(O,gel(cr(O,b,y,ghalf,prod),2),B,c);
-      else if (sw == 2) crsmoothpart2(O,b,y,ghalf,B,c);
-      else crsmoothpart_alt(O,gel(cr(O,b,y,ghalf,gen_0),2),B,c);
-      set_avma(av2);
+      if (sw == 4)
+      {
+         P = mkpoln(3,gen_1,gen_2,negi(x));
+         K = bnfinit0(P,1,NULL,DEFAULTPREC);
+         rqfusmoothpart(K,B,2);
+      }
+      else
+      {
+         O = rqoinit(x);
+         b = pci(O);
+         if (Mod4(x) != 1) x = mulsi(4,x);
+         if (i >= 10) R = gel(quadclassunit0(x,0,NULL,DEFAULTPREC),4);
+         else R = quadregulator(x,DEFAULTPREC);
+         if (cmpri(R,stoi(10)) < 0) continue; // in this case cr might fail
+         av = avma; y = gerepileupto(av,roundr(gdiv(R,mplog2(DEFAULTPREC))));
+         if (sw == 1) crsmoothpart(O,gel(cr(O,b,y,ghalf,prod),2),B,c);
+         else if (sw == 2) crsmoothpart2(O,b,y,ghalf,B,c);
+         else crsmoothpart_alt(O,gel(cr(O,b,y,ghalf,gen_0),2),B,c);
+         set_avma(av2);
+      }
    }
    return gc_long(ltop,timer_delay(&timer));
 }

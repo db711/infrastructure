@@ -4,6 +4,7 @@
 #include "real_quadratic_orders.h"
 #include "fp_representations.h"
 #include "compact_representations.h"
+#include "utility.h"
 
 ulong timedtest(GEN (*f)(GEN O, ulong prec, long flag), ulong i, ulong n);
 /* Timed tests.
