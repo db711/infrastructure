@@ -8,21 +8,21 @@ ulong sigbits(GEN x);
  * Output:  The number of significant bits in x, i.e floor(log_2(x)) + 1.
 */
 
-GEN rqfumodm(GEN bnf, GEN m);
+GEN rqfumodm(GEN bnf, GEN m); // This function is very bad.
 /* Real quadratic fundamental unit mod m.
  * Input:   bnf (as output by bnfinit0);
             integer m.
  * Output:  [x, y], the coefficients of the fundamental unit modulo some m' | m.
 */
 
-GEN rqfumodm_fixed(GEN bnf, GEN m);
+GEN rqfumodm_fixed(GEN bnf, GEN m); // This function is very bad.
 /* Real quadratic fundamental unit mod m fixed.
  * Input:   bnf (as output by bnfinit0);
             integer m.
  * Output:  [x, y], the coefficients of the fundamental unit modulo m.
 */
 
-ulong rqfupval(GEN bnf, ulong p, ulong c);
+ulong rqfupval(GEN bnf, ulong p, ulong c); // This function is very bad.
 /* Real quadratic fundamental unit p-adic valuation.
  * Input:  bnf (as output by bnfinit0);
            prime number p;
@@ -30,7 +30,7 @@ ulong rqfupval(GEN bnf, ulong p, ulong c);
  * Output: Integer n, the p-adic valuation of the c'th coordinate of the fundamental unit.
 */
 
-GEN rqfusmoothpart(GEN bnf, ulong B, ulong c);
+GEN rqfusmoothpart(GEN bnf, ulong B, ulong c); // This function is very bad.
 /* Real quadratic fundamental unit smooth part.
  * Input:   bnf (as output by bnfinit0);
             integer B;
