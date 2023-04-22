@@ -566,8 +566,8 @@ find(GEN O, GEN fprep, GEN c)
         gerepileall(av2,8,&P_0,&P_1,&Q_0,&Q_1,&B_0,&B_1,&G_0,&G_1);
     }
     tmp = powii(gen_2,s);
-    gen_3 = addii(gen_2,gen_1);
-    av = avma; T = gerepileupto(av,addii(mulii(tmp,G_1),mulii(B_1,gfloor(gmul(tmp,gsqrt(gel(O,1),DEFAULTPREC)))))); //should throw error if precision is too low
+    gen_3 = addii(gen_2,gen_1); 
+    av = avma; T = gerepileupto(av,addii(mulii(tmp,G_1),mulii(B_1,sqrti(mulii(powii(tmp,gen_2),gel(O,1)))))); 
     av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,subii(addii(gmael(fprep,1,2),gen_3),s)),gdiv(T,gmael4(fprep,2,1,2,1)))));
     av = avma; t = gerepileupto(av,subsi(sigbits(e)+sigbits(gmael(fprep,2,2))-6,mulii(gen_2,gmael(fprep,1,2))));
     tmp = mulii(e,gmael(fprep,2,2)); tmp2 = powii(gen_2,addii(addis(t,4),mulii(gen_2,gmael(fprep,1,2))));
