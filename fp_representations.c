@@ -95,7 +95,7 @@ numult (GEN O, GEN fprep1, GEN fprep2, long flag)
         else set_avma(av);
     }
     else s = gen_0;
-    av = avma; T = gerepileupto(av,addii(mulii(powii(gen_2,s),gmael(b,2,1)),mulii(gmael(b,2,2),gfloor(gmul(powii(gen_2,s),gsqrt(gel(O,1),DEFAULTPREC)))))); //should throw error if precision is too low
+    av = avma; T = gerepileupto(av,addii(mulii(powii(gen_2,s),gmael(b,2,1)),mulii(gmael(b,2,2),sqrti(mulii(powii(gen_2,mulii(gen_2,s)),gel(O,1)))))); 
     res = cgetg(3,t_VEC);
     if (gmael(fprep1,1,1) == NULL || gmael(fprep2,1,1) == NULL) 
     {
@@ -471,6 +471,27 @@ crax(GEN O, GEN x, GEN p, GEN m)
                     h_1 = N_;
                     av = avma; tmp = gerepileupto(av,mulii(gmael(O,2,2),subii(gel(O,3),gen_1)));
                     av = avma; b = gerepileupto(av,modii(diviiexact(subii(gmael5(fprep,1,2,1,2,2),tmp),gel(O,3)),h_1));
+                    // Failed experiment
+                    /*GEN q, q_, Q, P, a;
+                    pari_sp av4;
+                    GEN sqrtd_ = sqrti(gel(O,1));
+                    av4 = avma;
+                    Q = gmael5(fprep,1,2,1,2,1);
+                    P = gmael5(fprep,1,2,1,2,2);
+                    beta = mkvec2(gel(O,3),gen_0);
+                    do 
+                    {
+                        a = diviiexact(Q,gel(O,3));
+                        av = avma; b = gerepileupto(av,modii(diviiexact(subii(P,tmp),gel(O,3)),a));
+                        q = divii(addii(P,sqrtd_),Q);
+                        q_ = divii(addii(modii(P,Q),sqrtd_),Q);
+                        P = subii(mulii(q,Q),P);
+                        Q = diviiexact(subii(gel(O,1),sqri(P)),Q);
+                        b = subii(subii(mulii(q_,a),b),tmp);
+                        beta = mulqig(O,mkvec2(addii(mulii(gel(O,3),b),tmp),gen_m1),beta);
+                        pari_printf("beta = %Ps, c = (%Ps, %Ps)\n",beta,Q,P);
+                        gerepileall(av4,3,&Q,&P,&beta);
+                    } while(cmpii(gcdii(diviiexact(Q,gel(O,3)),m),gen_1) > 0);*/
                     av = avma; h_3 = gerepileupto(av,diviiexact(subii(sqri(addii(mulii(gel(O,3),b),tmp)),gel(O,1)),mulii(h_1,sqri(gel(O,3)))));
                     av = avma; h_2 = gerepileupto(av,addii(diviiexact(mulii(gen_2,addii(mulii(gel(O,3),b),tmp)),gel(O,3)),addii(h_1,h_3)));
                     spl = split(h_1,m); r_1 = gel(spl,1); s_1 = gel(spl,2);
