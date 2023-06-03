@@ -81,12 +81,19 @@ GEN crsmoothpart2(GEN O, GEN b, GEN y, GEN q, ulong B, ulong c); // O(logR*B*max
 GEN crsmoothpart_alt(GEN O, GEN cr, ulong B, ulong c);
 /* Compact rerpresentation smooth part.
  * Input:   Real quadratic order O (as output by rqoinit);
-            a compact representation [[m_1, n_1], L_1], ..., [[m_l, n_l], L_l], [[m_{l+1}, n_{l+1}], L_{l+1}]] (as output for example by cr),
+            a compact representation [[m_1, n_1], L_1], ..., [[m_l, n_l], L_l], [[m_{l+1}, n_{l+1}], L_{l+1}]] (as output for example by cr);
             integer B;
             c = {1, 2}.
  * Output:  Integer n, the B-smooth part of the c'th coordinate of [x, y] = (x + y*sqrt(d))/s = theta
                 = lambda_{l+1} * \prod_{i=0}^l (lambda_i/L_{i+1})^{2^(l-i)}, where lambda_i = (m_i + n_i*sqrtd(d))/s;
             that is the c'th coordinate can be written as n*r, where r is only divisible by primes p > B.
+*/
+
+long crnorm_sign(GEN O, GEN cr);
+/* Compact representation norm sign.
+ * Input:   Real quadratic order O (as output by rqoinit);
+            compact representation cr;
+* Output:   Sign of the norm of cr: either -1 or +1.
 */
 
 #endif

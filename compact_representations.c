@@ -223,3 +223,10 @@ crsmoothpart_alt(GEN O, GEN cr, ulong B, ulong c)
     while ((p = u_forprime_next(&S))) res = gerepileupto(ltop,mulii(res,powuu(p,crpval_alt(O,cr,p,c))));
     return gerepileupto(ltop,res);
 }
+
+long 
+crnorm_sign(GEN O, GEN cr)
+{
+    pari_sp ltop = avma;
+    return gc_long(ltop,signe(subii(sqri(gmael3(cr,lg(cr)-2,1,1)),mulii(gel(O,1),sqri(gmael3(cr,lg(cr)-2,1,2)))))*signe(gmael(cr,lg(cr)-1,2))*signe(subii(sqri(gmael3(cr,lg(cr)-1,1,1)),mulii(gel(O,1),sqri(gmael3(cr,lg(cr)-1,1,2))))));
+}
