@@ -90,7 +90,7 @@ numult (GEN O, GEN fprep1, GEN fprep2, long flag)
     }
     if (cmpii(gmael(b,2,2),gen_0) > 0)
     {
-        s = gmax(gen_0,addis(gmael(fprep1,1,2),sigbits(gmael(b,2,2))-sigbits(gmael3(b,1,2,1))+4));
+        s = gmax_shallow(gen_0,addis(gmael(fprep1,1,2),sigbits(gmael(b,2,2))-sigbits(gmael3(b,1,2,1))+4));
         av = avma; if (cmpii(mulii(powii(gen_2,subii(addis(gmael(fprep1,1,2),4),s)),gmael(b,2,2)),gmael3(b,1,2,1)) >= 0) s = gerepileupto(av,addii(s, gen_1));
         else set_avma(av);
     }
@@ -125,7 +125,7 @@ wnear(GEN O, GEN fprep, GEN w)
     sqrtd_ = sqrti(gel(O,1));
     if (cmpii(gmael(fprep,2,3),w) < 0)
     {
-        s = gmax(gen_0,addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1))));
+        s = gmax_shallow(gen_0,addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1))));
         av = avma; if (cmpii(gmael4(fprep,2,1,2,1),powii(gen_2,subii(addis(gmael(fprep,1,2),4),s))) <= 0) s = gerepileupto(av,addii(s,gen_1));
         else set_avma(av);
         tmp = powii(gen_2,s);
@@ -254,7 +254,7 @@ ewnear(GEN O, GEN fprep, GEN w)
     sqrtd_ = sqrti(gel(O,1));
     B_0 = gen_1;
     B_1 = gen_0;
-    s = gmax(gen_0,addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1))));
+    s = gmax_shallow(gen_0,addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1))));
     av = avma; if (cmpii(gmael4(fprep,2,1,2,1),powii(gen_2,subii(addis(gmael(fprep,1,2),4),s))) <= 0) s = gerepileupto(av,addii(s,gen_1));
     else set_avma(av);
     tmp = powii(gen_2,s);
@@ -538,7 +538,7 @@ find(GEN O, GEN fprep, GEN c)
     if (cmpir(negi(gmael4(fprep,2,1,2,1)),tmp) >= 0 || cmpri(tmp,gen_0) >= 0) pari_err_DOMAIN("find",GENtostr(tmp),"",NULL,gmael(fprep,2,1));
     set_avma(ltop);
     sqrtd_ = sqrti(gel(O,1));
-    s = gmax(gen_0,addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1))));
+    s = gmax_shallow(gen_0,addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1))));
     av = avma; if (cmpii(gmael4(fprep,2,1,2,1),powii(gen_2,subii(addis(gmael(fprep,1,2),4),s))) <= 0) s = gerepileupto(av,addii(s,gen_1));
     else set_avma(av);
     Q_1 = gmael4(fprep,2,1,2,1);
