@@ -442,12 +442,10 @@ crax(GEN O, GEN x, GEN p, GEN m)
     {
         N = diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3));
         fprep = eaddxy(O,gel(fprep,1),gel(fprep,1),s,s,0);
-        pari_printf("%Ps\n",fprep);
         s = mulii(gen_2,s);
         if (bex[i] == 1)
         {
             s = addii(s,gen_1);
-            pari_printf("%Ps\n",s);
             fprep_ = ewnear(O,gel(fprep,1),s);
             el2 = cgetg(3,t_VEC);
             eli = cgetg(3,t_VEC);
