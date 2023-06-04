@@ -54,7 +54,7 @@ ulong crpval_alt(GEN O, GEN cr, ulong p, ulong c);
 */
 
 GEN crsmoothpart(GEN O, GEN cr, ulong B, ulong c); // O(logR*B*max{B, logD})
-/* Compact rerpresentation smooth part.
+/* Compact representation smooth part.
  * Input:   Real quadratic order O (as output by rqoinit);
             a compact representation [[m_1, n_1], L_1], ..., [[m_l, n_l], L_l], [[m_{l+1}, n_{l+1}], L_{l+1}]] (as output for example by cr),
             where for every prime p <= B, p divides at most L_{i+1};
@@ -69,7 +69,7 @@ GEN crsmoothpart2(GEN O, GEN b, GEN y, GEN q, ulong B, ulong c); // O(logR*B*max
 /* Compact representation smooth part, alternative.
  * Input:   Real quadratic order O (as output by rqoinit);
             reduced principal ideal b = [1, [Q, P]] with (P + sqrt(d))/Q > 1 and -1 < (P - sqrt(d))/Q < 0;
-            y, q positive rational numbers, such that
+            y, q positive rational number, such that
                 |log_2(theta) - y| < q.
             where (theta) = b;
             integer B;
