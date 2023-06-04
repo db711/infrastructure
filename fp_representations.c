@@ -254,11 +254,11 @@ ewnear(GEN O, GEN fprep, GEN w)
     sqrtd_ = sqrti(gel(O,1));
     B_0 = gen_1;
     B_1 = gen_0;
-    s = addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1)));
+    s = gmax(gen_0,addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1))));
     av = avma; if (cmpii(gmael4(fprep,2,1,2,1),powii(gen_2,subii(addis(gmael(fprep,1,2),4),s))) <= 0) s = gerepileupto(av,addii(s,gen_1));
     else set_avma(av);
     tmp = powii(gen_2,s);
-    twossqrtd = sqrti(mulii(sqri(tmp),gel(O,1)));
+    av = avma; twossqrtd = gerepileupto(av,sqrti(mulii(sqri(tmp),gel(O,1))));
     Q_1 = gmael4(fprep,2,1,2,1);
     P_1 = gmael4(fprep,2,1,2,2);
     av = avma; M = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w)),gdiv(gmael4(fprep,2,1,2,1),gmael(fprep,2,2)))));
@@ -442,10 +442,12 @@ crax(GEN O, GEN x, GEN p, GEN m)
     {
         N = diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3));
         fprep = eaddxy(O,gel(fprep,1),gel(fprep,1),s,s,0);
+        pari_printf("%Ps\n",fprep);
         s = mulii(gen_2,s);
         if (bex[i] == 1)
         {
             s = addii(s,gen_1);
+            pari_printf("%Ps\n",s);
             fprep_ = ewnear(O,gel(fprep,1),s);
             el2 = cgetg(3,t_VEC);
             eli = cgetg(3,t_VEC);
