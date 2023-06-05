@@ -10,7 +10,7 @@ twin_smooth_d(ulong B, GEN d, ulong m)
     b = pci(O);
     d = mulsi(4,d);
     I = const_vecsmall(m+1,1);
-    if(cmprr(glog(d,DEFAULTPREC),dbltor(23.025850929940456840179914546843642076011014886287729760333279009)) < 0)
+    if(cmprr(glog(d,DEFAULTPREC),dbltor(27.631021115928548208215897456212370491213217863545275712399934811)) < 0)
     {
         e = quadunit0(d,-1); 
         if (gsigne(gnorm(e)) == -1) e = gsqr(e);
