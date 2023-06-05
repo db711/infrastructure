@@ -10,7 +10,7 @@ twin_smooth_d(ulong B, GEN d, ulong m)
     b = pci(O);
     d = mulsi(4,d);
     I = const_vecsmall(m+1,1);
-    if(cmprr(glog(d,DEFAULTPREC),dbltor(27.631021115928548208215897456212370491213217863545275712399934811)) < 0)
+    if(cmprr(glog(d,DEFAULTPREC),dbltor(27.631021115928548208215897456212370491213217863545275712399934811)) < 0) // if d >= 10^12, using compact representations is worth it
     {
         e = quadunit0(d,-1); 
         if (gsigne(gnorm(e)) == -1) e = gsqr(e);
@@ -96,7 +96,7 @@ twin_smooth_d(ulong B, GEN d, ulong m)
 GEN
 twin_smooth(ulong B)
 {
-    GEN S, s, D, d, ret, res = mkvec(gen_1);
+    GEN S, s, D, d, ret, res = NULL;
     pari_sp ltop = avma, av, av2;
     long i, m;
     forsubset_t T;
@@ -104,7 +104,6 @@ twin_smooth(ulong B)
     m = gel(S,lg(S)-1);
     forallsubset_init(&T,lg(S)-1);
     av2 = avma;
-    s = forsubset_next(&T);
     while ((s = forsubset_next(&T)) != NULL)
     {
         D = shallowextract(S,s);
@@ -114,7 +113,11 @@ twin_smooth(ulong B)
             av = avma; d = gerepileupto(av,mulis(d,gel(D,i)));
         }
         ret = twin_smooth_d(B,d,m+1);
-        if (ret != NULL) res = gerepileupto(av2,gcopy(concat(res,ret)));
+        if (ret != NULL)
+        {
+            if (res == NULL) res = gerepileupto(av2,ret);
+            else res = gerepileupto(av2,gcopy(concat(res,ret)));
+        }
     }
     return gerepileupto(ltop,gcopy(res));
 }
