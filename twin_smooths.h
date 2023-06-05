@@ -13,7 +13,6 @@ GEN twin_smooth_d(ulong B, GEN d, ulong m);
 GEN twin_smooth(ulong B);
 /* Twin smooths.
  * Input:   Positive integer B;
-            filename filename.
  * Output:  Vector containing all x, such that x(x+1) is B-smooth.
 */
 

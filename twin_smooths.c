@@ -100,9 +100,11 @@ twin_smooth(ulong B)
     pari_sp ltop = avma, av, av2;
     long i, m;
     forsubset_t T;
-    S = primes_interval_zv(3,B);
-    m = gel(S,lg(S)-1);
+    S = primes_interval_zv(2,B);
+    m = (((long)gel(S,lg(S)-1))-1)/2;
     forallsubset_init(&T,lg(S)-1);
+    forsubset_next(&T); forsubset_next(&T);
+    res = twin_smooth_d(B,gen_2,m);
     av2 = avma;
     while ((s = forsubset_next(&T)) != NULL)
     {
@@ -112,12 +114,8 @@ twin_smooth(ulong B)
         {
             av = avma; d = gerepileupto(av,mulis(d,gel(D,i)));
         }
-        ret = twin_smooth_d(B,d,m+1);
-        if (ret != NULL)
-        {
-            if (res == NULL) res = gerepileupto(av2,ret);
-            else res = gerepileupto(av2,gcopy(concat(res,ret)));
-        }
+        ret = twin_smooth_d(B,d,m);
+        if (ret != NULL) res = gerepileupto(av2,gcopy(concat(res,ret)));
     }
     return gerepileupto(ltop,gcopy(res));
 }
