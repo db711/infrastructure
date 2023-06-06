@@ -3,7 +3,10 @@
 GEN 
 twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
 {
-    GEN O, b, e, e_, I, R, ret = NULL, r, tmp, smooth_part = gen_1;
+    if (typ(d) != t_INT) pari_err_TYPE("twin_smooth_d",d);
+    if (typ(P) != t_INT) pari_err_TYPE("twin_smooth_d",P);
+    if (typ(S) != t_VECSMALL) pari_err_TYPE("twin_smooth_d",S);
+    GEN O, b, e, e_, I, R, ret = NULL, r, tmp, smooth_part = gen_1, ret2;
     long i, j;
     pari_sp ltop = avma, av;
     O = rqoinit(d);
@@ -17,13 +20,13 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
         e_ = e;
         for (i = 1; i < lg(I); i++)
         {
-            if (!gel(I,i)) continue;
-            if (Z_issmooth(gel(e,3),(ulong)gel(S,lg(S)-1)))
+            if (!I[i]) continue;
+            if (Z_issmooth(gel(e,3),S[lg(S)-1]))
             {
                 if (ret == NULL) ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
                 else ret = vec_append(ret,diviiexact(subii(gel(e,2),gen_1),gen_2));
             }
-            else for (j = i; j < lg(I); j += j) gel(I,j) = 0;
+            else for (j = i; j < lg(I); j += i) I[j] = 0;
             e = gmul(e,e_);
         }
     }
@@ -37,13 +40,13 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
             e_ = e;
             for (i = 1; i < lg(I); i++)
             {
-                if (!gel(I,i)) continue;
-                if (Z_issmooth(gel(e,3),(ulong)gel(S,lg(S)-1)))
+                if (!I[i]) continue;
+                if (Z_issmooth(gel(e,3),S[lg(S)-1]))
                 {
                     if (ret == NULL) ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
                     else ret = vec_append(ret,diviiexact(subii(gel(e,2),gen_1),gen_2));
                 }
-                else for (j = i; j < lg(I); j += i) gel(I,j) = 0;
+                else for (j = i; j < lg(I); j += i) I[j] = 0;
                 e = gmul(e,e_);
             }
         }
@@ -57,13 +60,13 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
                 r = mulii(gen_2,r);
             }
             av = avma;
-            if ((ulong)gel(S,lg(S)-1) < 2000) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
+            if (S[lg(S)-1] < 2000) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
             else
             {
                 if(cmprr(glog(d,DEFAULTPREC),dbltor(39.143946580898776628305854729634191529218725306689140592566574316)) < 0) smooth_part = crsmoothpart_alt(O,gel(cr(O,b,r,ghalf,gen_0),2),S,2); // d < 10^17
                 else
                 {
-                    if ((ulong)gel(S,lg(S)-1) < 5200) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
+                    if (S[lg(S)-1] < 5200) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
                     else smooth_part = crsmoothpart2(O,b,r,ghalf,S,2);
                 }
             }
@@ -75,15 +78,15 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
                 ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
                 for (i = 2; i < lg(I); i++)
                 {
-                    if (!gel(I,i)) continue;
+                    if (!I[i]) continue;
                     av = avma;
-                    if ((ulong)gel(S,lg(S)-1) < 2000) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
+                    if (S[lg(S)-1] < 2000) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
                     else
                     {
                         if(cmprr(glog(d,DEFAULTPREC),dbltor(39.143946580898776628305854729634191529218725306689140592566574316)) < 0) smooth_part = crsmoothpart_alt(O,gel(cr(O,b,r,ghalf,gen_0),2),S,2); // d < 10^17
                         else
                         {
-                            if ((ulong)gel(S,lg(S)-1) < 5200) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
+                            if (S[lg(S)-1] < 5200) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
                             else smooth_part = crsmoothpart2(O,b,r,ghalf,S,2);
                         }
                     }
@@ -92,12 +95,17 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
                         set_avma(av);
                         ret = vec_append(ret,diviiexact(subii(gel(gpow(e,stoi(i),DEFAULTPREC),2),gen_1),gen_2));
                     }
-                    else for (j = i; j < lg(I); j += i) gel(I,j) = 0;
+                    else for (j = i; j < lg(I); j += i) I[j] = 0;
                 }
             }
         }
     }
-    if (ret != NULL) return gerepileupto(ltop,gcopy(ret));
+    if (ret != NULL)
+    {
+        ret2 = cgetg(lg(ret),t_VEC);
+        for (i = 1; i < lg(ret); i++) gel(ret2,i) = gcopy(gel(ret,i));
+        return gerepileupto(ltop,ret2);
+    }
     else 
     {
         set_avma(ltop);
@@ -108,15 +116,15 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
 GEN
 twin_smooth(ulong B)
 {
-    GEN S, s, D, d, ret, res = NULL, P = gen_1;
+    GEN S, s, D, d, ret, res = NULL, res2, P = gen_1;
     pari_sp ltop = avma, av, av2;
     long i, m, k;
     forsubset_t T;
     S = primes_interval_zv(2,B);
-    m = (((ulong)gel(S,lg(S)-1))-1)/2;
+    m = ((S[lg(S)-1])-1)/2;
     forallsubset_init(&T,lg(S)-1);
     forsubset_next(&T); forsubset_next(&T);
-    for (k = 1; k < lg(S); k++) P = mulis(P,(ulong)gel(S,k));
+    for (k = 1; k < lg(S); k++) P = mulis(P,S[k]);
     res = twin_smooth_d(S,gen_2,m,P);
     av2 = avma;
     while ((s = forsubset_next(&T)) != NULL)
@@ -128,7 +136,9 @@ twin_smooth(ulong B)
             av = avma; d = gerepileupto(av,mulis(d,(ulong)gel(D,i)));
         }
         ret = twin_smooth_d(S,d,m,P);
-        if (ret != NULL) res = gerepileupto(av2,gcopy(concat(res,ret)));
+        if (ret != NULL) res = gerepileupto(av2,concat(res,ret));
     }
-    return gerepileupto(ltop,gcopy(res));
+    res2 = cgetg(lg(res),t_VEC);
+    for (i = 1; i < lg(res); i++) gel(res2,i) = gcopy(gel(res,i));
+    return gerepileupto(ltop,res2);
 }
