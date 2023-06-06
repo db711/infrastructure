@@ -4,7 +4,7 @@ GEN
 twin_smooth_d(GEN S, GEN d, ulong m)
 {
     GEN O, b, e, e_, I, R, ret = NULL, r, tmp;
-    long i, j, ri = 0;
+    long i, j, k;
     pari_sp ltop = avma, av;
     O = rqoinit(d);
     b = pci(O);
@@ -18,13 +18,9 @@ twin_smooth_d(GEN S, GEN d, ulong m)
         for (i = 1; i < lg(I); i++)
         {
             if (!gel(I,i)) continue;
-            if (Z_issmooth(gel(e,3),(long)gel(S,lg(S)-1)))
+            if (Z_issmooth(gel(e,3),(ulong)gel(S,lg(S)-1)))
             {
-                if (!ri)
-                {
-                    ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
-                    ri = 1;
-                }
+                if (ret == NULL) ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
                 else ret = vec_append(ret,diviiexact(subii(gel(e,2),gen_1),gen_2));
             }
             else for (j = i; j < lg(I); j += j) gel(I,j) = 0;
@@ -42,13 +38,9 @@ twin_smooth_d(GEN S, GEN d, ulong m)
             for (i = 1; i < lg(I); i++)
             {
                 if (!gel(I,i)) continue;
-                if (Z_issmooth(gel(e,3),(long)gel(S,lg(S)-1)))
+                if (Z_issmooth(gel(e,3),(ulong)gel(S,lg(S)-1)))
                 {
-                    if (!ri)
-                    {
-                        ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
-                        ri = 1;
-                    }
+                    if (ret == NULL) ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
                     else ret = vec_append(ret,diviiexact(subii(gel(e,2),gen_1),gen_2));
                 }
                 else for (j = i; j < lg(I); j += i) gel(I,j) = 0;
@@ -101,7 +93,7 @@ twin_smooth(ulong B)
     long i, m;
     forsubset_t T;
     S = primes_interval_zv(2,B);
-    m = (((long)gel(S,lg(S)-1))-1)/2;
+    m = (((ulong)gel(S,lg(S)-1))-1)/2;
     forallsubset_init(&T,lg(S)-1);
     forsubset_next(&T); forsubset_next(&T);
     res = twin_smooth_d(S,gen_2,m);
@@ -112,7 +104,7 @@ twin_smooth(ulong B)
         d = gen_2;
         for (i = 1; i < lg(D); i++)
         {
-            av = avma; d = gerepileupto(av,mulis(d,(long)gel(D,i)));
+            av = avma; d = gerepileupto(av,mulis(d,(ulong)gel(D,i)));
         }
         ret = twin_smooth_d(S,d,m);
         if (ret != NULL) res = gerepileupto(av2,gcopy(concat(res,ret)));

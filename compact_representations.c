@@ -193,8 +193,8 @@ crsmoothpart(GEN O, GEN cr, GEN S, ulong c)
 {
     pari_sp ltop = avma;
     GEN res = gen_1;
-    ulong p = 2;
-    while ((p = u_forprime_next(&S))) res = gerepileupto(ltop,mulii(res,powuu(p,crpval(O,cr,p,c))));
+    ulong i;
+    for (i = 1; i < lg(S); i++) res = gerepileupto(ltop,mulii(res,powuu((ulong)gel(S,i),crpval(O,cr,(ulong)gel(S,i),c))));
     return gerepileupto(ltop,res);
 }
 
@@ -203,8 +203,8 @@ crsmoothpart2(GEN O, GEN b, GEN y, GEN q, GEN S, ulong c)
 {
     pari_sp ltop = avma;
     GEN res = gen_1;
-    ulong p = 2;
-    while ((p = u_forprime_next(&S))) res = gerepileupto(ltop,mulii(res,powuu(p,crpval(O,gel(cr(O,b,y,q,stoi(p)),2),p,c))));
+    ulong i;
+    for (i = 1; i < lg(S); i++) res = gerepileupto(ltop,mulii(res,powuu((ulong)gel(S,i),crpval(O,gel(cr(O,b,y,q,stoi((ulong)gel(S,i))),2),(ulong)gel(S,i),c))));
     return gerepileupto(ltop,res);
 }
 
@@ -213,8 +213,8 @@ crsmoothpart_alt(GEN O, GEN cr, GEN S, ulong c)
 { //code duplication...
     pari_sp ltop = avma;
     GEN res = gen_1;
-    ulong p = 2;
-    while ((p = u_forprime_next(&S))) res = gerepileupto(ltop,mulii(res,powuu(p,crpval_alt(O,cr,p,c))));
+    ulong i;
+    for (i = 1; i < lg(S); i++) res = gerepileupto(ltop,mulii(res,powuu((ulong)gel(S,i),crpval_alt(O,cr,(ulong)gel(S,i),c))));
     return gerepileupto(ltop,res);
 }
 
