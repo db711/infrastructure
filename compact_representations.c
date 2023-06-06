@@ -189,37 +189,31 @@ crpval_alt(GEN O, GEN cr, ulong p, ulong c)
 }
 
 GEN 
-crsmoothpart(GEN O, GEN cr, ulong B, ulong c)
+crsmoothpart(GEN O, GEN cr, GEN S, ulong c)
 {
     pari_sp ltop = avma;
     GEN res = gen_1;
     ulong p = 2;
-    forprime_t S;
-    u_forprime_init(&S,2,B);
     while ((p = u_forprime_next(&S))) res = gerepileupto(ltop,mulii(res,powuu(p,crpval(O,cr,p,c))));
     return gerepileupto(ltop,res);
 }
 
 GEN
-crsmoothpart2(GEN O, GEN b, GEN y, GEN q, ulong B, ulong c)
+crsmoothpart2(GEN O, GEN b, GEN y, GEN q, GEN S, ulong c)
 {
     pari_sp ltop = avma;
     GEN res = gen_1;
     ulong p = 2;
-    forprime_t S;
-    u_forprime_init(&S,2,B);
     while ((p = u_forprime_next(&S))) res = gerepileupto(ltop,mulii(res,powuu(p,crpval(O,gel(cr(O,b,y,q,stoi(p)),2),p,c))));
     return gerepileupto(ltop,res);
 }
 
 GEN 
-crsmoothpart_alt(GEN O, GEN cr, ulong B, ulong c)
+crsmoothpart_alt(GEN O, GEN cr, GEN S, ulong c)
 { //code duplication...
     pari_sp ltop = avma;
     GEN res = gen_1;
     ulong p = 2;
-    forprime_t S;
-    u_forprime_init(&S,2,B);
     while ((p = u_forprime_next(&S))) res = gerepileupto(ltop,mulii(res,powuu(p,crpval_alt(O,cr,p,c))));
     return gerepileupto(ltop,res);
 }

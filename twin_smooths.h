@@ -2,9 +2,9 @@
 #define TWIN_SMOOTHS_H
 #include "compact_representations.h"
 
-GEN twin_smooth_d(ulong B, GEN d, ulong m);
+GEN twin_smooth_d(GEN S, GEN d, ulong m);
 /* Twin smooths (for value d)
- * Input:   Positive integer B;
+ * Input:   Vector S of primes below a bound B;;
             positive, even, squarefree integer d;
             upper bound m.
  * Output:  Vector containing all x, such that x(x+1) is B-smooth, corresponding to d or NULL if no such exist.
