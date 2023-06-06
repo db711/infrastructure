@@ -108,8 +108,8 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
     }
     else 
     {
-        set_avma(ltop);
-        return NULL;
+        ret2 = cgetg(1,t_VEC);
+        return ret2;
     }
 }
 
