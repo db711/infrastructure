@@ -1,10 +1,10 @@
 #include "twin_smooths.h"
 
 GEN 
-twin_smooth_d(GEN S, GEN d, ulong m)
+twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
 {
-    GEN O, b, e, e_, I, R, ret = NULL, r, tmp;
-    long i, j, k;
+    GEN O, b, e, e_, I, R, ret = NULL, r, tmp, smooth_part = gen_1;
+    long i, j;
     pari_sp ltop = avma, av;
     O = rqoinit(d);
     b = pci(O);
@@ -57,7 +57,17 @@ twin_smooth_d(GEN S, GEN d, ulong m)
                 r = mulii(gen_2,r);
             }
             av = avma;
-            if (gcmp(absr(subrr(glog(crsmoothpart2(O,b,r,ghalf,S,2),DEFAULTPREC),subrr(R,tmp))),ghalf) <= 0)
+            if ((ulong)gel(S,lg(S)-1) < 2000) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
+            else
+            {
+                if(cmprr(glog(d,DEFAULTPREC),dbltor(39.143946580898776628305854729634191529218725306689140592566574316)) < 0) smooth_part = crsmoothpart_alt(O,gel(cr(O,b,r,ghalf,gen_0),2),S,2); // d < 10^17
+                else
+                {
+                    if ((ulong)gel(S,lg(S)-1) < 5200) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
+                    else smooth_part = crsmoothpart2(O,b,r,ghalf,S,2);
+                }
+            }
+            if (gcmp(absr(subrr(glog(smooth_part,DEFAULTPREC),subrr(R,tmp))),ghalf) <= 0)
             {
                 set_avma(av);
                 e = quadunit0(d,-1);
@@ -67,7 +77,17 @@ twin_smooth_d(GEN S, GEN d, ulong m)
                 {
                     if (!gel(I,i)) continue;
                     av = avma;
-                    if (gcmp(absr(subrr(glog(crsmoothpart2(O,b,mulsi(i,r),ghalf,S,2),DEFAULTPREC),subrr(mulsr(i,R),tmp))),ghalf) <= 0)
+                    if ((ulong)gel(S,lg(S)-1) < 2000) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
+                    else
+                    {
+                        if(cmprr(glog(d,DEFAULTPREC),dbltor(39.143946580898776628305854729634191529218725306689140592566574316)) < 0) smooth_part = crsmoothpart_alt(O,gel(cr(O,b,r,ghalf,gen_0),2),S,2); // d < 10^17
+                        else
+                        {
+                            if ((ulong)gel(S,lg(S)-1) < 5200) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
+                            else smooth_part = crsmoothpart2(O,b,r,ghalf,S,2);
+                        }
+                    }
+                    if (gcmp(absr(subrr(glog(smooth_part,DEFAULTPREC),subrr(mulsr(i,R),tmp))),ghalf) <= 0)
                     {
                         set_avma(av);
                         ret = vec_append(ret,diviiexact(subii(gel(gpow(e,stoi(i),DEFAULTPREC),2),gen_1),gen_2));
@@ -88,15 +108,16 @@ twin_smooth_d(GEN S, GEN d, ulong m)
 GEN
 twin_smooth(ulong B)
 {
-    GEN S, s, D, d, ret, res = NULL;
+    GEN S, s, D, d, ret, res = NULL, P = gen_1;
     pari_sp ltop = avma, av, av2;
-    long i, m;
+    long i, m, k;
     forsubset_t T;
     S = primes_interval_zv(2,B);
     m = (((ulong)gel(S,lg(S)-1))-1)/2;
     forallsubset_init(&T,lg(S)-1);
     forsubset_next(&T); forsubset_next(&T);
-    res = twin_smooth_d(S,gen_2,m);
+    for (k = 1; k < lg(S); k++) P = mulis(P,(ulong)gel(S,k));
+    res = twin_smooth_d(S,gen_2,m,P);
     av2 = avma;
     while ((s = forsubset_next(&T)) != NULL)
     {
@@ -106,7 +127,7 @@ twin_smooth(ulong B)
         {
             av = avma; d = gerepileupto(av,mulis(d,(ulong)gel(D,i)));
         }
-        ret = twin_smooth_d(S,d,m);
+        ret = twin_smooth_d(S,d,m,P);
         if (ret != NULL) res = gerepileupto(av2,gcopy(concat(res,ret)));
     }
     return gerepileupto(ltop,gcopy(res));

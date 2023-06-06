@@ -2,7 +2,7 @@
 #define TWIN_SMOOTHS_H
 #include "compact_representations.h"
 
-GEN twin_smooth_d(GEN S, GEN d, ulong m);
+GEN twin_smooth_d(GEN S, GEN d, ulong m, GEN P);
 /* Twin smooths (for value d)
  * Input:   Vector S of primes below a bound B;;
             positive, even, squarefree integer d;
