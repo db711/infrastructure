@@ -11,7 +11,7 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
     pari_sp ltop = avma, av;
     O = rqoinit(d);
     b = pci(O);
-    d = mulsi(4,d);
+    d = gel(O,4);
     I = const_vecsmall(m+1,1);
     if(cmprr(glog(d,DEFAULTPREC),dbltor(27.631021115928548208215897456212370491213217863545275712399934811)) < 0) // if d >= 10^12, using compact representations is worth it
     {
@@ -70,6 +70,7 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
                     else smooth_part = crsmoothpart2(O,b,r,ghalf,S,2);
                 }
             }
+            if(equalii(gel(O,3),gen_2)) smooth_part = diviiexact(smooth_part,gen_2);
             if (gcmp(absr(subrr(glog(smooth_part,DEFAULTPREC),subrr(R,tmp))),ghalf) <= 0)
             {
                 set_avma(av);
