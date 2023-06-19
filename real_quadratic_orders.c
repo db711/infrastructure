@@ -82,12 +82,13 @@ imultiply(GEN O, GEN a, GEN b) // DEPRECATED
     if (cmpii(gen_1,gel(a,1))) pari_err_DOMAIN("imultiply","S","!=",gen_1,a);
     if (cmpii(gen_1,gel(b,1))) pari_err_DOMAIN("imultiply","S","!=",gen_1,b);
     pari_sp ltop = avma, av;
-    GEN S, Q, P, U, V, W, X, Y;
+    GEN S, Q, P, U, V, W, X, Y, tmp;
     S = bezout(bezout(diviiexact(gmael(a,2,1),gel(O,3)),diviiexact(gmael(b,2,1),gel(O,3)),&V,&W),diviiexact(addii(gmael(a,2,2),gmael(b,2,2)),gel(O,3)),&X,&Y);
     V = mulii(X,V);
     W = mulii(X,W);
     av = avma; Q = gerepileupto(av,diviiexact(mulii(gmael(a,2,1),gmael(b,2,1)),mulii(sqri(S),gel(O,3))));
-    av = avma; U = gerepileupto(av,lift(gadd(gmul(mkintmod(W,diviiexact(gmael(a,2,1),S)),subii(gmael(a,2,2),gmael(b,2,2))),gmul(mkintmod(Y,diviiexact(gmael(a,2,1),S)),diviiexact(subii(gel(O,1),sqri(gmael(b,2,2))),gmael(b,2,1))))));
+    tmp = diviiexact(gmael(a,2,1),S);
+    av = avma; U = gerepileupto(av,lift(gadd(gmul(mkintmod(modii(W,tmp),tmp),subii(gmael(a,2,2),gmael(b,2,2))),gmul(mkintmod(modii(Y,tmp),tmp),diviiexact(subii(gel(O,1),sqri(gmael(b,2,2))),gmael(b,2,1))))));
     av = avma; P = gerepileupto(av,lift(gadd(gmael(b,2,2),gmul(mkintmod(U,Q),diviiexact(gmael(b,2,1),mulii(gel(O,3),S))))));
     return gerepileupto(ltop,rqiinit(S,Q,P));
 }
@@ -141,14 +142,14 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     av2 = avma;
     S = bezout(diviiexact(addii(gmael(a,2,2),gmael(b,2,2)),gel(O,3)),G,&Y,&Z);
     av = avma; R_ = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael(b,2,2))),gmael(b,2,1)));
-    av = avma; R_1 = gerepileupto(av,lift(gadd(gmul(X,gmul(Z,gsub(mkintmod(gmael(a,2,2),diviiexact(gmael(a,2,1),S)),gmael(b,2,2)))),gmul(Y,mkintmod(R_,diviiexact(gmael(a,2,1),S))))));
-    gerepileall(ltop,3,&R_1,&R_,&S);
-    av = avma; tmp1 = gerepileupto(av,floorr(gmul(gsqrt(gmul(gen_2,gel(O,3)),DEFAULTPREC),gsqrtn(gel(O,1),sqri(gen_2),NULL,DEFAULTPREC)))); //truncate instead of floor?
     R_0 = diviiexact(gmael(a,2,1),S);
+    av = avma; R_1 = gerepileupto(av,lift(gadd(gmul(X,gmul(Z,gsub(mkintmod(modii(gmael(a,2,2),R_0),R_0),gmael(b,2,2)))),gmul(Y,mkintmod(modii(R_,R_0),R_0)))));
+    gerepileall(ltop,4,&R_0,&R_1,&R_,&S);
+    av = avma; tmp1 = gerepileupto(av,floorr(gmul(gsqrt(gmul(gen_2,gel(O,3)),DEFAULTPREC),gsqrtn(gel(O,1),sqri(gen_2),NULL,DEFAULTPREC)))); //truncate instead of floor?
     if (cmpii(R_0,tmp1) < 0)
     {
         av = avma; Q = gerepileupto(av,diviiexact(mulii(gmael(a,2,1),gmael(b,2,1)),mulii(gel(O,3),sqri(S))));
-        av = avma; P = gerepileupto(av,lift(gadd(mkintmod(gmael(b,2,2),Q),diviiexact(mulii(R_1,gmael(b,2,1)),mulii(gel(O,3),S)))));
+        av = avma; P = gerepileupto(av,lift(gadd(mkintmod(modii(gmael(b,2,2),Q),Q),diviiexact(mulii(R_1,gmael(b,2,1)),mulii(gel(O,3),S)))));
         B_0 = gen_1;
         B_1 = gen_0;
     }

@@ -322,7 +322,7 @@ GEN
 wmult(GEN O, GEN fprep1, GEN fprep2, GEN w, long flag)
 {
     pari_sp ltop = avma;
-    return gerepileupto(ltop,wnear(O,gel(numult(O,fprep1, fprep2, flag),1),w));
+    return gerepileupto(ltop,wnear(O,gel(numult(O,fprep1,fprep2,flag),1),w));
 }
 
 GEN 
