@@ -1,4 +1,5 @@
 #include "twin_smooths.h"
+#include "utility.h"
 
 GEN 
 twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
@@ -142,4 +143,68 @@ twin_smooth(ulong B)
     res2 = cgetg(lg(res),t_VEC);
     for (i = 1; i < lg(res); i++) gel(res2,i) = gcopy(gel(res,i));
     return gerepileupto(ltop,res2);
+}
+
+GEN
+regulator_range(GEN O, ulong A, ulong B)
+{
+    if (A > B) pari_err_DOMAIN("regulator_range",itostr(stoi(A)),">",stoi(B),stoi(A));
+    GEN sqrtd_, fprep, b, w, w_, p, s, tmp, tmp2, twossqrtd, Q_1, P_1, M, P_m1, P_0, Q_m1, T_m1, Q_0, T_0, T_1, q, c, e, t, g, h;
+    pari_sp ltop = avma, av, av2;
+    b = pci(O);
+    sqrtd_ = sqrti(gel(O,1));
+    w = stoi(A);
+    w_ = stoi(B);
+    av = avma; p = gerepileupto(av,addsi(4.48543+sigbits(w),gmax_shallow(stoi(4),stoi(sigbits(stoi(sigbits(w)+1))+1)))); //generous upper bound
+    fprep = ax(O,w,p);
+    s = gmax_shallow(gen_0,addis(gmael(fprep,1,2),5-sigbits(gmael4(fprep,2,1,2,1))));
+    av = avma; if (cmpii(gmael4(fprep,2,1,2,1),powii(gen_2,subii(addis(gmael(fprep,1,2),4),s))) <= 0) s = gerepileupto(av,addii(s,gen_1));
+    else set_avma(av);
+    tmp = powii(gen_2,s);
+    twossqrtd = sqrti(mulii(sqri(tmp),gel(O,1)));
+    Q_1 = gmael4(fprep,2,1,2,1);
+    P_1 = gmael4(fprep,2,1,2,2);
+    av = avma; M = gerepileupto(av,gceil(gmul(powii(gen_2,addii(subii(addii(gmael(fprep,1,2),s),gmael(fprep,2,3)),w_)),gdiv(gmael4(fprep,2,1,2,1),gmael(fprep,2,2)))));
+    av2 = avma;
+    P_m1 = P_0 = Q_m1 = T_m1 = gen_0; //dummy values
+    av = avma; Q_0 = gerepileupto(av,diviiexact(subii(gel(O,1),sqri(gmael4(fprep,2,1,2,2))),gmael4(fprep,2,1,2,1)));
+    av = avma; T_0 = gerepileupto(av,addii(mulii(negi(tmp),P_1),twossqrtd)); 
+    T_1 = mulii(tmp,gmael4(fprep,2,1,2,1));
+    while (cmpii(T_1,M) <= 0)
+    {
+        if (!cmpii(Q_1,gmael2(b,2,1)) && !cmpii(P_1,gmael2(b,2,2))) break;
+        av = avma; q = gerepileupto(av,divii(addii(P_1,sqrtd_),Q_1));
+        P_m1 = P_0; P_0 = P_1;
+        av = avma; P_1 = gerepileupto(av,subii(mulii(q,Q_1),P_1));
+        Q_m1 = Q_0; Q_0 = Q_1;
+        av = avma; Q_1 = gerepileupto(av,subii(Q_m1,mulii(q,subii(P_1,P_0))));
+        T_m1 = T_0; T_0 = T_1;
+        av = avma; T_1 = gerepileupto(av,addii(mulii(q,T_1),T_m1));
+        gerepileall(av2,9,&P_m1,&P_0,&P_1,&Q_m1,&Q_0,&Q_1,&T_m1,&T_0,&T_1);
+    }
+    if (!cmpii(Q_1,gmael2(b,2,1)) && !cmpii(P_1,gmael2(b,2,2)))
+    {
+        c = rqiinit(gen_1,Q_1,P_1);
+        av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,addis(subii(gmael(fprep,1,2),s),3)),gdiv(T_0,gmael4(fprep,2,1,2,1)))));
+        av = avma;
+        if (cmpii(mulii(gmael(fprep,2,2),e),powii(gen_2,addis(addii(subii(mulii(gen_2,gmael(fprep,1,2)),gmael(fprep,2,3)),w),3))) <= 0)
+        {
+            set_avma(av);
+            av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,addis(subii(gmael(fprep,1,2),s),3)),gdiv(T_1,gmael4(fprep,2,1,2,1)))));
+        }
+        else set_avma(av);
+        av = avma; t = gerepileupto(av,subsi(sigbits(e)+sigbits(gmael(fprep,2,2))-6,mulii(gen_2,gmael(fprep,1,2))));
+        tmp = mulii(e,gmael(fprep,2,2)); tmp2 = powii(gen_2,addii(addis(t,4),mulii(gen_2,gmael(fprep,1,2))));
+        if (gcmp(tmp2,tmp) < 0)
+        {
+            if (cmpii(mulii(tmp2,gen_2),tmp) < 0) t = gerepileupto(av,addii(t,gen_2));
+            else t = gerepileupto(av,addii(t,gen_1));
+        }
+        else set_avma(av);
+        av = avma; g = gerepileupto(av,gceil(gdiv(mulii(e,gmael(fprep,2,2)),powii(gen_2,addis(addii(gmael(fprep,1,2),t),3)))));
+        h = addii(gmael(fprep,2,3),t);
+        if (gmael(fprep,1,1) == NULL) return gerepileupto(ltop,fprepinit(NULL,gmael(fprep,1,2),c,g,h));
+        else return gerepileupto(ltop,fprepinit(gadd(gmael(fprep,1,1),gdiv(powii(stoi(3),gen_2),powis(gen_2,3))),gmael(fprep,1,2),c,g,h));
+    }
+    else return NULL;
 }
