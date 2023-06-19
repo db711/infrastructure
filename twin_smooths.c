@@ -206,5 +206,9 @@ regulator_range(GEN O, ulong A, ulong B)
         if (gmael(fprep,1,1) == NULL) return gerepileupto(ltop,fprepinit(NULL,gmael(fprep,1,2),c,g,h));
         else return gerepileupto(ltop,fprepinit(gadd(gmael(fprep,1,1),gdiv(powii(stoi(3),gen_2),powis(gen_2,3))),gmael(fprep,1,2),c,g,h));
     }
-    else return NULL;
+    else
+    {
+        set_avma(ltop);
+        return NULL;
+    }
 }
