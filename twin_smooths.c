@@ -184,6 +184,7 @@ regulator_range(GEN O, ulong A, ulong B)
     }
     if (!cmpii(Q_1,gmael2(b,2,1)) && !cmpii(P_1,gmael2(b,2,2)))
     {
+        return gen_1;
         c = rqiinit(gen_1,Q_1,P_1);
         av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,addis(subii(gmael(fprep,1,2),s),3)),gdiv(T_0,gmael4(fprep,2,1,2,1)))));
         av = avma;
@@ -210,5 +211,42 @@ regulator_range(GEN O, ulong A, ulong B)
     {
         set_avma(ltop);
         return NULL;
+    }
+}
+
+GEN
+twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m)
+{
+    GEN O, e, e_, I, ret = NULL, ret2;
+    ulong i;
+    pari_sp ltop = avma;
+    O = rqoinit(d);
+    if (regulator_range(O,bot,top))
+    {
+        d = gel(O,4);
+        I = const_vecsmall(m,1);
+        e = quadunit0(d,-1); 
+        if (gsigne(gnorm(e)) == -1) e = gsqr(e);
+        e_ = e;
+        for (i = 1; i < lg(I); i++)
+        {
+            if (Z_issmooth(gel(e,3),B))
+            {
+                if (ret == NULL) ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
+                else ret = vec_append(ret,diviiexact(subii(gel(e,2),gen_1),gen_2));
+            }
+            e = gmul(e,e_);
+        }
+    }
+    if (ret != NULL)
+    {
+        ret2 = cgetg(lg(ret),t_VEC);
+        for (i = 1; i < lg(ret); i++) gel(ret2,i) = gcopy(gel(ret,i));
+        return gerepileupto(ltop,ret2);
+    }
+    else 
+    {
+        ret2 = cgetg(1,t_VEC);
+        return ret2;
     }
 }
