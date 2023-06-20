@@ -27,8 +27,8 @@ twin_smooths_range_small(B) =
     m = 4;export(m);
     export(multiply);
     start = getwalltime;
-    parfor(i=0,2^(length(S))-3,TwinSmoothRangeDSmall(S[length(S)],2*multiply(vecextract(S,2^(length(S))-1-i)),245,275,4),r,if(r,write(output,i,": ",r)));
-    write(output,2^(length(S))-3,": ",TwinSmoothRangeDSmall(S[length(S)],2,245,275,4));
+    write(output,0,": ",TwinSmoothRangeDSmall(S[length(S)],2,245,275,4));
+    parfor(i=2,2^(length(S)),iferr(TwinSmoothRangeDSmall(S[length(S)],2*multiply(vecextract(S,2^(length(S))-1-i)),245,275,4),E,0),r,if(r,write(output,i,": ",r)));
     write(output,"Computation took ",getwalltime-start,"ms");
 }
 
