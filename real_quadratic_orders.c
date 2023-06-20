@@ -1,4 +1,5 @@
 #include "real_quadratic_orders.h"
+#include "utility.h"
 
 GEN
 rqoinit(GEN d)
@@ -145,7 +146,7 @@ inucomp(GEN O, GEN a, GEN b, long flag)
     R_0 = diviiexact(gmael(a,2,1),S);
     av = avma; R_1 = gerepileupto(av,lift(gadd(gmul(X,gmul(Z,gsub(mkintmod(modii(gmael(a,2,2),R_0),R_0),gmael(b,2,2)))),gmul(Y,mkintmod(modii(R_,R_0),R_0)))));
     gerepileall(ltop,4,&R_0,&R_1,&R_,&S);
-    av = avma; tmp1 = gerepileupto(av,floorr(gmul(gsqrt(gmul(gen_2,gel(O,3)),DEFAULTPREC),gsqrtn(gel(O,1),sqri(gen_2),NULL,DEFAULTPREC)))); //truncate instead of floor?
+    av = avma; tmp1 = gerepileupto(av,gsqrtn(mulii(mulsi(4,sqri(gel(O,3))),gel(O,1)),stoi(4),NULL,maxss(DEFAULTPREC,(sigbits(gel(O,1))/(4*BITS_IN_LONG))+2)));
     if (cmpii(R_0,tmp1) < 0)
     {
         av = avma; Q = gerepileupto(av,diviiexact(mulii(gmael(a,2,1),gmael(b,2,1)),mulii(gel(O,3),sqri(S))));
