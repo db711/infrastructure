@@ -184,7 +184,7 @@ regulator_range(GEN O, ulong A, ulong B)
     }
     if (!cmpii(Q_1,gmael2(b,2,1)) && !cmpii(P_1,gmael2(b,2,2)))
     {
-        return gen_1;
+        //return gerepileupto(ltop,gen_1);
         c = rqiinit(gen_1,Q_1,P_1);
         av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,addis(subii(gmael(fprep,1,2),s),3)),gdiv(T_0,gmael4(fprep,2,1,2,1)))));
         av = avma;
