@@ -111,7 +111,7 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
     else 
     {
         ret2 = cgetg(1,t_VEC);
-        return ret2;
+        return gerepileupto(ltop,ret2);
     }
 }
 
@@ -247,6 +247,6 @@ twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m)
     else 
     {
         ret2 = cgetg(1,t_VEC);
-        return ret2;
+        return gerepileupto(ltop,ret2);
     }
 }
