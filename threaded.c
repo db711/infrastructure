@@ -33,7 +33,9 @@ int
 main(void)
 {
     pari_init(1073741824,0); //1GB
-    default0("nbthreads","NUM_THREADS");
+    char str[4];
+    sprintf(str,"%d",NUM_THREADS);
+    default0("nbthreads",str);
     GEN end, e, S, fun;
     parfor_t T;
     ulong B = SMOOTHNESS_BOUND;
@@ -45,6 +47,8 @@ main(void)
     end = subii(powis(gen_2,lg(S)-1),gen_1);
     parfor_init(&T,gen_2,end,fun);
     av = avma;
+    e = twin_smooth_range_d_small(B,gen_2,LOWER_BOUND,UPPER_BOUND,4);
+    if (lg(e) > 1) pari_printf("%Ps\n",e);
     while ((e = parfor_next(&T)))
     {
         if (lg(gel(e,2)) > 1) pari_printf("%Ps\n",gel(e,2));
