@@ -13,7 +13,11 @@ testing: testing.o $(OBJS)
 shared: $(OBJS)
 	$(CC) $(LDFLAGS) -shared -o infrastructure.so $(OBJS) $(LDLIBS)
 
+threaded: threaded.o $(OBJS)
+	$(CC) $(LDFLAGS) -o threaded threaded.o $(OBJS) $(LDLIBS) -lpthread
+
 testing.o: testing.c testing.h
+threaded.o: threaded.c
 utility.o: utility.c utility.h
 real_quadratic_orders.o: real_quadratic_orders.c real_quadratic_orders.h
 fp_representations.o: fp_representations.c fp_representations.h
@@ -21,4 +25,4 @@ compact_representations.o: compact_representations.c compact_representations.h
 twin_smooths.o: twin_smooths.c twin_smooths.h
 
 clean:
-	$(RM) $(OBJS) testing.o testing infrastructure.so
+	$(RM) $(OBJS) testing.o testing infrastructure.so threaded.o threaded
