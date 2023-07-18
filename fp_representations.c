@@ -163,14 +163,13 @@ wnear(GEN O, GEN fprep, GEN w)
             //also set next element
         }
         av = avma; t = gerepileupto(av,subsi(sigbits(e)+sigbits(gmael(fprep,2,2))-6,mulii(gen_2,gmael(fprep,1,2))));
-        tmp = mulii(e,gmael(fprep,2,2)); tmp2 = powii(gen_2,addii(addis(t,4),mulii(gen_2,gmael(fprep,1,2))));
+        av = avma; tmp = mulii(e,gmael(fprep,2,2)); tmp2 = powii(gen_2,addii(addis(t,4),mulii(gen_2,gmael(fprep,1,2))));
         if (gcmp(tmp2,tmp) < 0)
         {
             if (cmpii(mulii(tmp2,gen_2),tmp) < 0) t = gerepileupto(av,addii(t,gen_2));
             else t = gerepileupto(av,addii(t,gen_1));
         }
         else set_avma(av);
-        //also set for next element and initialize that   
         av = avma; g = gerepileupto(av,gceil(gdiv(mulii(e,gmael(fprep,2,2)),powii(gen_2,addis(addii(gmael(fprep,1,2),t),3)))));
         h = addii(gmael(fprep,2,3),t);
     }
@@ -222,7 +221,7 @@ wnear(GEN O, GEN fprep, GEN w)
         }
         else c = rqiinit(gen_1,Q_1,P_1); //also set next element
         av = avma; t = gerepileupto(av,subsi(sigbits(e)+sigbits(gmael(fprep,2,2))-6,mulii(gen_2,gmael(fprep,1,2))));
-        tmp = mulii(e,gmael(fprep,2,2)); tmp2 = powii(gen_2,addii(addis(t,4),mulii(gen_2,gmael(fprep,1,2))));
+        av = avma; tmp = mulii(e,gmael(fprep,2,2)); tmp2 = powii(gen_2,addii(addis(t,4),mulii(gen_2,gmael(fprep,1,2))));
         if (gcmp(tmp2,tmp) < 0)
         {
             if (cmpii(mulii(tmp2,gen_2),tmp) < 0) t = gerepileupto(av,addii(t,gen_2));
@@ -296,7 +295,7 @@ ewnear(GEN O, GEN fprep, GEN w)
         b = B_m1;
     }
     av = avma; t = gerepileupto(av,subsi(sigbits(e)+sigbits(gmael(fprep,2,2))-6,mulii(gen_2,gmael(fprep,1,2))));
-    tmp = mulii(e,gmael(fprep,2,2)); tmp2 = powii(gen_2,addii(addis(t,4),mulii(gen_2,gmael(fprep,1,2))));
+    av = avma; tmp = mulii(e,gmael(fprep,2,2)); tmp2 = powii(gen_2,addii(addis(t,4),mulii(gen_2,gmael(fprep,1,2))));
     if (gcmp(tmp2,tmp) < 0)
     {
         if (cmpii(mulii(tmp2,gen_2),tmp) < 0) t = gerepileupto(av,addii(t,gen_2));
