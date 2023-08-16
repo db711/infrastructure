@@ -1,7 +1,7 @@
 # Introduction
 Those are algorithms related to computations in the infrastructure of a real quadratic number field, based on so-called (f, p)-representations of ideals ([[1]](#1), primarily chapters 11 and 12).
 
-The goal of this implementation was to compute twin smooth integers of cryptographic size following [[2]](#2) and [[3]](#3); for more background information on this problem see [[5]](#5).
+The goal of this implementation was to compute twin smooth integers of cryptographic size following [[2]](#2) and [[3]](#3); for more background information on this problem see [[4]](#4).
 
 This is an improved version of work I did for my Master Thesis, which can be found [here](https://github.com/db711/twin_smooth).
 
