@@ -12,7 +12,7 @@ twin_smooths(B) =
     my(res = []);
     S = Vecsmall(primes(primepi(B)));export(S);
     P = multiply(S);export(P);
-    m = (S[length(S)]-1)/2;export(m);
+    m = (S[length(S)]+1)/2;export(m);
     export(multiply);
     start = getwalltime;
     parfor(i=0,2^(length(S))-3,TwinSmoothD(S,2*multiply(vecextract(S,2^(length(S))-1-i)),m,P),r,if(r,write(output,i,": ",r)));
@@ -27,8 +27,8 @@ twin_smooths_range_small(B) =
     m = 4;export(m);
     export(multiply);
     start = getwalltime;
-    write(output,0,": ",TwinSmoothRangeDSmall(S[length(S)],2,245,275,4));
-    parfor(i=2,2^(length(S))-1,iferr(TwinSmoothRangeDSmall(S[length(S)],2*multiply(vecextract(S,i)),245,275,4),E,print(i,": ",component(E,1))),r,if(r,write(output,i,": ",r)));
+    write(output,0,": ",TwinSmoothRangeDSmall(S[length(S)],2,245,275,m));
+    parfor(i=2,2^(length(S))-1,iferr(TwinSmoothRangeDSmall(S[length(S)],2*multiply(vecextract(S,i)),245,275,m),E,print(i,": ",component(E,1))),r,if(r,write(output,i,": ",r)));
     write(output,"Computation took ",getwalltime-start,"ms");
 }
 
