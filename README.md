@@ -9,6 +9,9 @@ This is an improved version of work I did for my Master Thesis, which can be fou
 All of the code is written for use with [PARI/GP](https://pari.math.u-bordeaux.fr/). If you plan on using this, you can compile a shared library (for use in GP) with the included Makefile via `make shared`; to use specific functions, they have to be installed in GP first, see the PARI/GP documentation on how to do this or possibly also the example in `twin_smooths.gp`.
 All the functions are well documented in the respective `*.h` files.
 
+# Data
+The `data` directory contains some files that were created with the algorithms, including a comparison of the algorithms to test compact representations for smoothness as well as some lists of twin smooths (that is a list of numbers $m$, such that $m(m+1)$ is $B$-smooth) for various values of $B$.
+
 # References
 <a id="1">[1]</a> \
 M. J. Jacobson, H. C. Williams (2009) \
