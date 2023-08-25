@@ -85,7 +85,7 @@ crmodm (GEN O, GEN cr, GEN m)
 }
 
 GEN 
-crmodm_alt(GEN O, GEN cr, GEN m)
+crmodm_alt(GEN O, GEN cr, GEN m) // could be modified to remove the gcd stuff probably
 {
     pari_sp ltop = avma, av, av2, av3;
     GEN D, G, G_, r, r_, d, n, tmp, res;

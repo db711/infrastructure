@@ -72,6 +72,7 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
                 }
             }
             if(equalii(gel(O,3),gen_2)) smooth_part = diviiexact(smooth_part,gen_2);
+            // check continued fraction expansion up to smooth_part here
             if (gcmp(absr(subrr(glog(smooth_part,DEFAULTPREC),subrr(R,tmp))),ghalf) <= 0)
             {
                 set_avma(av);
@@ -184,7 +185,7 @@ regulator_range(GEN O, ulong A, ulong B)
     }
     if (!cmpii(Q_1,gmael2(b,2,1)) && !cmpii(P_1,gmael2(b,2,2)))
     {
-        //return gerepileupto(ltop,gen_1);
+        return gerepileupto(ltop,gen_1);
         c = rqiinit(gen_1,Q_1,P_1);
         av = avma; e = gerepileupto(av,gceil(gmul(powii(gen_2,addis(subii(gmael(fprep,1,2),s),3)),gdiv(T_0,gmael4(fprep,2,1,2,1)))));
         av = avma;
@@ -235,9 +236,11 @@ twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m)
                 if (ret == NULL) ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
                 else ret = vec_append(ret,diviiexact(subii(gel(e,2),gen_1),gen_2));
             }
+            //else if (cmpii(gel(e,2),strtoi("1606938044258990275541962092341162602522202993782792835301376")) > 0) pari_printf("\t%d: %Ps\n",i,diviiexact(subii(gel(e,2),gen_1),gen_2));
             e = gmul(e,e_);
         }
     }
+    //else pari_printf("FAIL\n");
     if (ret != NULL)
     {
         ret2 = cgetg(lg(ret),t_VEC);

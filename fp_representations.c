@@ -2,14 +2,14 @@
 #include "utility.h"
 
 static inline GEN 
-split(GEN h, GEN m)
-{ // Split integer m into [r, s] with m = r*s such that gcd(r, s) = 1 and any prime dividing s also divides h.
-    if (typ(h) != t_INT) pari_err_TYPE("split",h);
-    if (typ(m) != t_INT) pari_err_TYPE("split",m);
-    if (cmpii(m,gen_1) < 0) pari_err_DOMAIN("split",itostr(m),"<",gen_1,m);
+distribute(GEN n, GEN m)
+{ // Distribute prime factors of integer m into [r, s] with m = r*s such that gcd(r, s) = 1 and any prime dividing s also divides n.
+    if (typ(n) != t_INT) pari_err_TYPE("distribute",n);
+    if (typ(m) != t_INT) pari_err_TYPE("distribute",m);
+    if (cmpii(m,gen_1) < 0) pari_err_DOMAIN("distribute",itostr(m),"<",gen_1,m);
     GEN g, r, s, res;
     pari_sp ltop = avma;
-    g = gcdii(m,h);
+    g = gcdii(m,n);
     r = diviiexact(m,g);
     s = g;
     while (cmpii(g,gen_1) > 0)
@@ -422,7 +422,7 @@ crax(GEN O, GEN x, GEN p, GEN m)
     if (gcmp(powii(gen_2,p),gmax_shallow(powii(gen_2,addii(gen_2,gen_1)),gdiv(glog(x,DEFAULTPREC),mplog2(DEFAULTPREC)))) <= 0) pari_err_PREC("p"); //different error?
     set_avma(ltop);
     GEN bex, s, fprep, fprep_, list, el, el2, el2_, N, eli, res, beta, beta_;
-    GEN h_1, h_2, h_3, b, r_1, r_2, r_3, s_1, s_2, spl, x_, y_, N_, Nc, tmp;
+    GEN n_1, n_2, n_3, b, r_1, r_2, r_3, s_1, s_2, spl, x_, y_, N_, Nc, tmp;
     res = cgetg(3,t_VEC);
     ulong i, l;
     av3 = avma;
@@ -467,9 +467,9 @@ crax(GEN O, GEN x, GEN p, GEN m)
                 N_ = diviiexact(gmael5(fprep,1,2,1,2,1),gel(O,3));
                 if (i < l-1 && cmpii(gcdii(N_,m),gen_1) > 0)
                 {
-                    h_1 = N_;
+                    n_1 = N_;
                     av = avma; tmp = gerepileupto(av,mulii(gmael(O,2,2),subii(gel(O,3),gen_1)));
-                    av = avma; b = gerepileupto(av,modii(diviiexact(subii(gmael5(fprep,1,2,1,2,2),tmp),gel(O,3)),h_1));
+                    av = avma; b = gerepileupto(av,modii(diviiexact(subii(gmael5(fprep,1,2,1,2,2),tmp),gel(O,3)),n_1));
                     // Failed experiment
                     /*GEN q, q_, Q, P, a;
                     pari_sp av4;
@@ -491,15 +491,15 @@ crax(GEN O, GEN x, GEN p, GEN m)
                         pari_printf("beta = %Ps, c = (%Ps, %Ps)\n",beta,Q,P);
                         gerepileall(av4,3,&Q,&P,&beta);
                     } while(cmpii(gcdii(diviiexact(Q,gel(O,3)),m),gen_1) > 0);*/
-                    av = avma; h_3 = gerepileupto(av,diviiexact(subii(sqri(addii(mulii(gel(O,3),b),tmp)),gel(O,1)),mulii(h_1,sqri(gel(O,3)))));
-                    av = avma; h_2 = gerepileupto(av,addii(diviiexact(mulii(gen_2,addii(mulii(gel(O,3),b),tmp)),gel(O,3)),addii(h_1,h_3)));
-                    spl = split(h_1,m); r_1 = gel(spl,1); s_1 = gel(spl,2);
-                    spl = split(h_2,s_1); r_2 = gel(spl,1); s_2 = gel(spl,2);
-                    spl = split(h_3,s_2); r_3 = gel(spl,1); // s_3 not needed
+                    av = avma; n_3 = gerepileupto(av,diviiexact(subii(sqri(addii(mulii(gel(O,3),b),tmp)),gel(O,1)),mulii(n_1,sqri(gel(O,3)))));
+                    av = avma; n_2 = gerepileupto(av,addii(diviiexact(mulii(gen_2,addii(mulii(gel(O,3),b),tmp)),gel(O,3)),addii(n_1,n_3)));
+                    spl = distribute(n_1,m); r_1 = gel(spl,1); s_1 = gel(spl,2);
+                    spl = distribute(n_2,s_1); r_2 = gel(spl,1); s_2 = gel(spl,2);
+                    spl = distribute(n_3,s_2); r_3 = gel(spl,1); // s_3 not needed
                     x_ = lift(chinese1_coprime_Z(mkvec2(mkintmod(gen_1,mulii(r_1,r_2)),mkintmod(gen_0,r_3))));
                     y_ = lift(chinese1_coprime_Z(mkvec2(mkintmod(gen_1,mulii(r_2,r_3)),mkintmod(gen_0,r_1))));
                     beta = cgetg(3,t_VEC);
-                    av = avma; gel(beta,1) = gerepileupto(av,addii(mulii(gel(O,3),addii(mulii(x_,h_1),mulii(b,y_))),mulii(y_,tmp)));
+                    av = avma; gel(beta,1) = gerepileupto(av,addii(mulii(gel(O,3),addii(mulii(x_,n_1),mulii(b,y_))),mulii(y_,tmp)));
                     gel(beta,2) = gcopy(y_);
                 }
                 else

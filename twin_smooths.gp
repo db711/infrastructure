@@ -12,7 +12,7 @@ twin_smooths(B) =
     my(res = []);
     S = Vecsmall(primes(primepi(B)));export(S);
     P = multiply(S);export(P);
-    m = (S[length(S)]-1)/2;export(m);
+    m = (S[length(S)]+1)/2;export(m);
     export(multiply);
     start = getwalltime;
     parfor(i=0,2^(length(S))-3,TwinSmoothD(S,2*multiply(vecextract(S,2^(length(S))-1-i)),m,P),r,if(r,write(output,i,": ",r)));
@@ -39,5 +39,5 @@ multiply(S) =
     p;
 }
 
-default(parisize,1073741824);
+default(parisize,3221225472);
 default(nbthreads,48);
