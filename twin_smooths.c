@@ -53,8 +53,8 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
         }
         else
         {
-            av = avma; tmp = gerepileupto(av,addrr(glog(gen_2,DEFAULTPREC),glog(gsqrt(gel(O,1),DEFAULTPREC),DEFAULTPREC)));
-            av = avma; r = gerepileupto(av,roundr(gdiv(R,mplog2(DEFAULTPREC))));
+            av = avma; tmp = gerepileupto(av,addrr(glog(gen_2,precision(R)),glog(gsqrt(gel(O,1),precision(R)),precision(R))));
+            av = avma; r = gerepileupto(av,roundr_safe(gdiv(R,mplog2(precision(R)))));
             if (crnorm_sign(O,gel(cr(O,b,r,ghalf,gen_0),2)) == -1) 
             {
                 R = mulir(gen_2,R);
