@@ -30,9 +30,9 @@ rqoinit(GEN d)
 GEN
 rqiinit(GEN S, GEN Q, GEN P)
 {
-    if (typ(S) != t_INT) pari_err_TYPE("rqiinit0",S);
-    if (typ(Q) != t_INT) pari_err_TYPE("rqiinit0",Q);
-    if (typ(P) != t_INT) pari_err_TYPE("rqiinit0",P);
+    if (typ(S) != t_INT) pari_err_TYPE("rqiinit",S);
+    if (typ(Q) != t_INT) pari_err_TYPE("rqiinit",Q);
+    if (typ(P) != t_INT) pari_err_TYPE("rqiinit",P);
     GEN res;
     res = cgetg(3,t_VEC);
     gel(res,1) =  (S == gen_1) ? gen_1 : gcopy(S); //common special case, no need to store S
@@ -234,7 +234,7 @@ regulatorcf(GEN O, ulong prec, long flag)
     do
     {
         n += 1;
-        if (flag == 1) pari_printf("%ld: [%Ps, %Ps] %Ps\n",n,Q,P,gerepileupto(av,mplog(theta)));
+        if (flag == 1) pari_printf("%ld: [%Ps, %Ps]\n",n,Q,P);
         else if (flag == 2)
         {
             av = avma; pari_printf("%ld: [%Ps, %Ps] %Ps\n",n,Q,P,gerepileupto(av,mplog(theta)));
@@ -318,7 +318,7 @@ regulatorshanks(GEN O, ulong prec, long flag)
         av = avma; psi = gerepileupto(av,divri(addir(P,sqrtd),Q_));
         av = avma; theta = gerepileupto(av,mulrr(theta,psi));
         lt = mplog(theta);
-        if (equalii(Q,Q_0)) return gerepilecopy(ltop, lt);
+        if (equalii(Q,Q_0)) return gerepilecopy(ltop,lt);
         if (equalii(P_,P)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(rdivii(Q_0,Q_,prec))));
         if (equalii(Q_,Q)) return gerepileupto(ltop,addrr(mulir(gen_2,subrr(lt,mplog(psi))),mplog(mulir(Q_0,divri(psi,Q_)))));
         gerepileall(av2,10,&q,&Q,&P,&G_0,&G_1,&B_0,&B_1,&theta,&lt,&L);
