@@ -78,26 +78,13 @@ twin_smooth_d(GEN S, GEN d, ulong m, GEN P)
                 set_avma(av);
                 e = quadunit0(d,-1);
                 if (cmpii(gnorm(e),gen_1)) e = gsqr(e);
+                e_ = e;
                 ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
                 for (i = 2; i < lg(I); i++)
                 {
+                    e = gmul(e,e_);
                     if (!I[i]) continue;
-                    av = avma;
-                    if (S[lg(S)-1] < 2000) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
-                    else
-                    {
-                        if(cmprr(glog(d,DEFAULTPREC),dbltor(39.143946580898776628305854729634191529218725306689140592566574316)) < 0) smooth_part = crsmoothpart_alt(O,gel(cr(O,b,r,ghalf,gen_0),2),S,2); // d < 10^17
-                        else
-                        {
-                            if (S[lg(S)-1] < 5200) smooth_part = crsmoothpart(O,gel(cr(O,b,r,ghalf,P),2),S,2);
-                            else smooth_part = crsmoothpart2(O,b,r,ghalf,S,2);
-                        }
-                    }
-                    if (gcmp(absr(subrr(glog(smooth_part,DEFAULTPREC),subrr(mulsr(i,R),tmp))),ghalf) <= 0)
-                    {
-                        set_avma(av);
-                        ret = vec_append(ret,diviiexact(subii(gel(gpow(e,stoi(i),DEFAULTPREC),2),gen_1),gen_2));
-                    }
+                    if (Z_issmooth(gel(e,3),S[lg(S)-1])) ret = vec_append(ret,diviiexact(subii(gel(e,2),gen_1),gen_2)); //switch to compact representations?
                     else for (j = i; j < lg(I); j += i) I[j] = 0;
                 }
             }
@@ -231,7 +218,7 @@ twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m)
         e_ = e;
         for (i = 1; i < lg(I); i++)
         {
-            if (Z_issmooth(gel(e,3),B))
+            if (Z_issmooth(gel(e,3),B)) //switch to compact representations?
             {
                 if (ret == NULL) ret = mkvec(diviiexact(subii(gel(e,2),gen_1),gen_2));
                 else ret = vec_append(ret,diviiexact(subii(gel(e,2),gen_1),gen_2));

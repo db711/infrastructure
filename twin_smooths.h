@@ -4,7 +4,7 @@
 
 GEN twin_smooth_d(GEN S, GEN d, ulong m, GEN P);
 /* Twin smooths (for value d)
- * Input:   Vector S of primes below a bound B;;
+ * Input:   Vector S of primes below a bound B;
             positive, even, squarefree integer d;
             upper bound m.
  * Output:  Vector containing all x, such that x(x+1) is B-smooth, corresponding to d.
