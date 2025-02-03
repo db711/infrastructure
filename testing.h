@@ -6,6 +6,7 @@
 #include "compact_representations.h"
 #include "utility.h"
 #include "twin_smooths.h"
+#include "stormer.h"
 
 ulong timedtest(GEN (*f)(GEN O, ulong prec, long flag), ulong i, ulong n);
 /* Timed tests.
