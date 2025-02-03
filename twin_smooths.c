@@ -160,7 +160,6 @@ regulator_range(GEN O, ulong A, ulong B)
     T_1 = mulii(tmp,gmael4(fprep,2,1,2,1));
     while (cmpii(T_1,M) <= 0)
     {
-        if (!cmpii(Q_1,gmael2(b,2,1)) && !cmpii(P_1,gmael2(b,2,2))) break;
         av = avma; q = gerepileupto(av,divii(addii(P_1,sqrtd_),Q_1));
         P_m1 = P_0; P_0 = P_1;
         av = avma; P_1 = gerepileupto(av,subii(mulii(q,Q_1),P_1));
@@ -169,6 +168,7 @@ regulator_range(GEN O, ulong A, ulong B)
         T_m1 = T_0; T_0 = T_1;
         av = avma; T_1 = gerepileupto(av,addii(mulii(q,T_1),T_m1));
         gerepileall(av2,9,&P_m1,&P_0,&P_1,&Q_m1,&Q_0,&Q_1,&T_m1,&T_0,&T_1);
+        if (!cmpii(Q_1,gmael2(b,2,1)) && !cmpii(P_1,gmael2(b,2,2))) break;
     }
     if (!cmpii(Q_1,gmael2(b,2,1)) && !cmpii(P_1,gmael2(b,2,2)))
     {
