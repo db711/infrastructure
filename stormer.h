@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <pari/pari.h>
 
-//#define LOG_2_B 64 //an upper bound on the number of bits in log_2(B) for the smoothness bound B
-
 typedef enum
 {
    zero,
@@ -24,6 +22,12 @@ typedef struct
     GEN sol; //sum of logs
 } node;
 
+GEN logsofprimes(ulong B);
+/* Logarithms of primes.
+ * Input:   Smoothness bound B.
+ * Output:  A GEN holding a t_VEC containing a sorted list of the logarithms of the primes <= B (which are themselves t_REAL of precision DEFAULTPREC).
+*/
+
 char* tlv2str(const tlv* vector, char* str);
 /* three-valued logic vector to string.
  * Input:   tlv vector; char* str.
@@ -39,15 +43,17 @@ tlv* str2tlv(const char* str, const ulong* size);
  * Output:  A pointer to a tlv that is allocated in memory.
 */
 
-node* rightchild(const node* parent, node* child);
+node* rightchild(const node* parent, node* child, GEN lop);
 /* right child.
- * Input:   node* parent, node* child
+ * Input:   node* parent, node* child;
+            GEN lop (logarithms of primes) as returned by logsofprimes (defined globally).
  * Output:  The right child of node parent is stored in child and returned.
 */
 
-node* leftchild(const node* parent, node* child);
+node* leftchild(const node* parent, node* child, GEN lop);
 /* left child.
- * Input:   node* parent, node* child
+ * Input:   node* parent, node* child;
+            GEN lop (logarithms of primes) as returned by logsofprimes (defined globally).
  * Output:  The left child of node parent is stored in child and returned.
 */
 

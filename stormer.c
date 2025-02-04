@@ -1,5 +1,11 @@
 #include "stormer.h"
 
+GEN
+logsofprimes(ulong B)
+{
+    return glog(primes((long)uprimepi(B)),DEFAULTPREC);
+}
+
 char*
 tlv2str(const tlv* vector, char* str)
 {
@@ -36,7 +42,7 @@ str2tlv(const char* str, const ulong* size)
 }
 
 node* 
-rightchild(const node* parent, node* child)
+rightchild(const node* parent, node* child, GEN lop)
 {
     if (((parent->vector)->data)[0] != undefined) return NULL; //parent is a leaf
     ulong i;
@@ -52,7 +58,7 @@ rightchild(const node* parent, node* child)
 }
 
 node* 
-leftchild(const node* parent, node* child)
+leftchild(const node* parent, node* child, GEN lop)
 {
     if (((parent->vector)->data)[0] != undefined) return NULL; //parent is a leaf
     ulong i;
