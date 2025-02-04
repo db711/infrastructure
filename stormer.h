@@ -25,14 +25,14 @@ typedef struct
 } node;
 
 char* tlv2str(const tlv* vector, char* str);
-/* three-valued logic vector to string
+/* three-valued logic vector to string.
  * Input:   tlv vector; char* str.
             User must ensure that str can store *(tlv.size)+1 many characters.
- * Ouput:   tlv.data converted to a word over the alphabet {0, 1, x}^*.
+ * Ouput:   tlv.data converted to a word over the alphabet {0, 1, x}^* and stored in str.
 */
 
 tlv* str2tlv(const char* str, const ulong* size);
-/* string to three-valued logic vector
+/* string to three-valued logic vector.
  * Input:   char* str, holding a word over the alphabet {0, 1, x}^*;
             ulong* size, pointing to a global length parameter for tlvs.
             User must ensure that the string is (at least) (*size) characters long.
@@ -40,6 +40,15 @@ tlv* str2tlv(const char* str, const ulong* size);
 */
 
 node* rightchild(const node* parent, node* child);
+/* right child.
+ * Input:   node* parent, node* child
+ * Output:  The right child of node parent is stored in child and returned.
+*/
+
 node* leftchild(const node* parent, node* child);
+/* left child.
+ * Input:   node* parent, node* child
+ * Output:  The left child of node parent is stored in child and returned.
+*/
 
 #endif
