@@ -33,5 +33,6 @@ GEN rightchild(GEN node, GEN lop);
 */
 
 void printfailures(ulong B, ulong top, long prec);
+void stormer_print(ulong B, ulong top, long prec);
 
 #endif

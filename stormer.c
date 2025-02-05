@@ -38,21 +38,25 @@ rightchild(GEN node, GEN lop)
     return res;
 }
 
-static void
-branch_print(GEN node, GEN lop, GEN ub)
+static int
+stormer_branch(GEN node, GEN lop, GEN ub, int ft)
 {
-    if (node == NULL) return;
-    if(cmprr(gel(node,2),ub) > 0)  pari_printf("%Ps\n",gel(node,1)); //need to get rid of nodes after this
-    else
+    // need to do memory management somewhere
+    if (cmprr(gel(node,2),ub) > 0) return 1; // stops computing this branch
+    else 
     {
-        branch_print(rightchild(node,lop),lop,ub);
-        branch_print(leftchild(node,lop),lop,ub);
+        if (lg(gel(node,1)) >= lg(lop)) pari_printf("%Ps\n",node); // leaf node
+        else
+        {
+            if (ft == 0) ft = stormer_branch(rightchild(node,lop),lop,ub,ft);
+            stormer_branch(leftchild(node,lop),lop,ub,ft);
+        }
     }
-    return;
+    return 0;
 }
 
 void
-printfailures(ulong B, ulong top, long prec)
+stormer_print(ulong B, ulong top, long prec)
 {
     GEN node, ub, lop, vec;
     pari_sp ltop = avma, av;
@@ -63,7 +67,7 @@ printfailures(ulong B, ulong top, long prec)
     node = gerepileupto(av,createnode(vec,itor(gen_0,prec)));
     pari_printf("%Ps\n",lop);
     pari_printf("upper bound: %Ps\n\n",ub);
-    branch_print(node,lop,ub);
+    stormer_branch(node,lop,ub,0);
     set_avma(ltop);
     return;
 }
