@@ -20,14 +20,16 @@ GEN leftchild(GEN node, GEN lop);
 /* Left child.
  * Input:   Node [bv, sol] (as returned by createnode or *child);
             lop (as returned by logsofprimes).
- * Output:  Node [vec_append(bv,0), sol].
+ * Output:  Node [vec_append(bv,0), sol]
+            or NULL, if node is already a leaf.
 */
 
 GEN rightchild(GEN node, GEN lop);
 /* Right child.
  * Input:   Node [bv, sol] (as returned by createnode or *child);
             lop (as returned by logsofprimes).
- * Output:  Node [vec_append(bv,1), sol+lop(length(bv))].
+ * Output:  Node [vec_append(bv,1), sol+lop(length(bv))]
+            or NULL, if node is already a leaf.
 */
 
 void printfailures(ulong B, ulong top, long prec);
