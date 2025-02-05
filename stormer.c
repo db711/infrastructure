@@ -41,15 +41,15 @@ rightchild(GEN node, GEN lop)
 static int
 stormer_branch(GEN node, GEN lop, GEN ub, int ft)
 {
-    // need to do memory management somewhere
+    pari_sp av = avma;
     if (cmprr(gel(node,2),ub) > 0) return 1; // stops computing this branch
     else 
     {
         if (lg(gel(node,1)) >= lg(lop)) pari_printf("%Ps\n",node); // leaf node
         else
         {
-            if (ft == 0) ft = stormer_branch(rightchild(node,lop),lop,ub,ft);
-            stormer_branch(leftchild(node,lop),lop,ub,ft);
+            if (ft == 0) av = avma; ft = stormer_branch(rightchild(node,lop),lop,ub,ft); set_avma(av);
+            av = avma; stormer_branch(leftchild(node,lop),lop,ub,ft); set_avma(av);
         }
     }
     return 0;
