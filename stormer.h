@@ -32,7 +32,13 @@ GEN rightchild(GEN node, GEN lop);
             or NULL, if node is already a leaf.
 */
 
-void printfailures(ulong B, ulong top, long prec);
-void stormer_print(ulong B, ulong top, long prec);
+void stormeri_write_txt(ulong B, ulong top, long prec, char* path);
+/* Stormer indices write txt.
+ * Input:   Smoothness bound B;
+            upper bound (in bits) top;
+            precision prec;
+            path path.
+ * Output:  Writes the corresponding indices of the Stormer discriminants associated to (B, top) to the txt file path.
+*/
 
 #endif

@@ -38,26 +38,28 @@ rightchild(GEN node, GEN lop)
     return res;
 }
 
-static int
-stormer_branch(GEN node, GEN lop, GEN ub, int ft)
+static inline int
+stormeri_write_txt_branch(GEN node, GEN lop, GEN ub, int ft, FILE* fptr)
 {
-    pari_sp av = avma;
+    pari_sp ltop = avma;
     if (cmprr(gel(node,2),ub) > 0) return 1; // stops computing this branch
     else 
     {
-        if (lg(gel(node,1)) >= lg(lop)) pari_printf("%Ps\n",node); // leaf node
+        if (lg(gel(node,1)) >= lg(lop)) pari_fprintf(fptr,"%Ps\n",bits_to_int(gel(node,1),lg(gel(node,1))-1));
         else
         {
-            if (ft == 0) av = avma; ft = stormer_branch(rightchild(node,lop),lop,ub,ft); set_avma(av);
-            av = avma; stormer_branch(leftchild(node,lop),lop,ub,ft); set_avma(av);
+            stormeri_write_txt_branch(leftchild(node,lop),lop,ub,ft,fptr); set_avma(ltop);
+            if (ft == 0) ft = stormeri_write_txt_branch(rightchild(node,lop),lop,ub,ft,fptr); set_avma(ltop);
         }
     }
+    set_avma(ltop);
     return 0;
 }
 
 void
-stormer_print(ulong B, ulong top, long prec)
+stormeri_write_txt(ulong B, ulong top, long prec, char* path)
 {
+    FILE* fptr;
     GEN node, ub, lop, vec;
     pari_sp ltop = avma, av;
     av = avma; ub = gerepileupto(av,logr_abs(mulir(gen_2,addir(gen_1,gcosh(mulis(gen_2,top),prec))))); //can this be simplified?
@@ -65,9 +67,9 @@ stormer_print(ulong B, ulong top, long prec)
     av = avma;
     vec = cgetg(1,t_VECSMALL);
     node = gerepileupto(av,createnode(vec,itor(gen_0,prec)));
-    pari_printf("%Ps\n",lop);
-    pari_printf("upper bound: %Ps\n\n",ub);
-    stormer_branch(node,lop,ub,0);
+    fptr = fopen(path,"w");
+    stormeri_write_txt_branch(node,lop,ub,0,fptr);
+    fclose(fptr);
     set_avma(ltop);
     return;
 }
