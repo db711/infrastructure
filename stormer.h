@@ -16,9 +16,10 @@ GEN createnode(GEN bv, GEN sol);
  * Output:  [bv, sol].
 */
 
-GEN leftchild(GEN node);
+GEN leftchild(GEN node, GEN lop);
 /* Left child.
- * Input:   Node [bv, sol] (as returned by createnode or *child).
+ * Input:   Node [bv, sol] (as returned by createnode or *child);
+            lop (as returned by logsofprimes).
  * Output:  Node [vec_append(bv,0), sol].
 */
 

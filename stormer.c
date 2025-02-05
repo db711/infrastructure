@@ -9,7 +9,8 @@ logsofprimes(ulong B, long prec)
 GEN
 createnode(GEN bv, GEN sol)
 {
-    //TODO: error handling
+    if (typ(bv) != t_VEC) pari_err_TYPE("createnode",bv);
+    if (typ(sol) != t_REAL) pari_err_type("createnode",sol);
     GEN res = cgetg(3,t_VEC);
     gel(res,1) = shallowcopy(bv);
     gel(res,2) = gcopy(sol);
@@ -17,9 +18,9 @@ createnode(GEN bv, GEN sol)
 }
 
 GEN
-leftchild(GEN node)
+leftchild(GEN node, GEN lop)
 {
-    //TODO: error handling
+    if (lg(gel(node,1)) > lg(lop)) return NULL; // node is a leaf
     GEN res = cgetg(3,t_VEC);
     gel(res,1) = vec_append(gel(node,1),gen_0);
     gel(res,2) = gcopy(gel(node,2));
@@ -29,7 +30,7 @@ leftchild(GEN node)
 GEN
 rightchild(GEN node, GEN lop)
 {
-    //TODO: error handling
+    if (lg(gel(node,1)) > lg(lop)) return NULL; // node is a leaf
     GEN res = cgetg(3,t_VEC);
     pari_sp ltop;
     gel(res,1) = vec_append(gel(node,1),gen_1);
@@ -40,7 +41,6 @@ rightchild(GEN node, GEN lop)
 void
 printfailures(ulong B, ulong top, long prec)
 {
-    // TODO: error handling
     GEN ub,lop;
     pari_sp ltop = avma, av;
     av = avma; ub = gerepileupto(av,logr_abs(mulir(gen_2,addir(gen_1,gcosh(mulis(gen_2,top),prec))))); //can this be simplified?
