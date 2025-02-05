@@ -32,7 +32,7 @@ GEN rightchild(GEN node, GEN lop);
             or NULL, if node is already a leaf.
 */
 
-void stormeri_write_txt(ulong B, ulong top, long prec, char* path);
+void stormeri_write_txt(ulong B, ulong top, long prec, FILE* fptr);
 /* Stormer indices write txt.
  * Input:   Smoothness bound B;
             upper bound (in bits) top;

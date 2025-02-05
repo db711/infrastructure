@@ -57,9 +57,8 @@ stormeri_write_txt_branch(GEN node, GEN lop, GEN ub, int ft, FILE* fptr)
 }
 
 void
-stormeri_write_txt(ulong B, ulong top, long prec, char* path)
+stormeri_write_txt(ulong B, ulong top, long prec, FILE* fptr)
 {
-    FILE* fptr;
     GEN node, ub, lop, vec;
     pari_sp ltop = avma, av;
     av = avma; ub = gerepileupto(av,logr_abs(mulir(gen_2,addir(gen_1,gcosh(mulis(gen_2,top),prec))))); //can this be simplified?
@@ -67,9 +66,7 @@ stormeri_write_txt(ulong B, ulong top, long prec, char* path)
     av = avma;
     vec = cgetg(1,t_VECSMALL);
     node = gerepileupto(av,createnode(vec,itor(gen_0,prec)));
-    fptr = fopen(path,"w");
     stormeri_write_txt_branch(node,lop,ub,0,fptr);
-    fclose(fptr);
     set_avma(ltop);
     return;
 }
