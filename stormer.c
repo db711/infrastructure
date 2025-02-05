@@ -1,7 +1,7 @@
 #include "stormer.h"
 
 GEN
-logsofprimes(ulong B, ulong prec)
+logsofprimes(ulong B, long prec)
 {
     return glog(primes((long)uprimepi(B)),prec);
 }
@@ -35,4 +35,16 @@ rightchild(GEN node, GEN lop)
     gel(res,1) = vec_append(gel(node,1),gen_1);
     ltop = avma; gel(res,2) = gerepileupto(ltop,addrr(gel(node,2),gel(lop,lg(gel(res,1))-1)));
     return res;
+}
+
+void
+printfailures(ulong B, ulong top, long prec)
+{
+    // TODO: error handling
+    GEN ub,lop;
+    pari_sp ltop = avma, av;
+    av = avma; ub = gerepileupto(av,logr_abs(mulir(gen_2,addir(gen_1,gcosh(mulis(gen_2,top),prec))))); //can this be simplified?
+    lop = logsofprimes(B,prec);
+    set_avma(ltop);
+    return;
 }

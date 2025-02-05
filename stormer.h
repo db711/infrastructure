@@ -2,7 +2,7 @@
 #define STORMER_H
 #include <pari/pari.h>
 
-GEN logsofprimes(ulong B, ulong prec);
+GEN logsofprimes(ulong B, long prec);
 /* Logarithms of primes.
  * Input:   Smoothness bound B;
             precision prec.
@@ -28,5 +28,7 @@ GEN rightchild(GEN node, GEN lop);
             lop (as returned by logsofprimes).
  * Output:  Node [vec_append(bv,1), sol+lop(length(bv))].
 */
+
+void printfailures(ulong B, ulong top, long prec);
 
 #endif
