@@ -10,7 +10,7 @@ GEN
 createnode(GEN bv, GEN sol)
 {
     if (typ(bv) != t_VEC) pari_err_TYPE("createnode",bv);
-    if (typ(sol) != t_REAL) pari_err_type("createnode",sol);
+    if (typ(sol) != t_REAL) pari_err_TYPE("createnode",sol);
     GEN res = cgetg(3,t_VEC);
     gel(res,1) = shallowcopy(bv);
     gel(res,2) = gcopy(sol);
