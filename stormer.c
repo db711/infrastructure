@@ -12,15 +12,21 @@ createnode(GEN bv, GEN sol)
     if (typ(bv) != t_VECSMALL) pari_err_TYPE("createnode",bv);
     if (typ(sol) != t_REAL) pari_err_TYPE("createnode",sol);
     GEN res = cgetg(3,t_VEC);
-    gel(res,1) = shallowcopy(bv);
+    gel(res,1) = gcopy(bv);
     gel(res,2) = gcopy(sol);
     return res;
 }
 
-GEN
-leftchild(GEN node, GEN lop)
+int
+isleaf (GEN node, GEN lop)
 {
-    if (lg(gel(node,1)) >= lg(lop)) return NULL; // node is a leaf
+    if (lg(gel(node,1)) >= lg(lop)) return 1;
+    return 0;
+}
+
+GEN
+leftchild(GEN node)
+{
     GEN res = cgetg(3,t_VEC);
     gel(res,1) = vecsmall_append(gel(node,1),0);
     gel(res,2) = gcopy(gel(node,2));
@@ -30,7 +36,6 @@ leftchild(GEN node, GEN lop)
 GEN
 rightchild(GEN node, GEN lop)
 {
-    if (lg(gel(node,1)) >= lg(lop)) return NULL; // node is a leaf
     GEN res = cgetg(3,t_VEC);
     pari_sp ltop;
     gel(res,1) = vecsmall_append(gel(node,1),1);
@@ -38,6 +43,48 @@ rightchild(GEN node, GEN lop)
     return res;
 }
 
+sstack
+stormer_gen(GEN lop, GEN sol)
+{ // TODO: supply a starting bv
+    sstack stormer = {0};
+    pari_sp rc;
+    stormer.sizes = calloc(sizeof(pari_sp),2*lg(lop)-1);
+    stormer.bot = avma;
+    stormer.top = (pari_sp)gerepileupto(stormer.bot,createnode(cgetg(1,t_VECSMALL),sol)); // root
+    stormer.sizes[stormer.length++] = stormer.bot-stormer.top;
+    while (!isleaf((GEN)stormer.top,lop))
+    {
+        rc = (pari_sp)rightchild((GEN)stormer.top,lop);
+        stormer.sizes[stormer.length++] = stormer.top-rc;
+        stormer.top = (pari_sp)leftchild((GEN)stormer.top);
+        stormer.sizes[stormer.length++] = rc-stormer.top;
+    }
+    return stormer;
+}
+
+/*
+sstack
+stormer_next(sstack stormer, GEN lop)
+{ // TODO: How to recognize when there are no more leaves?
+    pari_sp rc, ltop = avma;
+    pari_printf("\tchanging top from %u to ",stormer.top);
+    stormer.top += stormer.sizes[--stormer.length];
+    pari_printf("%u\n",stormer.top);
+    if (!isleaf((GEN)stormer.top,lop))
+    {
+        pari_printf("\t%Ps isnt a leaf\n",stormer.top);
+        avma = stormer.top;
+        rc = (pari_sp)rightchild((GEN)stormer.top,lop);
+        stormer.sizes[stormer.length++] = stormer.top-rc;
+        stormer.top = (pari_sp)leftchild((GEN)stormer.top);
+        stormer.sizes[stormer.length++] = rc-stormer.top;
+    }
+    avma = ltop;
+    return stormer;
+}
+*/
+
+/*
 static inline int
 stormeri_write_txt_branch(GEN node, GEN lop, GEN ub, int ft, FILE* fptr)
 {
@@ -70,3 +117,4 @@ stormeri_write_txt(GEN sol, ulong B, ulong top, long prec, FILE* fptr)
     set_avma(ltop);
     return;
 }
+*/
