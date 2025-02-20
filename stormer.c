@@ -39,82 +39,44 @@ rightchild(GEN node, GEN lop)
     GEN res = cgetg(3,t_VEC);
     pari_sp ltop;
     gel(res,1) = vecsmall_append(gel(node,1),1);
-    ltop = avma; gel(res,2) = gerepileupto(ltop,addrr(gel(node,2),gel(lop,lg(gel(res,1))-1)));
+    ltop = avma; gel(res,2) = gerepileupto(ltop,addrr(gel(node,2),gel(lop,lg(lop)+1-lg(gel(res,1)))));
     return res;
 }
 
 sstack
 stormer_gen(GEN lop, GEN sol)
-{ // TODO: supply a starting bv
+{ // TODO: supply a starting bv and incorporate sol
     sstack stormer = {0};
-    pari_sp rc;
-    stormer.sizes = calloc(sizeof(pari_sp),2*lg(lop)-1);
-    stormer.bot = avma;
-    stormer.top = (pari_sp)gerepileupto(stormer.bot,createnode(cgetg(1,t_VECSMALL),sol)); // root
-    stormer.sizes[stormer.length++] = stormer.bot-stormer.top;
-    while (!isleaf((GEN)stormer.top,lop))
+    stormer.top = avma;
+    stormer.bot= (pari_sp)gerepileupto(stormer.top,createnode(cgetg(1,t_VECSMALL),sol));
+    while (!isleaf((GEN)stormer.bot,lop))
     {
-        rc = (pari_sp)rightchild((GEN)stormer.top,lop);
-        stormer.sizes[stormer.length++] = stormer.top-rc;
-        stormer.top = (pari_sp)leftchild((GEN)stormer.top);
-        stormer.sizes[stormer.length++] = rc-stormer.top;
+        rightchild((GEN)stormer.bot,lop);
+        stormer.bot = (pari_sp)leftchild((GEN)stormer.bot);
     }
     return stormer;
 }
 
-/*
 sstack
 stormer_next(sstack stormer, GEN lop)
 { // TODO: How to recognize when there are no more leaves?
-    pari_sp rc, ltop = avma;
-    pari_printf("\tchanging top from %u to ",stormer.top);
-    stormer.top += stormer.sizes[--stormer.length];
-    pari_printf("%u\n",stormer.top);
-    if (!isleaf((GEN)stormer.top,lop))
+    GEN prev, curr = (GEN)stormer.bot;
+    if ((long)gel(gel(curr,1),lg(gel(curr,1))-1) == 1) 
     {
-        pari_printf("\t%Ps isnt a leaf\n",stormer.top);
-        avma = stormer.top;
-        rc = (pari_sp)rightchild((GEN)stormer.top,lop);
-        stormer.sizes[stormer.length++] = stormer.top-rc;
-        stormer.top = (pari_sp)leftchild((GEN)stormer.top);
-        stormer.sizes[stormer.length++] = rc-stormer.top;
-    }
-    avma = ltop;
-    return stormer;
-}
-*/
-
-/*
-static inline int
-stormeri_write_txt_branch(GEN node, GEN lop, GEN ub, int ft, FILE* fptr)
-{
-    pari_sp ltop = avma;
-    if (cmprr(gel(node,2),ub) > 0) return 1; // stops computing this branch
-    else 
-    {
-        if (lg(gel(node,1)) >= lg(lop)) pari_fprintf(fptr,"%Ps\n",bits_to_int(gel(node,1),lg(gel(node,1))-1));
-        else
+        prev = curr;
+        do { prev = (GEN)((pari_sp)prev+gsizebyte(prev)-sizeof(long)); } while ((long)gel(gel(prev,1),lg(gel(prev,1))-1) == 1);
+        prev = (GEN)((pari_sp)prev+gsizebyte(prev));
+        stormer.bot = (pari_sp)gerepile((pari_sp)(gel(prev,2)),(pari_sp)gel(curr,2),prev);
+        while (!isleaf((GEN)stormer.bot,lop))
         {
-            stormeri_write_txt_branch(leftchild(node,lop),lop,ub,ft,fptr); set_avma(ltop);
-            if (ft == 0) ft = stormeri_write_txt_branch(rightchild(node,lop),lop,ub,ft,fptr); set_avma(ltop);
+            rightchild((GEN)stormer.bot,lop);
+            stormer.bot = (pari_sp)leftchild((GEN)stormer.bot);
         }
     }
-    set_avma(ltop);
-    return 0;
+    else
+    {
+        prev = (GEN)(stormer.bot+gsizebyte((GEN)stormer.bot));
+        stormer.bot = (pari_sp)gerepile((pari_sp)(gel(prev,2)),(pari_sp)gel(curr,2),prev);
+    }
+    return stormer;
 }
-
-void
-stormeri_write_txt(GEN sol, ulong B, ulong top, long prec, FILE* fptr)
-{
-    GEN node, ub, lop, vec;
-    pari_sp ltop = avma, av;
-    av = avma; ub = gerepileupto(av,logr_abs(mulir(gen_2,addir(gen_1,gcosh(mulis(gen_2,top),prec))))); //can this be simplified?
-    lop = logsofprimes(B,prec);
-    av = avma;
-    vec = cgetg(1,t_VECSMALL);
-    node = gerepileupto(av,createnode(vec,sol));
-    stormeri_write_txt_branch(node,lop,ub,0,fptr);
-    set_avma(ltop);
-    return;
-}
-*/
