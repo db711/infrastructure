@@ -9,7 +9,8 @@ typedef struct {
 /* We think of this as a (separate) stack storing nodes.
  * This stack is initialized with stormer_gen, 
  * further elements are generated (i.e. bot is changed) by running stormer_next.
- * Currently it is required that the PARI stock is not modified (or at least cleaned)
+ * Currently it is required that the PARI stack is not modified 
+ * (or at least cleaned, meaning avma = gel(bot,2))
  * between running stormer_gen and calling stormer_next 
  * (respectively between any subsequent calls of stormer_next).
  * Further calls to stormer_gen after all leaves were generated are undefined.
