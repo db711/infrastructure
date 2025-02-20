@@ -59,7 +59,7 @@ stormer_gen(GEN lop, GEN sol)
 
 sstack
 stormer_next(sstack stormer, GEN lop)
-{ // TODO: How to recognize when there are no more leaves?
+{ // TODO: incorporate sol
     GEN prev, curr = (GEN)stormer.bot;
     if ((long)gel(gel(curr,1),lg(gel(curr,1))-1) == 1) 
     {
