@@ -13,7 +13,7 @@ typedef struct {
  * (or at least cleaned, meaning avma = gel(bot,2))
  * between running stormer_gen and calling stormer_next 
  * (respectively between any subsequent calls of stormer_next).
- * Further calls to stormer_gen after all leaves were generated are undefined.
+ * Further calls to stormer_next after all leaves were generated are undefined.
 */ 
 
 GEN logsofprimes(ulong B, long prec);
