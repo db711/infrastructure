@@ -48,23 +48,53 @@ rightchild(GEN node, GEN lop, GEN prev)
 }
 
 GEN
-stormer_gen(GEN lop, GEN sol)
-{ // TODO: supply a starting bv and incorporate sol
+stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv)
+{ // TODO: incorporate bv
+    if (typ(lop) != t_VEC) pari_err_TYPE("stormer_gen", lop);
+    if (typ(sol) != t_REAL) pari_err_TYPE("stormer_gen",sol);
+    if (bv != NULL && typ(bv) != t_VECSMALL) pari_err_TYPE("stormer_gen",bv);
+    GEN rc;
+    pari_sp av;
+    if (gcmp(sol,ub) > 0) return NULL;
     pari_sp ltop = avma;
-    GEN curr = gerepileupto(ltop,createnode(cgetg(1,t_VECSMALL),sol,NULL));
-    while (!isleaf(curr,lop)) curr = leftchild(curr,rightchild(curr,lop,curr));
-    return curr;
+    GEN node = gerepileupto(ltop,createnode(cgetg(1,t_VECSMALL),sol,NULL));
+    //need cases depending on bv = NULL or not
+    while (!isleaf(node,lop)) 
+    {
+        av = avma;
+        rc = rightchild(node,lop,node);
+        if (gcmp(gel(rc,2),ub) > 0)
+        {
+            set_avma(av);
+            node = leftchild(node,node);
+        }
+        else node = leftchild(node,rc);
+    }
+    return node;
 }
 
 GEN 
-stormer_next(GEN node, GEN lop, GEN *old)
-{ // TODO: incorporate sol
-    if ((long)gel(gel(node,1),lg(gel(node,1))-1) == 1) 
+stormer_next(GEN node, GEN lop, GEN ub, GEN *old)
+{ // TODO: how to recognize we reached the end?
+    GEN rc;
+    pari_sp av;
+    *old = gel(node,3);
+    while (lg(gel(node,1)) > lg(gel(*old,1)))
     {
-        do { node = gel(node,3); } while ((long)gel(gel(node,1),lg(gel(node,1))-1) == 1);
-        *old = node = gel(node,3);
-        while (!isleaf(node,lop)) node = leftchild(node,rightchild(node,lop,node));
+        node = *old;
+        *old = gel(node,3);
     }
-    else *old = node = gerepile((pari_sp)gel(gel(node,3),2),(pari_sp)gel(node,2),gel(node,3));
+    node = *old;
+    while (!isleaf(node,lop)) // code duplication...
+    {
+        av = avma;
+        rc = rightchild(node,lop,node);
+        if (gcmp(gel(rc,2),ub) > 0)
+        {
+            set_avma(av);
+            node = leftchild(node,node);
+        }
+        else node = leftchild(node,rc);
+    }
     return node;
 }
