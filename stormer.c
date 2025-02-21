@@ -41,6 +41,7 @@ rightchild(GEN node, GEN lop, GEN prev)
 {
     GEN res = cgetg(4,t_VEC);
     pari_sp ltop;
+    if (lg(gel(node,1)) >= lg(lop)) pari_err_COMPONENT("rightchild",">=",gel(node,1),lop);
     gel(res,1) = vecsmall_append(gel(node,1),1);
     ltop = avma; gel(res,2) = gerepileupto(ltop,addrr(gel(node,2),gel(lop,lg(lop)+1-lg(gel(res,1)))));
     gel(res,3) = prev;
@@ -83,6 +84,7 @@ stormer_next(GEN node, GEN lop, GEN ub, GEN *old)
     {
         node = *old;
         *old = gel(node,3);
+        if (*old == NULL) return NULL;
     }
     node = *old;
     while (!isleaf(node,lop)) // code duplication...

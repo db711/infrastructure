@@ -30,7 +30,6 @@ GEN leftchild(GEN node, GEN prev);
  * Input:   node [bv, sol, prev] (as returned by createnode or *child);
             node prev.
  * Output:  Node [vec_append(bv,0), sol, prev].
-            (undefined behavior if node is already a leaf)
 */
 
 GEN rightchild(GEN node, GEN lop, GEN prev);
@@ -39,7 +38,6 @@ GEN rightchild(GEN node, GEN lop, GEN prev);
             lop (as returned by logsofprimes);
             node prev.
  * Output:  Node [vec_append(bv,1), sol+lop(length(lop)-length(bv)), prev];
-            undefined behavior if node is already a leaf.
 */
 
 GEN stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv);
@@ -52,6 +50,7 @@ GEN stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv);
             with backlinks up to the root.
             It is ensured that each sol stored in a node is not greater than ub.
             (bv has to have this property)
+            Returns NULL if sol > ub.
 */
 
 GEN stormer_next(GEN node, GEN lop, GEN ub, GEN *old);
@@ -80,7 +79,7 @@ GEN stormer_next(GEN node, GEN lop, GEN ub, GEN *old);
                 }
                 node = gerepile((pari_sp)gel(old,2), lbot, node);
             It is ensured that each sol stored in a node is not greater than ub.
-            (Undefined behavior if all leaves have already been returned.)
+            If all valid leaves have already been returned, this returns NULL.
 */
 
 #endif
