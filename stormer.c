@@ -6,8 +6,15 @@ logsofprimes(ulong B, long prec)
     return glog(primes((long)uprimepi(B)),prec);
 }
 
-GEN
+static inline GEN
 createnode(GEN bv, GEN sol, GEN prev)
+/* Create node.
+ * Input:   bit vector bv \in {0, 1}^*;
+            real number sol;
+            other node prev or NULL.
+ * Output:  [bv, sol, prev].
+            (bv and sol are copied, prev is stored as a pointer only)
+*/
 {
     if (typ(bv) != t_VECSMALL) pari_err_TYPE("createnode",bv);
     if (typ(sol) != t_REAL) pari_err_TYPE("createnode",sol);
@@ -19,15 +26,25 @@ createnode(GEN bv, GEN sol, GEN prev)
     return res;
 }
 
-int
+static inline int
 isleaf (GEN node, GEN lop)
+/* is leaf?
+ * Input:   node [bv, sol, prev] as created by createnode or leftchild/rightchild,
+            lop (as returned by logsofprimes).
+ * Output:  1 if the node is a leaf, 0 otherwise.
+*/
 {
     if (lg(gel(node,1)) >= lg(lop)) return 1;
     return 0;
 }
 
-GEN
+static inline GEN
 leftchild(GEN node, GEN prev)
+/* Left child.
+ * Input:   node [bv, sol, prev] (as returned by createnode or *child);
+            node prev.
+ * Output:  Node [vec_append(bv,0), sol, prev].
+*/
 {
     GEN res = cgetg(4,t_VEC);
     gel(res,1) = vecsmall_append(gel(node,1),0);
@@ -36,8 +53,14 @@ leftchild(GEN node, GEN prev)
     return res;
 }
 
-GEN
+static inline GEN
 rightchild(GEN node, GEN lop, GEN prev)
+/* Right child.
+ * Input:   node [bv, sol, prev] (as returned by createnode or *child);
+            lop (as returned by logsofprimes);
+            node prev.
+ * Output:  Node [vec_append(bv,1), sol+lop(length(lop)-length(bv)), prev];
+*/
 {
     GEN res = cgetg(4,t_VEC);
     pari_sp ltop;
@@ -62,13 +85,8 @@ stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv)
     //need cases depending on bv = NULL or not
     while (!isleaf(node,lop)) 
     {
-        av = avma;
-        rc = rightchild(node,lop,node);
-        if (gcmp(gel(rc,2),ub) > 0)
-        {
-            set_avma(av);
-            node = leftchild(node,node);
-        }
+        av = avma; rc = rightchild(node,lop,node);
+        if (gcmp(gel(rc,2),ub) > 0) node = gerepileupto(av,leftchild(node,node));
         else node = leftchild(node,rc);
     }
     return node;
@@ -76,7 +94,7 @@ stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv)
 
 GEN 
 stormer_next(GEN node, GEN lop, GEN ub, GEN *old)
-{ // TODO: how to recognize we reached the end?
+{ 
     GEN rc;
     pari_sp av;
     *old = gel(node,3);
@@ -89,13 +107,8 @@ stormer_next(GEN node, GEN lop, GEN ub, GEN *old)
     node = *old;
     while (!isleaf(node,lop)) // code duplication...
     {
-        av = avma;
-        rc = rightchild(node,lop,node);
-        if (gcmp(gel(rc,2),ub) > 0)
-        {
-            set_avma(av);
-            node = leftchild(node,node);
-        }
+        av = avma; rc = rightchild(node,lop,node);
+        if (gcmp(gel(rc,2),ub) > 0) node = gerepileupto(av,leftchild(node,node));
         else node = leftchild(node,rc);
     }
     return node;

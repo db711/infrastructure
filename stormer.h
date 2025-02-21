@@ -9,37 +9,6 @@ GEN logsofprimes(ulong B, long prec);
  * Output:  log(primes(primepi(B))).
 */
 
-GEN createnode(GEN bv, GEN sol, GEN prev);
-/* Create node.
- * Input:   bit vector bv \in {0, 1}^*;
-            real number sol;
-            other node prev or NULL.
- * Output:  [bv, sol, prev].
-            (bv and sol are copied, prev is stored as a pointer only)
-*/
-
-int isleaf (GEN node, GEN lop);
-/* is leaf?
- * Input:   node [bv, sol, prev] as created by createnode or leftchild/rightchild,
-            lop (as returned by logsofprimes).
- * Output:  1 if the node is a leaf, 0 otherwise.
-*/
-
-GEN leftchild(GEN node, GEN prev);
-/* Left child.
- * Input:   node [bv, sol, prev] (as returned by createnode or *child);
-            node prev.
- * Output:  Node [vec_append(bv,0), sol, prev].
-*/
-
-GEN rightchild(GEN node, GEN lop, GEN prev);
-/* Right child.
- * Input:   node [bv, sol, prev] (as returned by createnode or *child);
-            lop (as returned by logsofprimes);
-            node prev.
- * Output:  Node [vec_append(bv,1), sol+lop(length(lop)-length(bv)), prev];
-*/
-
 GEN stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv);
 /* Stormer generator. 
  * Input:   lop (as returned by logsofprimes);
