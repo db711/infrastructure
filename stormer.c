@@ -73,21 +73,36 @@ rightchild(GEN node, GEN lop, GEN prev)
 
 GEN
 stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv)
-{ // TODO: incorporate bv
+{ 
     if (typ(lop) != t_VEC) pari_err_TYPE("stormer_gen", lop);
     if (typ(sol) != t_REAL) pari_err_TYPE("stormer_gen",sol);
     if (bv != NULL && typ(bv) != t_VECSMALL) pari_err_TYPE("stormer_gen",bv);
-    GEN rc;
-    pari_sp av;
+    GEN rc, node;
+    pari_sp av = avma;
+    ulong i;
     if (gcmp(sol,ub) > 0) return NULL;
-    pari_sp ltop = avma;
-    GEN node = gerepileupto(ltop,createnode(cgetg(1,t_VECSMALL),sol,NULL));
-    //need cases depending on bv = NULL or not
-    while (!isleaf(node,lop)) 
+    node = gerepileupto(avma,createnode(cgetg(1,t_VECSMALL),sol,NULL));
+    if (bv == NULL)
     {
-        av = avma; rc = rightchild(node,lop,node);
-        if (gcmp(gel(rc,2),ub) > 0) node = gerepileupto(av,leftchild(node,node));
-        else node = leftchild(node,rc);
+        while (!isleaf(node,lop)) 
+        {
+            av = avma; rc = rightchild(node,lop,node);
+            if (gcmp(gel(rc,2),ub) > 0) node = gerepileupto(av,leftchild(node,node));
+            else node = leftchild(node,rc);
+        }
+    }
+    else
+    {
+        for (i = 1; i < lg(bv); i++)
+        {
+            if ((long)gel(bv,lg(bv)-i) == 1) node = rightchild(node,lop,node);
+            else // code duplication...
+            {
+                av = avma; rc = rightchild(node,lop,node);
+                if (gcmp(gel(rc,2),ub) > 0) node = gerepileupto(av,leftchild(node,node));
+                else node = leftchild(node,rc);
+            }
+        }
     }
     return node;
 }
