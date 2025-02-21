@@ -2,20 +2,6 @@
 #define STORMER_H
 #include <pari/pari.h>
 
-typedef struct {
-    pari_sp bot; // current node
-    pari_sp top; // root node
-} sstack; // stormer stack
-/* We think of this as a (separate) stack storing nodes.
- * This stack is initialized with stormer_gen, 
- * further elements are generated (i.e. bot is changed) by running stormer_next.
- * Currently it is required that the PARI stack is not modified 
- * (or at least cleaned, meaning avma = gel(bot,2))
- * between running stormer_gen and calling stormer_next 
- * (respectively between any subsequent calls of stormer_next).
- * Further calls to stormer_next after all leaves were generated are undefined.
-*/ 
-
 GEN logsofprimes(ulong B, long prec);
 /* Logarithms of primes.
  * Input:   Smoothness bound B;
@@ -23,48 +9,70 @@ GEN logsofprimes(ulong B, long prec);
  * Output:  log(primes(primepi(B))).
 */
 
-GEN createnode(GEN bv, GEN sol);
+GEN createnode(GEN bv, GEN sol, GEN prev);
 /* Create node.
  * Input:   bit vector bv \in {0, 1}^*;
-            real number sol.
- * Output:  [bv, sol].
+            real number sol;
+            other node prev or NULL.
+ * Output:  [bv, sol, prev].
+            (bv and sol are copied, prev is stored as a pointer only)
 */
 
 int isleaf (GEN node, GEN lop);
 /* is leaf?
- * Input:   node [bv, sol] as created by createnode or leftchild/rightchild,
+ * Input:   node [bv, sol, prev] as created by createnode or leftchild/rightchild,
             lop (as returned by logsofprimes).
  * Output:  1 if the node is a leaf, 0 otherwise.
 */
 
-GEN leftchild(GEN node);
+GEN leftchild(GEN node, GEN prev);
 /* Left child.
- * Input:   Node [bv, sol] (as returned by createnode or *child).
- * Output:  Node [vec_append(bv,0), sol]
-            undefined behavior if node is already a leaf.
+ * Input:   node [bv, sol, prev] (as returned by createnode or *child);
+            node prev.
+ * Output:  Node [vec_append(bv,0), sol, prev].
+            (undefined behavior if node is already a leaf)
 */
 
-GEN rightchild(GEN node, GEN lop);
+GEN rightchild(GEN node, GEN lop, GEN prev);
 /* Right child.
- * Input:   Node [bv, sol] (as returned by createnode or *child);
-            lop (as returned by logsofprimes).
- * Output:  Node [vec_append(bv,1), sol+lop(length(bv))];
+ * Input:   node [bv, sol, prev] (as returned by createnode or *child);
+            lop (as returned by logsofprimes);
+            node prev.
+ * Output:  Node [vec_append(bv,1), sol+lop(length(lop)-length(bv)), prev];
             undefined behavior if node is already a leaf.
 */
 
-sstack stormer_gen(GEN lop, GEN sol);
+GEN stormer_gen(GEN lop, GEN sol);
 /* Stormer generator. 
  * Input:   lop (as returned by logsofprimes);
             sol (sum of logs) as a starting value in the nodes. 
- * Output:  A sstack structure with bot set to the node [[0,...,0], sol].
+ * Output:  A singly linked list starting at [[0,...,0], sol, prev]
+            with backlinks up to the root.
 */
 
-sstack stormer_next(sstack stormer, GEN lop);
+GEN stormer_next(GEN node, GEN lop, GEN *old);
 /* Stormer next.
  * Input:   sstack structure stormer (as returned by stormer_gen or stormer_next);
-            lop (as returned by logsofprimes). 
- * Output:  A sstack structure with bot set to the next leaf node.
-            (Undefined behavior if the sstack structure already returned all leaves.)
+            lop (as returned by logsofprimes);
+            *old (just some GEN *, that will be overwritten).
+ * Output:  A singly linked list [node, sol, prev], starting at the next node, going back to root;
+            old now points to newest node in that list, that was already on the PARI stack.
+            If the return value and *old differ after this function terminates, 
+            new nodes have been added to the singly linked list.
+            To ensure that the list remains continuous in memory, 
+            all data that was added to the PARI stack before the call of this function has to be copied (and pointers updated) and memory has to be cleaned.
+            To ensure this, use the function like this:
+                GEN node, old;
+                // call of node = stormer_gen or previous call of node = stormer_next is here
+                // data is created
+                pari_sp lbot = avma;
+                node = stormer_next(node, lop, &old);
+                if (stormer != old)
+                {
+                    // gcopy all the data you want to keep, updating the pointers
+                }
+                node = gerepile((pari_sp)gel(old,2), lbot, node);
+            (Undefined behavior if all leaves have already been returned.)
 */
 
 #endif

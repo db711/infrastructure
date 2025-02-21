@@ -7,13 +7,15 @@ logsofprimes(ulong B, long prec)
 }
 
 GEN
-createnode(GEN bv, GEN sol)
+createnode(GEN bv, GEN sol, GEN prev)
 {
     if (typ(bv) != t_VECSMALL) pari_err_TYPE("createnode",bv);
     if (typ(sol) != t_REAL) pari_err_TYPE("createnode",sol);
-    GEN res = cgetg(3,t_VEC);
+    if (prev != NULL && typ(prev) != t_VEC) pari_err_TYPE("createnode",prev);
+    GEN res = cgetg(4,t_VEC);
     gel(res,1) = gcopy(bv);
     gel(res,2) = gcopy(sol);
+    gel(res,3) = prev;
     return res;
 }
 
@@ -25,58 +27,44 @@ isleaf (GEN node, GEN lop)
 }
 
 GEN
-leftchild(GEN node)
+leftchild(GEN node, GEN prev)
 {
-    GEN res = cgetg(3,t_VEC);
+    GEN res = cgetg(4,t_VEC);
     gel(res,1) = vecsmall_append(gel(node,1),0);
     gel(res,2) = gcopy(gel(node,2));
+    gel(res,3) = prev;
     return res;
 }
 
 GEN
-rightchild(GEN node, GEN lop)
+rightchild(GEN node, GEN lop, GEN prev)
 {
-    GEN res = cgetg(3,t_VEC);
+    GEN res = cgetg(4,t_VEC);
     pari_sp ltop;
     gel(res,1) = vecsmall_append(gel(node,1),1);
     ltop = avma; gel(res,2) = gerepileupto(ltop,addrr(gel(node,2),gel(lop,lg(lop)+1-lg(gel(res,1)))));
+    gel(res,3) = prev;
     return res;
 }
 
-sstack
+GEN
 stormer_gen(GEN lop, GEN sol)
 { // TODO: supply a starting bv and incorporate sol
-    sstack stormer = {0};
-    stormer.top = avma;
-    stormer.bot= (pari_sp)gerepileupto(stormer.top,createnode(cgetg(1,t_VECSMALL),sol));
-    while (!isleaf((GEN)stormer.bot,lop))
-    {
-        rightchild((GEN)stormer.bot,lop);
-        stormer.bot = (pari_sp)leftchild((GEN)stormer.bot);
-    }
-    return stormer;
+    pari_sp ltop = avma;
+    GEN curr = gerepileupto(ltop,createnode(cgetg(1,t_VECSMALL),sol,NULL));
+    while (!isleaf(curr,lop)) curr = leftchild(curr,rightchild(curr,lop,curr));
+    return curr;
 }
 
-sstack
-stormer_next(sstack stormer, GEN lop)
+GEN 
+stormer_next(GEN node, GEN lop, GEN *old)
 { // TODO: incorporate sol
-    GEN prev, curr = (GEN)stormer.bot;
-    if ((long)gel(gel(curr,1),lg(gel(curr,1))-1) == 1) 
+    if ((long)gel(gel(node,1),lg(gel(node,1))-1) == 1) 
     {
-        prev = curr;
-        do { prev = (GEN)((pari_sp)prev+gsizebyte(prev)-sizeof(long)); } while ((long)gel(gel(prev,1),lg(gel(prev,1))-1) == 1);
-        prev = (GEN)((pari_sp)prev+gsizebyte(prev));
-        stormer.bot = (pari_sp)gerepile((pari_sp)(gel(prev,2)),(pari_sp)gel(curr,2),prev);
-        while (!isleaf((GEN)stormer.bot,lop))
-        {
-            rightchild((GEN)stormer.bot,lop);
-            stormer.bot = (pari_sp)leftchild((GEN)stormer.bot);
-        }
+        do { node = gel(node,3); } while ((long)gel(gel(node,1),lg(gel(node,1))-1) == 1);
+        *old = node = gel(node,3);
+        while (!isleaf(node,lop)) node = leftchild(node,rightchild(node,lop,node));
     }
-    else
-    {
-        prev = (GEN)(stormer.bot+gsizebyte((GEN)stormer.bot));
-        stormer.bot = (pari_sp)gerepile((pari_sp)(gel(prev,2)),(pari_sp)gel(curr,2),prev);
-    }
-    return stormer;
+    else *old = node = gerepile((pari_sp)gel(gel(node,3),2),(pari_sp)gel(node,2),gel(node,3));
+    return node;
 }
