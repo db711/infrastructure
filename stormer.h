@@ -28,7 +28,7 @@ GEN stormer_next(GEN node, GEN lop, GEN ub, GEN *old);
             lop (as returned by logsofprimes);
             ub (upperbound) for sol in the nodes (may be t_INFINITY);
             *old (just some GEN *, that will be overwritten).
- * Output:  A singly linked list [node, sol, prev], starting at the next node, going back to root;
+ * Output:  A singly linked list [bv, sol, prev], starting at the next node, going back to root;
             old now points to newest node in that list, that was already on the PARI stack.
             If the return value and *old differ after this function terminates, 
             new nodes have been added to the singly linked list.
