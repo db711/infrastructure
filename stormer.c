@@ -93,7 +93,6 @@ stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv)
     }
     else
     {
-        pari_printf("\ttrying to walk to %Ps\n",bv);
         for (i = 1; i < lg(bv); i++)
         {
             if ((long)gel(bv,i) == 1) node = rightchild(node,lop,node);
