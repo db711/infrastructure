@@ -67,8 +67,13 @@ GEN stormer_next(GEN node, GEN lop, GEN *old);
                 // data is created
                 pari_sp lbot = avma;
                 node = stormer_next(node, lop, &old);
-                if (stormer != old) node = gerepileall((pari_sp)gel(old,2), lbot, n, ...)
-                else node = gerepile((pari_sp)gel(old,2), lbot, node);
+                if (stormer != old)
+                {
+                    // gcopy all the data you want to keep, updating the pointers
+                    // alternatively if you know what you are doing, 
+                    // you can use gerepileall instead of the following gerepile
+                }
+                node = gerepile((pari_sp)gel(old,2), lbot, node);
             (Undefined behavior if all leaves have already been returned.)
 */
 
