@@ -18,7 +18,7 @@ GEN stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv);
  * Output:  A singly linked list starting at [bv, sol, prev]
             with backlinks up to the root.
             It is ensured that each sol stored in a node is not greater than ub.
-            (bv has to have this property)
+            (bv has to have this property, this is not checked)
             Returns NULL if sol > ub.
 */
 
