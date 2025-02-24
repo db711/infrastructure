@@ -47,6 +47,7 @@ GEN stormer_next(GEN node, GEN lop, GEN ub, GEN *old);
                     // you can use gerepileall instead of the following gerepile
                 }
                 node = gerepile((pari_sp)gel(old,2), lbot, node);
+            Alternatively (if you know what you are doing), you may fragment the memory.
             It is ensured that each sol stored in a node is not greater than ub.
             If all valid leaves have already been returned, this returns NULL.
 */
