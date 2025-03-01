@@ -38,28 +38,37 @@ isleaf (GEN node, GEN lop)
     return 0;
 }
 
+static inline int
+isleftchild (GEN node)
+/* is left child?
+ * Input:   node [bv, sol, prev] as created by createnode or leftchild/rightchild,
+ * Output:  1 if the node is a left child, 0 otherwise.
+*/
+{
+    if (lg(gel(node,1)) > 1 && (long)gel(gel(node,1),lg(gel(node,1))-1) == 0) return 1;
+    return 0;
+}
+
 static inline GEN
-leftchild(GEN node, GEN prev)
+leftchild(GEN node)
 /* Left child.
  * Input:   node [bv, sol, prev] (as returned by createnode or *child);
-            node prev.
- * Output:  Node [vec_append(bv,0), sol, prev].
+ * Output:  Node [vec_append(bv,0), sol, node].
 */
 {
     GEN res = cgetg(4,t_VEC);
     gel(res,1) = vecsmall_append(gel(node,1),0);
     gel(res,2) = gcopy(gel(node,2));
-    gel(res,3) = prev;
+    gel(res,3) = node;
     return res;
 }
 
 static inline GEN
-rightchild(GEN node, GEN lop, GEN prev)
+rightchild(GEN node, GEN lop)
 /* Right child.
  * Input:   node [bv, sol, prev] (as returned by createnode or *child);
             lop (as returned by logsofprimes);
-            node prev.
- * Output:  Node [vec_append(bv,1), sol+lop(length(lop)-length(bv)), prev];
+ * Output:  Node [vec_append(bv,1), sol+lop(length(lop)-length(bv)), node];
 */
 {
     GEN res = cgetg(4,t_VEC);
@@ -67,8 +76,24 @@ rightchild(GEN node, GEN lop, GEN prev)
     if (lg(gel(node,1)) >= lg(lop)) pari_err_COMPONENT("rightchild",">=",gel(node,1),lop);
     gel(res,1) = vecsmall_append(gel(node,1),1);
     ltop = avma; gel(res,2) = gerepileupto(ltop,addrr(gel(node,2),gel(lop,lg(lop)+1-lg(gel(res,1)))));
-    gel(res,3) = prev;
+    gel(res,3) = node;
     return res;
+}
+
+static inline int
+checkrightchild(GEN node, GEN lop, GEN ub)
+/* Check right child.
+ * Input:   node [bv, sol, prev] (as returned by createnode or *child);
+            lop (as returned by logsofprimes);
+            ub (upperbound) for sol in the nodes (may be t_INFINITY);
+ * Output:  1 if the rightchild of node is within the ub, 0 otherwise.
+*/
+{
+    pari_sp ltop = avma;
+    int ret;
+    if (gcmp(addrr(gel(node,2),gel(lop,lg(lop)-lg(gel(node,1)))),ub) > 0) ret = 0;
+    else ret = 1;
+    set_avma(ltop); return ret;
 }
 
 GEN
@@ -77,54 +102,40 @@ stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv)
     if (typ(lop) != t_VEC) pari_err_TYPE("stormer_gen", lop);
     if (typ(sol) != t_REAL) pari_err_TYPE("stormer_gen",sol);
     if (bv != NULL && typ(bv) != t_VECSMALL) pari_err_TYPE("stormer_gen",bv);
-    GEN rc, node;
+    GEN node;
     pari_sp av = avma;
     ulong i;
     if (gcmp(sol,ub) > 0) return NULL;
-    node = gerepileupto(avma,createnode(cgetg(1,t_VECSMALL),sol,NULL));
-    if (bv == NULL)
-    {
-        while (!isleaf(node,lop)) 
-        {
-            av = avma; rc = rightchild(node,lop,node);
-            if (gcmp(gel(rc,2),ub) > 0) node = gerepileupto(av,leftchild(node,node));
-            else node = leftchild(node,rc);
-        }
-    }
+    node = gerepileupto(av,createnode(cgetg(1,t_VECSMALL),sol,NULL));
+    if (bv == NULL) while (!isleaf(node,lop)) node = leftchild(node);
     else
     {
         for (i = 1; i < lg(bv); i++)
         {
-            if ((long)gel(bv,i) == 1) node = rightchild(node,lop,node);
-            else // code duplication...
-            {
-                av = avma; rc = rightchild(node,lop,node);
-                if (gcmp(gel(rc,2),ub) > 0) node = gerepileupto(av,leftchild(node,node));
-                else node = leftchild(node,rc);
-            }
+            if ((long)gel(bv,i) == 1) node = rightchild(node,lop);
+            else node = leftchild(node);
         }
     }
     return node;
 }
 
 GEN 
-stormer_next(GEN node, GEN lop, GEN ub, GEN *old)
+stormer_next(GEN node, GEN lop, GEN ub)
 { 
-    GEN rc;
-    pari_sp av;
-    *old = gel(node,3);
-    while (lg(gel(node,1)) > lg(gel(*old,1)))
+    GEN prev;
+    pari_sp ltop = avma;
+    do
     {
-        node = *old;
-        *old = gel(node,3);
-        if (*old == NULL) return NULL;
-    }
-    node = *old;
-    while (!isleaf(node,lop)) // code duplication...
-    {
-        av = avma; rc = rightchild(node,lop,node);
-        if (gcmp(gel(rc,2),ub) > 0) node = gerepileupto(av,leftchild(node,node));
-        else node = leftchild(node,rc);
-    }
-    return node;
+        prev = node;
+        node = gel(node,3);
+        if (node == NULL) return NULL;
+        if (isleftchild(prev) && checkrightchild(node,lop,ub))
+        {
+            set_avma((pari_sp)gel(node,2)); 
+            node = rightchild(node,lop);
+            while (!isleaf(node,lop)) node = leftchild(node);
+            set_avma(ltop);
+            return node;
+        }
+    } while (1);
 }

@@ -22,34 +22,15 @@ GEN stormer_gen(GEN lop, GEN sol, GEN ub, GEN bv);
             Returns NULL if sol > ub.
 */
 
-GEN stormer_next(GEN node, GEN lop, GEN ub, GEN *old);
+GEN stormer_next(GEN node, GEN lop, GEN ub);
 /* Stormer next.
  * Input:   node with (as returned by stormer_gen or stormer_next);
             lop (as returned by logsofprimes);
             ub (upperbound) for sol in the nodes (may be t_INFINITY);
-            *old (just some GEN *, that will be overwritten).
  * Output:  A singly linked list [bv, sol, prev], starting at the next node, going back to root;
-            old now points to newest node in that list, that was already on the PARI stack.
-            If the return value and *old differ after this function terminates, 
-            new nodes have been added to the singly linked list.
-            To ensure that the list remains continuous in memory, 
-            all data that was added to the PARI stack before the call of this function has to be copied (and pointers updated) and memory has to be cleaned.
-            To ensure this, use the function like this:
-                GEN node, old;
-                // call of node = stormer_gen or previous call of node = stormer_next is here
-                // data is created
-                pari_sp lbot = avma;
-                node = stormer_next(node, lop, &old);
-                if (stormer != old)
-                {
-                    // gcopy all the data you want to keep, updating the pointers
-                    // alternatively if you know what you are doing, 
-                    // you can use gerepileall instead of the following gerepile
-                }
-                node = gerepile((pari_sp)gel(old,2), lbot, node);
-            Alternatively (if you know what you are doing), you may fragment the memory.
-            It is ensured that each sol stored in a node is not greater than ub.
-            If all valid leaves have already been returned, this returns NULL.
+            This function overwrites the part of the PARI stack taken up by the singly linked list returned by stormer_gen
+            and restores avma before returning.
+            Returns NULL if there are no more leaves to return.
 */
 
 #endif
