@@ -85,7 +85,7 @@ GEN
 stormer_next(GEN node, long length, GEN ub)
 { 
     GEN prev, rc;
-    pari_sp ltop = avma;
+    pari_sp lbot = avma;
     do
     {
         prev = node;
@@ -93,14 +93,14 @@ stormer_next(GEN node, long length, GEN ub)
         if (node == NULL) return NULL;
         if (isleftchild(prev))
         {
-            set_avma((pari_sp)gel(node,2)); 
+            set_avma((pari_sp)gel(node,2));
             rc = rightchild(node,length);
-            if (cmpii(ub,gel(rc,2)) < 0) set_avma(ltop);
+            if (cmpii(ub,gel(rc,2)) < 0) set_avma(lbot);
             else
             {
                 node = rc;
                 while (!isleaf(node,length)) node = leftchild(node);
-                set_avma(ltop);
+                set_avma(lbot);
                 return node;
             }
         }

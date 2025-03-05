@@ -23,6 +23,15 @@ GEN stormer_next(GEN node, long length, GEN ub);
  * Output:  A singly linked list [bv, d, prev], starting at the next node, going back to root;
             This function overwrites the part of the PARI stack taken up by the singly linked list returned by stormer_gen
             and restores avma before returning.
+            For some reason if you want to create (and keep) data between calls of stormer_next,
+            you have to leave space between the singly linked list and the data, i.e. use it something like this:
+                stormer = stormer_gen(...);
+                set_avma (avma - 64); // possibly adjust
+                // create data
+                stormer_next(stormer, ...);
+                // create more data 
+                stormer_next(stormer, ...);
+                // ...
             Returns NULL if there are no more leaves to return.
 */
 
