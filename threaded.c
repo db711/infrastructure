@@ -1,79 +1,102 @@
 #include "twin_smooths.h"
+#include "stormer.h"
 #include <pthread.h> 
 
-#define NUM_THREADS 4 
-#define LOWER_BOUND 245
-#define UPPER_BOUND 275
-#define SMOOTHNESS_BOUND 100
+#define NUM_THREADS 6 // number of threads to run (at once)
+#define SECURITY_PARAM 128 // half the bit size we are looking for
+#define LOWER_BOUND 250 // lower bound (in bits) for twin smooths
+#define UPPER_BOUND 260 // upper bound (in bits) for twin smooths
+#define ITER 8 // how many numbers in the Pell sequence are checked at most
+#define SMOOTHNESS_BOUND 65536// 2^16
+#define STARTING_D "2"
+#define NUM_DISC 8192 // number of discriminants per thread
+#define OUTPUT_FILE "test.txt"
+#define STATUS_FILE "status.txt"
 
-void *
-find_smooths(void *arg) // UNUSED
+static inline GEN
+bvtodisc(GEN bv, GEN start)
 {
-    GEN F, M;
-    M = pari_thread_start((struct pari_thread*) arg); // = [S, P, d]
-    F = regulator_range(rqoinit(gel(M,2)),LOWER_BOUND,UPPER_BOUND) == NULL ? NULL : twin_smooth_d(gel(M,1),gel(M,2),0,gel(M,3));
-    pari_thread_close();
-    return (void*)F;
+  pari_sp ltop = avma;
+  ulong i;
+  for (i = 1; i < lg(bv); i++) if (gel(bv,i)) start = gerepileupto(ltop,mulis(start,uprime(lg(bv)-i)));
+  return gerepileupto(ltop,start);
 }
 
-GEN 
-twin_smooth_range_d_small_wrapper(GEN i, ulong B, GEN S, ulong bot, ulong top, ulong m)
+void *
+twin_smooth_range_d_small_bulk(void *arg)
 {
-    GEN d, D;
-    ulong j;
-    pari_sp ltop = avma, av;
-    d = gen_2;
-    D = shallowextract(S,i); 
-    av = avma;
-    for (j = 1; j < lg(D); j++) d = gerepileupto(av,mulis(d,D[j]));
-    return gerepileupto(ltop,twin_smooth_range_d_small(B,d,bot,top,m));
+  GEN ds, tmp, ret;
+  long i;
+  ds = pari_thread_start((struct pari_thread*) arg);
+  ret = cgetg(1, t_VEC);
+  for (i = 1; i < lg(ds); i++)
+  {
+    tmp = twin_smooth_range_d_small(SMOOTHNESS_BOUND, gel(ds, i), LOWER_BOUND, UPPER_BOUND, ITER);
+    if (lg(tmp) > 1) ret = vec_append(ret, mkvec2(gel(ds, i), tmp));
+  }
+  pari_thread_close();
+  return (void*)ret;
 }
 
 int
 main(void)
 {
-    pari_init(1073741824,0); //1GB
-    char str[4];
-    sprintf(str,"%d",NUM_THREADS);
-    default0("nbthreads",str);
-    GEN end, e, S, fun;
-    parfor_t T;
-    ulong B = SMOOTHNESS_BOUND;
-    pari_sp ltop = avma, av;
-    S = primes_interval_zv(2,B); 
-    //install((void *)&twin_smooth_range_d_small_wrapper,"TwinSmoothRangeDSmallWrapper","GUGUUU");
-    //fun = strtoclosure("TwinSmoothRangeDSmallWrapper",5,stoi(B),S,stoi(245),stoi(275),stoi(4));
-    fun = snm_closure(install((void *)&twin_smooth_range_d_small_wrapper,"TwinSmoothRangeDSmallWrapper","GUGUUU"),mkvec5(stoi(B),S,stoi(LOWER_BOUND),stoi(UPPER_BOUND),stoi(4)));
-    end = subii(powis(gen_2,lg(S)-1),gen_1);
-    parfor_init(&T,gen_2,end,fun);
-    av = avma;
-    e = twin_smooth_range_d_small(B,gen_2,LOWER_BOUND,UPPER_BOUND,4);
-    if (lg(e) > 1) pari_printf("%Ps\n",e);
-    while ((e = parfor_next(&T)))
-    {
-        if (lg(gel(e,2)) > 1) pari_printf("%Ps\n",gel(e,2));
-        set_avma(av);
-    }
-    set_avma(ltop);
+  long i, j, np;
+  pari_init(1048576000,SMOOTHNESS_BOUND+1);
+  pthread_t th[NUM_THREADS];
+  struct pari_thread pth[NUM_THREADS];
+
+  GEN d_start, ub, bv, stormer, in, out;
+  pari_sp ltop, av;
+  pari_timer timer;
+  FILE* output = NULL;
+  FILE* status = NULL;
+  d_start = strtoi(STARTING_D);
+  av = avma; ub = gerepileupto(av, powis(stoi(2), 2*UPPER_BOUND));
+  av = avma; np = itos(primepi(stoi(SMOOTHNESS_BOUND))); set_avma(av);
+  bv = gtovecsmall0(gen_0, np);
+  gel(bv, lg(bv)-31) = 1;
+  stormer = stormer_gen(np, d_start, ub, bv);
+  set_avma (avma - 64); // kinda hacky
+
+  if (NULL == (output = fopen(OUTPUT_FILE, "w")))
+  {
+    pari_printf("Error opening output file %s. Aborting.\n", OUTPUT_FILE);
     pari_close();
-    return 0;
-    /*GEN S, s, d, P, M;
-    ulong B = SMOOTHNESS_BOUND, i;
-    forsubset_t T;
-    pari_sp av;
-    pthread_t ths[NUM_THREADS];
-    struct pari_thread pths[NUM_THREADS];
-    pari_init(1073741824,0); //1GB
-    S = primes_upto_zv(B);
-    P = gen_1;
-    av = avma;
-    for (i = 1; i < lg(S); i++) P = gerepileupto(av,mulis(P,S[i]));
-    forallsubset_init(&T,lg(S)-1);
-    av = avma;
-    forsubset_next(&T); forsubset_next(&T);
-    //if(regulator_range(rqoinit(gen_2),245,275)) pari_printf("%Ps\n",gen_2);
-    for (i = 0; i < NUM_THREADS; i++)
+    return 1;
+  }
+  if (NULL == (status = fopen(STATUS_FILE, "w")))
+  {
+    pari_printf("Error opening status file %s. Aborting.\n", STATUS_FILE);
+    pari_close();
+    return 1;
+  }
+
+  timer_start(&timer);
+  ltop = avma;
+  while (NULL != stormer)
+  {
+    in = cgetg(NUM_THREADS+1, t_VEC);
+    for (i = 1; i < lg(in); i++)
     {
-        pari_thread_alloc(&pths[i],1073741824,M); //1GB
-    }*/
+      gel(in, i) = cgetg(NUM_DISC+1, t_VEC);
+      for (j = 1; j < lg(gel(in, i)); j++)
+      {
+        if (NULL == stormer) break;
+        gmael2(in, i, j) = gcopy(gel(stormer, 2));
+        stormer = stormer_next(stormer, np, ub);
+      }
+    }
+    for (i = 0; i < NUM_THREADS; i++) pari_thread_alloc(&pth[i], 1048576000, gel(in, i+1));
+    for (i = 0; i < NUM_THREADS; i++) pthread_create(&th[i], NULL, &twin_smooth_range_d_small_bulk, (void*)&pth[i]);
+    out = cgetg(NUM_THREADS+1, t_VEC);
+    for (i = 0; i < NUM_THREADS; i++) pthread_join(th[i],(void*)&gel(out, i+1));
+    for (i = 1; i < lg(out); i++) for (j = 1; j < lg(gel(out, i)); j++) pari_fprintf(output, "%Ps: %Ps\n", gmael3(out, i, j, 1), gmael3(out, i, j, 2));
+    for (i = 1; i < NUM_THREADS; i++) pari_thread_free(&pth[i]);
+    pari_fprintf(status, "%d: %Ps\n", timer_get(&timer), gel(gel(in, lg(in)-1), lg(gel(in, lg(in)-1))-1));
+    set_avma(ltop);
+  }
+  fclose(output); fclose(status);
+  pari_close();
+  return 0;
 }
