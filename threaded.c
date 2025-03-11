@@ -9,9 +9,9 @@
 #define ITER 8 // how many numbers in the Pell sequence are checked at most
 #define SMOOTHNESS_BOUND 65536// 2^16
 #define STARTING_D "2"
-#define NUM_DISC 8192 // number of discriminants per thread
-#define OUTPUT_FILE "test.txt"
-#define STATUS_FILE "status.txt"
+#define NUM_DISC 32 //8192 // number of discriminants per thread
+#define OUTPUT_FILE "test0.txt"
+#define STATUS_FILE "status0.txt"
 
 static inline GEN
 bvtodisc(GEN bv, GEN start)
@@ -20,6 +20,28 @@ bvtodisc(GEN bv, GEN start)
   ulong i;
   for (i = 1; i < lg(bv); i++) if (gel(bv,i)) start = gerepileupto(ltop,mulis(start,uprime(lg(bv)-i)));
   return gerepileupto(ltop,start);
+}
+
+static inline GEN
+disctobv(GEN d, GEN start, long length)
+{
+   GEN bv;
+   long i;
+   pari_sp av, ltop = avma;
+   bv = gtovecsmall0(gen_0,length);
+   d = diviiexact(d,start);
+   for (i = 1; i <= length; i++)
+   {
+      av = avma;
+      if (!cmpii(gen_0,modii(d,prime(i))))
+      {
+         gel(bv,length-i+1) = 1;
+         d = gerepileupto(av,diviiexact(d,prime(i)));
+         if (!cmpii(gen_1,d)) break;
+      }
+      else set_avma(av);
+   }
+   return gerepileupto(ltop,bv);
 }
 
 void *
@@ -57,7 +79,7 @@ main(void)
   bv = gtovecsmall0(gen_0, np);
   gel(bv, lg(bv)-31) = 1;
   stormer = stormer_gen(np, d_start, ub, bv);
-  set_avma (avma - 64); // kinda hacky
+  set_avma(avma - 64); // kinda hacky
 
   if (NULL == (output = fopen(OUTPUT_FILE, "w")))
   {
