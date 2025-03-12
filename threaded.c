@@ -9,9 +9,9 @@
 #define ITER 8 // how many numbers in the Pell sequence are checked at most
 #define SMOOTHNESS_BOUND 65536// 2^16
 #define STARTING_D "2"
-#define NUM_DISC 32 //8192 // number of discriminants per thread
-#define OUTPUT_FILE "test0.txt"
-#define STATUS_FILE "status0.txt"
+#define NUM_DISC 8192 // number of discriminants per thread
+#define OUTPUT_FILE "output.txt"
+#define STATUS_FILE "status.txt"
 
 static inline GEN
 bvtodisc(GEN bv, GEN start)
@@ -76,10 +76,9 @@ main(void)
   d_start = strtoi(STARTING_D);
   av = avma; ub = gerepileupto(av, powis(stoi(2), 2*UPPER_BOUND));
   av = avma; np = itos(primepi(stoi(SMOOTHNESS_BOUND))); set_avma(av);
-  bv = gtovecsmall0(gen_0, np);
-  gel(bv, lg(bv)-31) = 1;
+  av = avma; bv = gerepileupto(av,disctobv(strtoi("254"),d_start,np)); // 254 = 127*2
   stormer = stormer_gen(np, d_start, ub, bv);
-  set_avma(avma - 64); // kinda hacky
+  set_avma(avma - SECURITY_PARAM); // kinda hacky
 
   if (NULL == (output = fopen(OUTPUT_FILE, "w")))
   {
