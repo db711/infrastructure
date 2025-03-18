@@ -108,13 +108,14 @@ main(void)
         stormer = stormer_next(stormer, np, ub);
       }
     }
+    pari_fprintf(status, "%d: in created\n", timer_get(&timer));
     for (i = 0; i < NUM_THREADS; i++) pari_thread_alloc(&pth[i], 1048576000, gel(in, i+1));
     for (i = 0; i < NUM_THREADS; i++) pthread_create(&th[i], NULL, &twin_smooth_range_d_small_bulk, (void*)&pth[i]);
     out = cgetg(NUM_THREADS+1, t_VEC);
     for (i = 0; i < NUM_THREADS; i++) pthread_join(th[i],(void*)&gel(out, i+1));
     for (i = 1; i < lg(out); i++) for (j = 1; j < lg(gel(out, i)); j++) pari_fprintf(output, "%Ps: %Ps\n", gmael3(out, i, j, 1), gmael3(out, i, j, 2));
     for (i = 1; i < NUM_THREADS; i++) pari_thread_free(&pth[i]);
-    pari_fprintf(status, "%d: %Ps\n", timer_get(&timer), gel(gel(in, lg(in)-1), lg(gel(in, lg(in)-1))-1));
+    pari_fprintf(status, "%d: out written, latest disc %Ps\n", timer_get(&timer), gel(gel(in, lg(in)-1), lg(gel(in, lg(in)-1))-1));
     set_avma(ltop);
   }
   fclose(output); fclose(status);

@@ -3,7 +3,7 @@ RM = rm -f
 CFLAGS = -Wall -Wextra -pedantic -std=c11 -g -fPIC
 LDFLAGS = -g -L/usr/lib
 LDLIBS = -lpari
-DYNLIBS = -lpthread -lm -lgmp
+DYNLIBS = -lpthread -lm -lgmp -ldl
 
 SRCS = real_quadratic_orders.c fp_representations.c compact_representations.c twin_smooths.c utility.c stormer.c
 OBJS = $(subst .c,.o,$(SRCS))
