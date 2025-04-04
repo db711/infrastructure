@@ -15,11 +15,13 @@ GEN stormer_gen(long length, GEN d, GEN ub, GEN bv);
             Returns NULL if d > ub.
 */
 
-GEN stormer_next(GEN node, long length, GEN ub);
+GEN stormer_next(GEN node, long length, GEN ub, long* h, long l, long m);
 /* Stormer next.
  * Input:   node with (as returned by stormer_gen or stormer_next);
             length (of the considered list of primes);
             ub (upperbound) for sol in the nodes;
+            long* h, storing the effective height of current leaf;
+            long l, m bounding the effective height: l <= h <= m is maintained (i.e. needs to be true when first calling this).
  * Output:  A singly linked list [bv, d, prev], starting at the next node, going back to root;
             This function overwrites the part of the PARI stack taken up by the singly linked list returned by stormer_gen
             and restores avma before returning.

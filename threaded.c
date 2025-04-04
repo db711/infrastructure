@@ -8,6 +8,8 @@
 #define UPPER_BOUND 260 // upper bound (in bits) for twin smooths
 #define ITER 8 // how many numbers in the Pell sequence are checked at most
 #define SMOOTHNESS_BOUND 65536// 2^16
+#define MIN_FACTOR 8 // minimum number of factors in Stormer discriminant
+#define MAX_FACTOR 32 // maximum number of factors in Stormer discriminant
 #define STARTING_D "2"
 #define NUM_DISC 8192 // number of discriminants per thread
 #define OUTPUT_FILE "test.txt"
@@ -41,7 +43,7 @@ twin_smooth_range_d_small_bulk(void *arg)
 int
 main(void)
 {
-  long i, j, np;
+  long i, j, np, h;
   pari_init(1048576000,SMOOTHNESS_BOUND+1);
   pthread_t th[NUM_THREADS];
   struct pari_thread pth[NUM_THREADS];
@@ -52,10 +54,11 @@ main(void)
   FILE* output = NULL;
   FILE* status = NULL;
   d_start = strtoi(STARTING_D);
-  av = avma; ub = gerepileupto(av, powis(stoi(2), 2*UPPER_BOUND));
+  av = avma; ub = gerepileupto(av, powis(gen_2, 2*UPPER_BOUND));
   av = avma; np = itos(primepi(stoi(SMOOTHNESS_BOUND))); set_avma(av);
   bv = gtovecsmall0(gen_0, np);
   gel(bv, lg(bv)-31) = 1;
+  h = 1;
   stormer = stormer_gen(np, d_start, ub, bv);
   set_avma (avma - 64); // kinda hacky
 
@@ -84,7 +87,7 @@ main(void)
       {
         if (NULL == stormer) break;
         gmael2(in, i, j) = gcopy(gel(stormer, 2));
-        stormer = stormer_next(stormer, np, ub);
+        stormer = stormer_next(stormer, np, ub, &h, MIN_FACTOR, MAX_FACTOR);
       }
     }
     for (i = 0; i < NUM_THREADS; i++) pari_thread_alloc(&pth[i], 1048576000, gel(in, i+1));
