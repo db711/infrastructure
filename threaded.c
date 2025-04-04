@@ -12,7 +12,7 @@
 #define MAX_FACTOR 32 // maximum number of factors in Stormer discriminant
 #define STARTING_D "2"
 #define NUM_DISC 8192 // number of discriminants per thread
-#define OUTPUT_FILE "test.txt"
+#define OUTPUT_FILE "output.txt"
 #define STATUS_FILE "status.txt"
 
 static inline GEN
@@ -22,6 +22,28 @@ bvtodisc(GEN bv, GEN start)
   ulong i;
   for (i = 1; i < lg(bv); i++) if (gel(bv,i)) start = gerepileupto(ltop,mulis(start,uprime(lg(bv)-i)));
   return gerepileupto(ltop,start);
+}
+
+static inline GEN
+disctobv(GEN d, GEN start, long length)
+{
+   GEN bv;
+   long i;
+   pari_sp av, ltop = avma;
+   bv = gtovecsmall0(gen_0,length);
+   d = diviiexact(d,start);
+   for (i = 1; i <= length; i++)
+   {
+      av = avma;
+      if (!cmpii(gen_0,modii(d,prime(i))))
+      {
+         gel(bv,length-i+1) = 1;
+         d = gerepileupto(av,diviiexact(d,prime(i)));
+         if (!cmpii(gen_1,d)) break;
+      }
+      else set_avma(av);
+   }
+   return gerepileupto(ltop,bv);
 }
 
 void *
@@ -56,11 +78,11 @@ main(void)
   d_start = strtoi(STARTING_D);
   av = avma; ub = gerepileupto(av, powis(gen_2, 2*UPPER_BOUND));
   av = avma; np = itos(primepi(stoi(SMOOTHNESS_BOUND))); set_avma(av);
-  bv = gtovecsmall0(gen_0, np);
-  gel(bv, lg(bv)-31) = 1;
-  h = 1;
+  av = avma; bv = gerepileupto(av,disctobv(strtoi("254"),d_start,np)); // 254 = 127*2
+  h = 0;
+  for (i = 1; i < lg(bv); i++) h += (long)gel(bv,i);
   stormer = stormer_gen(np, d_start, ub, bv);
-  set_avma (avma - 64); // kinda hacky
+  set_avma(avma - SECURITY_PARAM); // kinda hacky
 
   if (NULL == (output = fopen(OUTPUT_FILE, "w")))
   {
@@ -90,13 +112,14 @@ main(void)
         stormer = stormer_next(stormer, np, ub, &h, MIN_FACTOR, MAX_FACTOR);
       }
     }
+    pari_fprintf(status, "%d: in created\n", timer_get(&timer));
     for (i = 0; i < NUM_THREADS; i++) pari_thread_alloc(&pth[i], 1048576000, gel(in, i+1));
     for (i = 0; i < NUM_THREADS; i++) pthread_create(&th[i], NULL, &twin_smooth_range_d_small_bulk, (void*)&pth[i]);
     out = cgetg(NUM_THREADS+1, t_VEC);
     for (i = 0; i < NUM_THREADS; i++) pthread_join(th[i],(void*)&gel(out, i+1));
     for (i = 1; i < lg(out); i++) for (j = 1; j < lg(gel(out, i)); j++) pari_fprintf(output, "%Ps: %Ps\n", gmael3(out, i, j, 1), gmael3(out, i, j, 2));
     for (i = 1; i < NUM_THREADS; i++) pari_thread_free(&pth[i]);
-    pari_fprintf(status, "%d: %Ps\n", timer_get(&timer), gel(gel(in, lg(in)-1), lg(gel(in, lg(in)-1))-1));
+    pari_fprintf(status, "%d: out written, latest disc %Ps\n", timer_get(&timer), gel(gel(in, lg(in)-1), lg(gel(in, lg(in)-1))-1));
     set_avma(ltop);
   }
   fclose(output); fclose(status);
