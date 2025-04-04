@@ -240,3 +240,25 @@ twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m)
         return gerepileupto(ltop,ret2);
     }
 }
+
+GEN
+regulator_cryptographic(GEN O)
+{
+    GEN e, e_, ret;
+    pari_sp ltop = avma;
+    ret = cgetg(1,t_VEC);
+    
+    if (NULL != regulator_range(O,LOWER_BOUND_III,UPPER_BOUND_III) || NULL != regulator_range(O,LOWER_BOUND_V,UPPER_BOUND_V))
+    {
+        e = quadunit0(gel(O,4),-1);
+        if (gsigne(e) == -1) e = gsqr(e);
+        e_ = e;
+    }
+    while (sigbits(gel(e,2)) < LOWER_BOUND_I) e = gmul(e,e_);
+    if (sigbits(gel(e,2)) < UPPER_BOUND_I) ret = vec_append(ret,gel(e,2));
+    while (sigbits(gel(e,2)) < LOWER_BOUND_III) e = gmul(e,e_);
+    if (sigbits(gel(e,2)) < UPPER_BOUND_III) ret = vec_append(ret,gel(e,2));
+    while (sigbits(gel(e,2)) < LOWER_BOUND_V) e = gmul(e,e_);
+    if (sigbits(gel(e,2)) < UPPER_BOUND_V) ret = vec_append(ret,gel(e,2));
+    return gerepileupto(ltop,gcopy(ret));
+}
