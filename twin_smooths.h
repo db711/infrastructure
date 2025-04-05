@@ -46,8 +46,8 @@ GEN twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m);
 GEN regulator_cryptographic(GEN O);
 /* Regulator of cryptographic size.
  * Input:   Real quadratic order O (as output by rqoinit);
- * Output:  Vector containing the x-coordinate of units in O having the correct number of bits (per NIST security level).
-            (may be empty).
+ * Output:  Vector containing the x-coordinate of units in O having the correct number of bits (per NIST security level)
+            and the chance to be prime (may be empty).
 */
 
 #endif
