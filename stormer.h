@@ -2,26 +2,30 @@
 #define STORMER_H
 #include <pari/pari.h>
 
-GEN stormer_gen(long length, GEN d, GEN ub, GEN bv);
+GEN stormer_gen(long length, GEN d, GEN lb, GEN ub, GEN bv, long* h, long l);
 /* Stormer generator. 
  * Input:   length (of the considered list of primes);
             d as a starting value in the nodes;
-            ub (upperbound) for d in the nodes;
-            bv (bit vector) as a starting value, having the same length as lop (NULL is treated as [0, ..., 0]). 
+            lb (lower bound) for d in the nodes;
+            ub (upper bound) for d in the nodes;
+            bv (bit vector) as a starting value, having the same length as lop (or NULL for the first one);
+            h, bv's effective height or 0;
+            l (least effective height).
  * Output:  A singly linked list starting at [bv, d, prev] (if bv != NULL, this d is different than the input)
             with backlinks up to the root.
-            It is ensured that each d stored in a node is not greater than ub.
-            (bv has to have this property, this is not checked)
+            It is ensured that each d stored in a node is not smaller than lb and not greater than ub.
+            It is ensured that the first bv has effective height at least l.
+            (if bv is supplied, it is not checked whether it is malformed with respect to lb, ub, h, l).
             Returns NULL if d > ub.
 */
 
 GEN stormer_next(GEN node, long length, GEN ub, long* h, long l, long m);
 /* Stormer next.
- * Input:   node with (as returned by stormer_gen or stormer_next);
+ * Input:   node (as returned by stormer_gen or stormer_next);
             length (of the considered list of primes);
             ub (upperbound) for sol in the nodes;
-            long* h, storing the effective height of current leaf;
-            long l, m bounding the effective height: l <= h <= m is maintained (i.e. needs to be true when first calling this).
+            h, storing the effective height of current leaf;
+            l, m bounding the effective height: l <= h <= m is maintained (i.e. needs to be true when first calling this).
  * Output:  A singly linked list [bv, d, prev], starting at the next node, going back to root;
             This function overwrites the part of the PARI stack taken up by the singly linked list returned by stormer_gen
             and restores avma before returning.
