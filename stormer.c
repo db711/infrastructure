@@ -76,7 +76,7 @@ stormer_gen(long length, GEN d, GEN lb, GEN ub, GEN bv, long* h, long l)
     p = glog(d,DEFAULTPREC);
     for (i=1; i <= length; i++) p = addrr(p,glog(prime(i),DEFAULTPREC));
     p = subrr(p,glog(lb,DEFAULTPREC));
-    if (cmpri(gel(lc,3),gen_0) < 0) return NULL;
+    if (cmpri(p,gen_0) < 0) return NULL;
     node = gerepileupto(av,createnode(cgetg(1,t_VECSMALL),d,size,p,NULL));
     if (bv == NULL)
     {
