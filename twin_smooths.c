@@ -249,7 +249,7 @@ regulator_cryptographic(GEN O)
     ret = cgetg(1,t_VEC);
     if (NULL != regulator_range(O,LOWER_BOUND_III,UPPER_BOUND_III) || NULL != regulator_range(O,LOWER_BOUND_V,UPPER_BOUND_V) || NULL != regulator_range(O,LOWER_BOUND_I,UPPER_BOUND_I))
     {
-        e = quadunit0(gel(O,4),-1);
+        e = quadunit0(diviiexact(gel(O,4),gel(gel(O,2),2)),-1);
         if (gsigne(e) == -1) e = gsqr(e);
     }
     if (NULL != e)
