@@ -242,14 +242,27 @@ twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m)
 }
 
 GEN
-regulator_cryptographic(GEN O)
+regulator_cryptographic(GEN d, GEN f)
 {
-    GEN e = NULL, ret;
+    GEN O, e = NULL, ret;
     pari_sp ltop = avma;
+    O = cgetg(5,t_VEC);
+    gel(O,1) = d;
+    gel(O,2) = mkvec2(diviiexact(d,sqri(f)),f);
+    if (mod4(gmael(O,2,1)) == 1) 
+    {
+        gel(O,3) = gen_2;
+        gel(O,4) = gmael(O,2,1);
+    }
+    else
+    {
+        gel(O,3) = gen_1;
+        gel(O,4) = mulsi(4,gmael(O,2,1));
+    }
     ret = cgetg(1,t_VEC);
     if (NULL != regulator_range(O,LOWER_BOUND_III,UPPER_BOUND_III) || NULL != regulator_range(O,LOWER_BOUND_V,UPPER_BOUND_V) || NULL != regulator_range(O,LOWER_BOUND_I,UPPER_BOUND_I))
     {
-        e = quadunit0(diviiexact(gel(O,4),gel(gel(O,2),2)),-1);
+        e = quadunit0(gel(O,4),-1);
         if (gsigne(e) == -1) e = gsqr(e);
     }
     if (NULL != e)

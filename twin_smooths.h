@@ -43,10 +43,11 @@ GEN twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m);
             The value m decides how many solutions (including the fundamental) are checked, the algorithm is supposed to be run with m < 5.
 */
 
-GEN regulator_cryptographic(GEN O);
+GEN regulator_cryptographic(GEN d, GEN f);
 /* Regulator of cryptographic size.
- * Input:   Real quadratic order O (as output by rqoinit);
- * Output:  Vector containing the x-coordinate of units in O having the correct number of bits (per NIST security level)
+ * Input:   Nonsquare integer d;
+            corresponding regulator f.
+ * Output:  Vector containing the x-coordinate of units in the order of regulator f in Q(sqrt(d)) having the correct number of bits (per NIST security level)
             and the chance to be prime (may be empty).
 */
 
