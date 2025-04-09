@@ -244,54 +244,54 @@ twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m)
 GEN
 regulator_cryptographic(GEN d, GEN f)
 {
-    GEN O, e = NULL, ret;
+    GEN O, e = NULL, x, ret;
     pari_sp ltop = avma;
+    long s;
     O = cgetg(5,t_VEC);
     gel(O,1) = d;
     gel(O,2) = mkvec2(diviiexact(d,sqri(f)),f);
     if (mod4(gmael(O,2,1)) == 1) 
     {
-        gel(O,3) = gen_2;
+        gel(O,3) = gen_2; s = 2;
         gel(O,4) = gmael(O,2,1);
     }
     else
     {
-        gel(O,3) = gen_1;
+        gel(O,3) = gen_1; s = 1;
         gel(O,4) = mulsi(4,gmael(O,2,1));
     }
     ret = cgetg(1,t_VEC);
     if (NULL != regulator_range(O,LOWER_BOUND_III,UPPER_BOUND_III) || NULL != regulator_range(O,LOWER_BOUND_V,UPPER_BOUND_V) || NULL != regulator_range(O,LOWER_BOUND_I,UPPER_BOUND_I))
     {
         e = quadunit0(gel(O,4),-1);
+        if (s == 2 && mod2(gel(e,3)) == 1) e = gmul(e,gsqr(e));
         if (gsigne(e) == -1) e = gsqr(e);
-        output(addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
-        e = gsqr(e);
-        output(addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
-        e = gsqr(e);
-        output(addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
-        e = gsqr(e);
-        output(addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
     }
     if (NULL != e)
     {
-        while (sigbits(gel(e,2)) < LOWER_BOUND_I) e = gsqr(e);
-        if (sigbits(gel(e,2)) < UPPER_BOUND_I)
+        if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+        else x = gel(e,2);
+        while (sigbits(x) < LOWER_BOUND_I)
         {
-            if (cmpii(gel(O,3),gen_2)) ret = vec_append(ret,addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
-            else ret = vec_append(ret,gel(e,2));
+            e = gsqr(e);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
         }
-        while (sigbits(gel(e,2)) < LOWER_BOUND_III) e = gsqr(e);
-        if (sigbits(gel(e,2)) < UPPER_BOUND_III)
+        if (sigbits(x) < UPPER_BOUND_I) ret = vec_append(ret,x);
+        while (sigbits(x) < LOWER_BOUND_III)
         {
-            if (cmpii(gel(O,3),gen_2)) ret = vec_append(ret,addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
-            else ret = vec_append(ret,gel(e,2));
+            e = gsqr(e);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
         }
-        while (sigbits(gel(e,2)) < LOWER_BOUND_V) e = gsqr(e);
-        if (sigbits(gel(e,2)) < UPPER_BOUND_V)
+        if (sigbits(x) < UPPER_BOUND_III) ret = vec_append(ret,x);
+        while (sigbits(x) < LOWER_BOUND_V) 
         {
-            if (cmpii(gel(O,3),gen_2)) ret = vec_append(ret,addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
-            else ret = vec_append(ret,gel(e,2));
+            e = gsqr(e);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
         }
+        if (sigbits(x) < UPPER_BOUND_V) ret = vec_append(ret,x);
     }
     return gerepileupto(ltop,gcopy(ret));
 }
