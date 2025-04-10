@@ -3,17 +3,13 @@
 #include <pthread.h> 
 
 #define NUM_THREADS 6 // number of threads to run (at once)
-#define SECURITY_PARAM 128 // half the bit size we are looking for
-#define LOWER_BOUND 250 // lower bound (in bits) for twin smooths
-#define UPPER_BOUND 260 // upper bound (in bits) for twin smooths
-#define ITER 8 // how many numbers in the Pell sequence are checked at most
 #define SMOOTHNESS_BOUND 65536// 2^16
-#define MIN_FACTOR 8 // minimum number of factors in Stormer discriminant
-#define MAX_FACTOR 32 // maximum number of factors in Stormer discriminant
-#define STARTING_D "2"
-#define NUM_DISC 8192 // number of discriminants per thread
-#define OUTPUT_FILE "output.txt"
-#define STATUS_FILE "status.txt"
+#define LOWER_BOUND "1427247692705959881058285969449495136382746624" // 2^150
+#define UPPER_BOUND "1606938044258990275541962092341162602522202993782792835301376" // 2^200
+#define MIN_FACTOR 15 // minimum number of factors in Stormer discriminant
+#define MAX_FACTOR 20 // maximum number of factors in Stormer discriminant
+#define STARTING_D "18446744073709551616" // 2^64
+#define CONDUCTOR "2542949672966" // 2^32 = sqrt(STARTING_D)
 
 static inline GEN
 bvtodisc(GEN bv, GEN start)
@@ -47,6 +43,57 @@ disctobv(GEN d, GEN start, long length)
 }
 
 void *
+regulator_cryptographic_(void *arg)
+{
+  GEN stormer, ret, in; // [k, [np, l, m, lb, ub, d, f]]
+  long i, k, np, l, m, h;
+  pari_sp av;
+  char output_s[100], status_s[100];
+  FILE* output = NULL;
+  FILE* status = NULL;
+  pari_timer timer;
+  in = pari_thread_start((struct pari_thread*) arg);
+  k = itos(gel(in,1));
+  np = itos(gmael(in,2,1));
+  l = itos(gmael2(in,2,2));
+  m = itos(gmael2(in,2,3));
+  h = 0;
+  sprintf(output_s, "output_%ld", k);
+  sprintf(status_s, "status_%ld", k);
+  if (NULL == (output = fopen(output_s, "w")))
+  {
+    pari_printf("Error opening output file %s. Aborting.\n", output_s);
+    pari_close();
+    return NULL;
+  }
+  if (NULL == (status = fopen(status_s, "w")))
+  {
+    pari_printf("Error opening status file %s. Aborting.\n", status_s);
+    pari_close();
+    return NULL;
+  }
+  stormer = stormer_gen(np, gmael2(in,2,6), gmael2(in,2,4), gmael2(in,2,5), NULL, &h, l);
+  for (i = 0; i < k; i++) stormer = stormer_next(stormer, np, gmael2(in,2,5), &h, l, m);
+  timer_start(&timer);
+  while (NULL != stormer)
+  {
+    av = avma;
+    ret = regulator_cryptographic(gel(stormer,2), gmael2(in,2,7));
+    if (lg(ret) > 1) pari_fprintf(output, "%Ps: %Ps\n", gel(stormer,2), ret);
+    if (timer_get(&timer) > 3600000)
+    {
+      pari_fprintf(status, "%Ps\n", gel(stormer,2));
+      timer_delay(&timer);
+    }
+    set_avma(av);
+    for (i = 0; i < NUM_THREADS; i++) stormer = stormer_next(stormer, np, gmael2(in,2,5), &h, l, m);
+  }
+  pari_thread_close();
+  return NULL;
+}
+
+/*
+void *
 twin_smooth_range_d_small_bulk(void *arg)
 {
   GEN ds, tmp, ret;
@@ -61,68 +108,36 @@ twin_smooth_range_d_small_bulk(void *arg)
   pari_thread_close();
   return (void*)ret;
 }
+*/
 
 int
 main(void)
 {
-  long i, j, np, h;
+  long np, i;
   pari_init(1048576000,SMOOTHNESS_BOUND+1);
   pthread_t th[NUM_THREADS];
   struct pari_thread pth[NUM_THREADS];
-
-  GEN d_start, ub, bv, stormer, in, out;
-  pari_sp ltop, av;
-  pari_timer timer;
-  FILE* output = NULL;
-  FILE* status = NULL;
+  GEN d_start, f, lb, ub, in;
+  pari_sp av;
   d_start = strtoi(STARTING_D);
-  av = avma; ub = gerepileupto(av, powis(gen_2, 2*UPPER_BOUND));
+  f = strtoi(CONDUCTOR);
+  lb = strtoi(LOWER_BOUND);
+  ub = strtoi(UPPER_BOUND);
   av = avma; np = itos(primepi(stoi(SMOOTHNESS_BOUND))); set_avma(av);
-  av = avma; bv = gerepileupto(av,disctobv(strtoi("254"),d_start,np)); // 254 = 127*2
-  h = 0;
-  for (i = 1; i < lg(bv); i++) h += (long)gel(bv,i);
-  stormer = stormer_gen(np, d_start, ub, bv);
-  set_avma(avma - SECURITY_PARAM); // kinda hacky
 
-  if (NULL == (output = fopen(OUTPUT_FILE, "w")))
-  {
-    pari_printf("Error opening output file %s. Aborting.\n", OUTPUT_FILE);
-    pari_close();
-    return 1;
-  }
-  if (NULL == (status = fopen(STATUS_FILE, "w")))
-  {
-    pari_printf("Error opening status file %s. Aborting.\n", STATUS_FILE);
-    pari_close();
-    return 1;
-  }
+  in = cgetg(8, t_VEC);
+  gel(in, 1) = stoi(np);
+  gel(in, 2) = stoi(MIN_FACTOR);
+  gel(in, 3) = stoi(MAX_FACTOR);
+  gel(in, 4) = lb;
+  gel(in, 5) = ub;
+  gel(in, 6) = d_start;
+  gel(in, 7) = f;
+  for (i = 0; i < NUM_THREADS; i++) pari_thread_alloc(&pth[i], 1048576000, mkvec2(stoi(i),in));
+  for (i = 0; i < NUM_THREADS; i++) pthread_create(&th[i], NULL, &regulator_cryptographic_, (void*)&pth[i]);
+  for (i = 0; i < NUM_THREADS; i++) pthread_join(th[i],NULL);
+  for (i = 1; i < NUM_THREADS; i++) pari_thread_free(&pth[i]);
 
-  timer_start(&timer);
-  ltop = avma;
-  while (NULL != stormer)
-  {
-    in = cgetg(NUM_THREADS+1, t_VEC);
-    for (i = 1; i < lg(in); i++)
-    {
-      gel(in, i) = cgetg(NUM_DISC+1, t_VEC);
-      for (j = 1; j < lg(gel(in, i)); j++)
-      {
-        if (NULL == stormer) break;
-        gmael2(in, i, j) = gcopy(gel(stormer, 2));
-        stormer = stormer_next(stormer, np, ub, &h, MIN_FACTOR, MAX_FACTOR);
-      }
-    }
-    pari_fprintf(status, "%d: in created\n", timer_get(&timer));
-    for (i = 0; i < NUM_THREADS; i++) pari_thread_alloc(&pth[i], 1048576000, gel(in, i+1));
-    for (i = 0; i < NUM_THREADS; i++) pthread_create(&th[i], NULL, &twin_smooth_range_d_small_bulk, (void*)&pth[i]);
-    out = cgetg(NUM_THREADS+1, t_VEC);
-    for (i = 0; i < NUM_THREADS; i++) pthread_join(th[i],(void*)&gel(out, i+1));
-    for (i = 1; i < lg(out); i++) for (j = 1; j < lg(gel(out, i)); j++) pari_fprintf(output, "%Ps: %Ps\n", gmael3(out, i, j, 1), gmael3(out, i, j, 2));
-    for (i = 1; i < NUM_THREADS; i++) pari_thread_free(&pth[i]);
-    pari_fprintf(status, "%d: out written, latest disc %Ps\n", timer_get(&timer), gel(gel(in, lg(in)-1), lg(gel(in, lg(in)-1))-1));
-    set_avma(ltop);
-  }
-  fclose(output); fclose(status);
   pari_close();
   return 0;
 }

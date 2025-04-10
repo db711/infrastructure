@@ -118,6 +118,7 @@ stormer_next(GEN node, long length, GEN ub, long* h, long l, long m)
     GEN prev, rc, lc;
     pari_sp lbot = avma;
     long cont;
+    if (NULL == node) return NULL;
     do
     {
         prev = node;
@@ -126,7 +127,7 @@ stormer_next(GEN node, long length, GEN ub, long* h, long l, long m)
         {
             if (*h >= m) continue;
             cont = 0;
-            set_avma((pari_sp)gel(node,3)); //we start appending new nodes here
+            set_avma((pari_sp)gel(node,3)); 
             rc = rightchild(node,length);
             (*h)++;
 
