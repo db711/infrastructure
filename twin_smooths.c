@@ -244,7 +244,7 @@ twin_smooth_range_d_small(ulong B, GEN d, ulong bot, ulong top, ulong m)
 GEN
 regulator_cryptographic(GEN d, GEN f)
 {
-    GEN O, e = NULL, x, ret;
+    GEN O, e = NULL, e_, x, ret;
     pari_sp ltop = avma;
     long s;
     O = cgetg(5,t_VEC);
@@ -266,28 +266,30 @@ regulator_cryptographic(GEN d, GEN f)
         e = quadunit0(gel(O,4),-1);
         if (s == 2 && mod2(gel(e,3)) == 1) e = gmul(e,gsqr(e));
         if (gsigne(e) == -1) e = gsqr(e);
+        e_ = e;
     }
     if (NULL != e)
     {
         if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
         else x = gel(e,2);
+        ret = vec_append(ret,x);
         while (sigbits(x) < LOWER_BOUND_I)
         {
-            e = gsqr(e);
+            e = gmul(e,e_);
             if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
             else x = gel(e,2);
         }
         if (sigbits(x) < UPPER_BOUND_I) ret = vec_append(ret,x);
         while (sigbits(x) < LOWER_BOUND_III)
         {
-            e = gsqr(e);
+            e = gmul(e,e_);
             if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
             else x = gel(e,2);
         }
         if (sigbits(x) < UPPER_BOUND_III) ret = vec_append(ret,x);
         while (sigbits(x) < LOWER_BOUND_V) 
         {
-            e = gsqr(e);
+            e = gmul(e,e_);
             if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
             else x = gel(e,2);
         }

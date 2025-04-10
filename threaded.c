@@ -2,7 +2,7 @@
 #include "stormer.h"
 #include <pthread.h> 
 
-#define NUM_THREADS 6 // number of threads to run (at once)
+#define NUM_THREADS 30 // number of threads to run (at once)
 #define SMOOTHNESS_BOUND 65536// 2^16
 #define LOWER_BOUND "1427247692705959881058285969449495136382746624" // 2^150
 #define UPPER_BOUND "1606938044258990275541962092341162602522202993782792835301376" // 2^200
@@ -10,6 +10,15 @@
 #define MAX_FACTOR 20 // maximum number of factors in Stormer discriminant
 #define STARTING_D "18446744073709551616" // 2^64
 #define CONDUCTOR "2542949672966" // 2^32 = sqrt(STARTING_D)
+
+//#define NUM_THREADS 10 // number of threads to run (at once)
+//#define SMOOTHNESS_BOUND 65536// 2^16
+//#define LOWER_BOUND "4294967296" // 2^32
+//#define UPPER_BOUND "340282366920938463463374607431768211456" // 2^128
+//#define MIN_FACTOR 4 // minimum number of factors in Stormer discriminant
+//#define MAX_FACTOR 16 // maximum number of factors in Stormer discriminant
+//#define STARTING_D "256" // 2^8
+//#define CONDUCTOR "16" // 2^4 = sqrt(STARTING_D)
 
 static inline GEN
 bvtodisc(GEN bv, GEN start)
@@ -136,7 +145,7 @@ main(void)
   for (i = 0; i < NUM_THREADS; i++) pari_thread_alloc(&pth[i], 1048576000, mkvec2(stoi(i),in));
   for (i = 0; i < NUM_THREADS; i++) pthread_create(&th[i], NULL, &regulator_cryptographic_, (void*)&pth[i]);
   for (i = 0; i < NUM_THREADS; i++) pthread_join(th[i],NULL);
-  for (i = 1; i < NUM_THREADS; i++) pari_thread_free(&pth[i]);
+  for (i = 0; i < NUM_THREADS; i++) pari_thread_free(&pth[i]);
 
   pari_close();
   return 0;
