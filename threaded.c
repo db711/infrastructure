@@ -2,23 +2,23 @@
 #include "stormer.h"
 #include <pthread.h> 
 
-#define NUM_THREADS 30 // number of threads to run (at once)
+/*#define NUM_THREADS 30 // number of threads to run (at once)
 #define SMOOTHNESS_BOUND 65536// 2^16
 #define LOWER_BOUND "1427247692705959881058285969449495136382746624" // 2^150
 #define UPPER_BOUND "1606938044258990275541962092341162602522202993782792835301376" // 2^200
 #define MIN_FACTOR 15 // minimum number of factors in Stormer discriminant
 #define MAX_FACTOR 20 // maximum number of factors in Stormer discriminant
-#define STARTING_D "18446744073709551616" // 2^64
-#define CONDUCTOR "2542949672966" // 2^32 = sqrt(STARTING_D)
+#define STARTING_D "36893488147419103232" // 2^63
+#define CONDUCTOR "2147483648" // 2^31 = sqrt(STARTING_D/2)*/
 
-//#define NUM_THREADS 10 // number of threads to run (at once)
-//#define SMOOTHNESS_BOUND 65536// 2^16
-//#define LOWER_BOUND "4294967296" // 2^32
-//#define UPPER_BOUND "340282366920938463463374607431768211456" // 2^128
-//#define MIN_FACTOR 4 // minimum number of factors in Stormer discriminant
-//#define MAX_FACTOR 16 // maximum number of factors in Stormer discriminant
-//#define STARTING_D "256" // 2^8
-//#define CONDUCTOR "16" // 2^4 = sqrt(STARTING_D)
+#define NUM_THREADS 10 // number of threads to run (at once)
+#define SMOOTHNESS_BOUND 65536// 2^16
+#define LOWER_BOUND "4294967296" // 2^32
+#define UPPER_BOUND "340282366920938463463374607431768211456" // 2^128
+#define MIN_FACTOR 4 // minimum number of factors in Stormer discriminant
+#define MAX_FACTOR 16 // maximum number of factors in Stormer discriminant
+#define STARTING_D "131072" // 2^15
+#define CONDUCTOR "128" // 2^7 = sqrt(STARTING_D/2)
 
 static inline GEN
 bvtodisc(GEN bv, GEN start)
