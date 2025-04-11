@@ -47,7 +47,7 @@ GEN regulator_cryptographic(GEN d, GEN f);
 /* Regulator of cryptographic size.
  * Input:   Nonsquare integer d;
             corresponding regulator f.
- * Output:  Vector containing the x-coordinate of fundamental unit in the order of regulator f in Q(sqrt(d)) as well as those powers having the correct number of bits (per NIST security level). 
+ * Output:  Vector containing the x-coordinate of fundamental unit in the order of regulator f in Q(sqrt(d)) as well as those powers having the correct number of bits (per NIST security level), which have a chance to be prime. 
 */
 
 GEN pell_and_boost(GEN d, GEN f);

@@ -329,12 +329,12 @@ pell_and_boost (GEN d, GEN f)
         av = avma;
         if (s == 2) x = gerepileupto(av,addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
         else x = gel(e,2);
-        n1 = n3 = n5 = 1;
-        while (n1*sigbits(x) < LOWER_BOUND_I) n1++;
-        while (n3*sigbits(x) < LOWER_BOUND_III) n3++;
-        while (n5*sigbits(x) < LOWER_BOUND_V) n5++;
-        while (sigbits(x) < UPPER_BOUND_V)
+        do
         {
+            n1 = n3 = n5 = 1;
+            while (n1*sigbits(x) < LOWER_BOUND_I) n1++;
+            while (n3*sigbits(x) < LOWER_BOUND_III) n3++;
+            while (n5*sigbits(x) < LOWER_BOUND_V) n5++;
             if (n1 > 1 && n1*sigbits(x) < UPPER_BOUND_I)
             {
                 av = avma;
@@ -348,7 +348,6 @@ pell_and_boost (GEN d, GEN f)
                     p = gerepileupto(av,subii(mulii(gen_2,powis(r,n1)),gen_1));
                     if (isprime(p)) ret = vec_append(ret,p);
                 }
-                n1--;
             }
             if (n3 > 1 && n3*sigbits(x) < UPPER_BOUND_III)
             {
@@ -363,7 +362,6 @@ pell_and_boost (GEN d, GEN f)
                     p = gerepileupto(av,subii(mulii(gen_2,powis(r,n3)),gen_1));
                     if (isprime(p)) ret = vec_append(ret,p);
                 }
-                n3--;
             }
             if (n5 > 1 && n5*sigbits(x) < UPPER_BOUND_V)
             {
@@ -378,14 +376,13 @@ pell_and_boost (GEN d, GEN f)
                     p = gerepileupto(av,subii(mulii(gen_2,powis(r,n5)),gen_1));
                     if (isprime(p)) ret = vec_append(ret,p);
                 }
-                n5--;
             }
             if ((n1 == 1 || n3 == 1 || n5 == 1) && isprime(x)) ret = vec_append(ret,x);
             e = gmul(e,e_);
             av = avma;
             if (s == 2) x = gerepileupto(av,addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
             else x = gel(e,2);
-        }
+        } while (sigbits(x) < UPPER_BOUND_V);
     }
     return gerepileupto(ltop,gcopy(ret));
 }
