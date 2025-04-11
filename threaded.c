@@ -101,6 +101,56 @@ regulator_cryptographic_(void *arg)
   return NULL;
 }
 
+void *
+pell_and_boost_(void *arg)
+{
+  GEN stormer, ret, in; // [k, [np, l, m, lb, ub, d, f]]
+  long i, k, np, l, m, h;
+  pari_sp av;
+  char output_s[100], status_s[100];
+  FILE* output = NULL;
+  FILE* status = NULL;
+  pari_timer timer;
+  in = pari_thread_start((struct pari_thread*) arg);
+  k = itos(gel(in,1));
+  np = itos(gmael(in,2,1));
+  l = itos(gmael2(in,2,2));
+  m = itos(gmael2(in,2,3));
+  h = 0;
+  sprintf(output_s, "output_%ld", k);
+  sprintf(status_s, "status_%ld", k);
+  if (NULL == (output = fopen(output_s, "w")))
+  {
+    pari_printf("Error opening output file %s. Aborting.\n", output_s);
+    pari_close();
+    return NULL;
+  }
+  if (NULL == (status = fopen(status_s, "w")))
+  {
+    pari_printf("Error opening status file %s. Aborting.\n", status_s);
+    pari_close();
+    return NULL;
+  }
+  stormer = stormer_gen(np, gmael2(in,2,6), gmael2(in,2,4), gmael2(in,2,5), NULL, &h, l);
+  for (i = 0; i < k; i++) stormer = stormer_next(stormer, np, gmael2(in,2,5), &h, l, m);
+  timer_start(&timer);
+  while (NULL != stormer)
+  {
+    av = avma;
+    ret = pell_and_boost(gel(stormer,2), gmael2(in,2,7));
+    if (lg(ret) > 1) pari_fprintf(output, "%Ps: %Ps\n", gel(stormer,2), ret);
+    if (timer_get(&timer) > 3600000)
+    {
+      pari_fprintf(status, "%Ps\n", gel(stormer,2));
+      timer_delay(&timer);
+    }
+    set_avma(av);
+    for (i = 0; i < NUM_THREADS; i++) stormer = stormer_next(stormer, np, gmael2(in,2,5), &h, l, m);
+  }
+  pari_thread_close();
+  return NULL;
+}
+
 /*
 void *
 twin_smooth_range_d_small_bulk(void *arg)

@@ -50,4 +50,11 @@ GEN regulator_cryptographic(GEN d, GEN f);
  * Output:  Vector containing the x-coordinate of fundamental unit in the order of regulator f in Q(sqrt(d)) as well as those powers having the correct number of bits (per NIST security level). 
 */
 
+GEN pell_and_boost(GEN d, GEN f);
+/* Pell-and-boost
+ * Input:   Nonsquare integer d;
+            corresponding regulator f.
+ * Output:  Vector containing prime x obtained from the Pell-and-boost method. 
+*/
+
 #endif

@@ -297,3 +297,188 @@ regulator_cryptographic(GEN d, GEN f)
     }
     return gerepileupto(ltop,gcopy(ret));
 }
+
+GEN
+pell_and_boost (GEN d, GEN f)
+{
+    GEN O, e = NULL, e_, x, r, p, ret;
+    pari_sp ltop = avma;
+    long s;
+    O = cgetg(5,t_VEC);
+    gel(O,1) = d;
+    gel(O,2) = mkvec2(diviiexact(d,sqri(f)),f);
+    if (mod4(gmael(O,2,1)) == 1) 
+    {
+        gel(O,3) = gen_2; s = 2;
+        gel(O,4) = gmael(O,2,1);
+    }
+    else
+    {
+        gel(O,3) = gen_1; s = 1;
+        gel(O,4) = mulsi(4,gmael(O,2,1));
+    }
+    ret = cgetg(1,t_VEC);
+    if (NULL != regulator_range(O,LOWER_BOUND_III,UPPER_BOUND_III) || NULL != regulator_range(O,LOWER_BOUND_V,UPPER_BOUND_V) || NULL != regulator_range(O,LOWER_BOUND_I,UPPER_BOUND_I))
+    {
+        e = quadunit0(gel(O,4),-1);
+        if (s == 2 && mod2(gel(e,3)) == 1) e = gmul(e,gsqr(e));
+        if (gsigne(e) == -1) e = gsqr(e);
+        e_ = e;
+    }
+    if (NULL != e)
+    {
+        if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+        else x = gel(e,2);
+        while (4*sigbits(x) < LOWER_BOUND_I)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (4*sigbits(x) < UPPER_BOUND_I)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,4)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (3*sigbits(x) < LOWER_BOUND_I)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (3*sigbits(x) < UPPER_BOUND_I)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,3)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (4*sigbits(x) < LOWER_BOUND_III)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (4*sigbits(x) < UPPER_BOUND_III)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,4)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (2*sigbits(x) < LOWER_BOUND_I)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (2*sigbits(x) < UPPER_BOUND_I)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,2)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (2*sigbits(x) < LOWER_BOUND_I)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (2*sigbits(x) < UPPER_BOUND_I)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,2)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (3*sigbits(x) < LOWER_BOUND_III)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (3*sigbits(x) < UPPER_BOUND_III)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,3)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (4*sigbits(x) < LOWER_BOUND_V)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (4*sigbits(x) < UPPER_BOUND_V)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,4)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (3*sigbits(x) < LOWER_BOUND_V)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (3*sigbits(x) < UPPER_BOUND_V)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,3)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (2*sigbits(x) < LOWER_BOUND_III)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (2*sigbits(x) < UPPER_BOUND_III)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,2)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (sigbits(x) < LOWER_BOUND_I)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (sigbits(x) < UPPER_BOUND_I)
+        {
+            if (isprime(x)) ret = vec_append(ret,x);
+        }
+        while (2*sigbits(x) < LOWER_BOUND_V)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (2*sigbits(x) < UPPER_BOUND_V)
+        {
+            r = diviiexact(addii(x,gen_1),gen_2);
+            p = subii(mulii(gen_2,powis(r,2)),gen_1);
+            if (isprime(p)) ret = vec_append(ret,p);
+        }
+        while (sigbits(x) < LOWER_BOUND_III)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (sigbits(x) < UPPER_BOUND_III)
+        {
+            if (isprime(x)) ret = vec_append(ret,x);
+        }
+        while (sigbits(x) < LOWER_BOUND_V)
+        {
+            e = gmul(e,e_);
+            if (s == 2) x = addii(gel(e,2),diviiexact(gel(e,3),gen_2));
+            else x = gel(e,2);
+        }
+        if (sigbits(x) < UPPER_BOUND_V)
+        {
+            if (isprime(x)) ret = vec_append(ret,x);
+        }
+    }
+    return gerepileupto(ltop,gcopy(ret));
+}
