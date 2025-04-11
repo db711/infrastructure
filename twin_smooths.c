@@ -380,7 +380,7 @@ pell_and_boost (GEN d, GEN f)
                 }
                 n5--;
             }
-            if ((n1 == 1 || n3 == 1 || n5 == 1) && isprime(x)) ret = vec_append(ret,p);
+            if ((n1 == 1 || n3 == 1 || n5 == 1) && isprime(x)) ret = vec_append(ret,x);
             e = gmul(e,e_);
             av = avma;
             if (s == 2) x = gerepileupto(av,addii(gel(e,2),diviiexact(gel(e,3),gen_2)));
