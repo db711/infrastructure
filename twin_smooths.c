@@ -341,13 +341,10 @@ pell_and_boost (GEN d, GEN f)
                 r = gerepileupto(av,diviiexact(addii(x,gen_1),gen_2));
                 p = gerepileupto(av,subii(mulii(gen_2,powis(r,n1)),gen_1));
                 if (isprime(p)) ret = vec_append(ret,p);
-                if (n1%2 == 0)
-                {
-                    av = avma;
-                    r = gerepileupto(av,diviiexact(subii(x,gen_1),gen_2));
-                    p = gerepileupto(av,subii(mulii(gen_2,powis(r,n1)),gen_1));
-                    if (isprime(p)) ret = vec_append(ret,p);
-                }
+                av = avma;
+                r = gerepileupto(av,diviiexact(subii(x,gen_1),gen_2));
+                p = gerepileupto(av,subii(mulii(gen_2,powis(r,n1)),gen_1));
+                if (isprime(p)) ret = vec_append(ret,p);
             }
             if (n3 > 1 && n3*sigbits(x) < UPPER_BOUND_III)
             {
@@ -355,13 +352,10 @@ pell_and_boost (GEN d, GEN f)
                 r = gerepileupto(av,diviiexact(addii(x,gen_1),gen_2));
                 p = gerepileupto(av,subii(mulii(gen_2,powis(r,n3)),gen_1));
                 if (isprime(p)) ret = vec_append(ret,p);
-                if (n3%2 == 0)
-                {
-                    av = avma;
-                    r = gerepileupto(av,diviiexact(subii(x,gen_1),gen_2));
-                    p = gerepileupto(av,subii(mulii(gen_2,powis(r,n3)),gen_1));
-                    if (isprime(p)) ret = vec_append(ret,p);
-                }
+                av = avma;
+                r = gerepileupto(av,diviiexact(subii(x,gen_1),gen_2));
+                p = gerepileupto(av,subii(mulii(gen_2,powis(r,n3)),gen_1));
+                if (isprime(p)) ret = vec_append(ret,p);
             }
             if (n5 > 1 && n5*sigbits(x) < UPPER_BOUND_V)
             {
@@ -369,13 +363,10 @@ pell_and_boost (GEN d, GEN f)
                 r = gerepileupto(av,diviiexact(addii(x,gen_1),gen_2));
                 p = gerepileupto(av,subii(mulii(gen_2,powis(r,n5)),gen_1));
                 if (isprime(p)) ret = vec_append(ret,p);
-                if (n5%2 == 0)
-                {
-                    av = avma;
-                    r = gerepileupto(av,diviiexact(subii(x,gen_1),gen_2));
-                    p = gerepileupto(av,subii(mulii(gen_2,powis(r,n5)),gen_1));
-                    if (isprime(p)) ret = vec_append(ret,p);
-                }
+                av = avma;
+                r = gerepileupto(av,diviiexact(subii(x,gen_1),gen_2));
+                p = gerepileupto(av,subii(mulii(gen_2,powis(r,n5)),gen_1));
+                if (isprime(p)) ret = vec_append(ret,p);
             }
             if ((n1 == 1 || n3 == 1 || n5 == 1) && isprime(x)) ret = vec_append(ret,x);
             e = gmul(e,e_);
