@@ -88,10 +88,15 @@ regulator_cryptographic_(void *arg)
   {
     av = avma;
     ret = regulator_cryptographic(gel(stormer,2), gmael2(in,2,7));
-    if (lg(ret) > 1) pari_fprintf(output, "%Ps: %Ps\n", gel(stormer,2), ret);
+    if (lg(ret) > 1) 
+    {
+      pari_fprintf(output, "%Ps: %Ps\n", gel(stormer,2), ret);
+      fflush(output);
+    }
     if (timer_get(&timer) > 3600000)
     {
       pari_fprintf(status, "%Ps\n", gel(stormer,2));
+      fflush(status);
       timer_delay(&timer);
     }
     set_avma(av);
@@ -138,10 +143,15 @@ pell_and_boost_(void *arg)
   {
     av = avma;
     ret = pell_and_boost(gel(stormer,2), gmael2(in,2,7));
-    if (lg(ret) > 1) pari_fprintf(output, "%Ps: %Ps\n", gel(stormer,2), ret);
+    if (lg(ret) > 1) 
+    {
+      pari_fprintf(output, "%Ps: %Ps\n", gel(stormer,2), ret);
+      fflush(output);
+    }
     if (timer_get(&timer) > 3600000)
     {
       pari_fprintf(status, "%Ps\n", gel(stormer,2));
+      fflush(status);
       timer_delay(&timer);
     }
     set_avma(av);
@@ -193,7 +203,7 @@ main(void)
   gel(in, 6) = d_start;
   gel(in, 7) = f;
   for (i = 0; i < NUM_THREADS; i++) pari_thread_alloc(&pth[i], 1048576000, mkvec2(stoi(i),in));
-  for (i = 0; i < NUM_THREADS; i++) pthread_create(&th[i], NULL, &regulator_cryptographic_, (void*)&pth[i]);
+  for (i = 0; i < NUM_THREADS; i++) pthread_create(&th[i], NULL, &pell_and_boost_, (void*)&pth[i]);
   for (i = 0; i < NUM_THREADS; i++) pthread_join(th[i],NULL);
   for (i = 0; i < NUM_THREADS; i++) pari_thread_free(&pth[i]);
 
